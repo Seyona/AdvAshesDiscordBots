@@ -33,6 +33,7 @@ async def on_ready():
 		if channel == "botfuckery":
 			break
 
+	print(channel.id)
 	await channel.purge()
 	await channel.send("Pick yo class fool")
 	msg = channel.last_message
