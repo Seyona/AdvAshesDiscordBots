@@ -7,6 +7,7 @@ import sys
 #End Discord requirements
 
 import json
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -57,6 +58,7 @@ async def on_ready():
 			if discordEmojis.count == 8: # 8 classes no more lookup required
 				break
 	
+	time.sleep(0.5) # let the awaits finish up
 	global isReady
 	isReady = True
 
