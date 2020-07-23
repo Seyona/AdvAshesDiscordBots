@@ -65,15 +65,19 @@ async def on_ready():
 async def on_reaction_add(reaction,user):
 	if not isReady:
 		return
-		
+
 	reactMsgId = reaction.message.id
 
 	if (reaction.emoji not in discordEmojis):
 		await reaction.message.remove_reaction(reaction.emoji, user)
+		return
 
 	if reactMsgId == primaryClassMsgId:
 		x =""
+		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
+
 	elif reactMsgId == secondaryClassMsgId:
 		x = ""
+		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 client.run(TOKEN)
