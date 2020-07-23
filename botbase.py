@@ -33,7 +33,6 @@ async def on_ready():
     await channel.purge()
     await channel.send("bitches")
     msg = channel.last_message
-    await msg.pin()
     await msg.add_reaction(emoji)
 
 
