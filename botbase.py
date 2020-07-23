@@ -1,6 +1,10 @@
-#Roles Bot
-import os
+# Discord requirements
 import discord
+import asyncio
+import datetime
+import os
+import sys
+#End Discord requirements
 
 from dotenv import load_dotenv
 
