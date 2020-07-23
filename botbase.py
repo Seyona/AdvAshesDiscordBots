@@ -26,8 +26,7 @@ async def on_ready():
         if channel == "botfuckery":
             break
     
-    pastMessages = await channel.history().flatten()
-    await channel.delete_messages(pastMessages)
+    await channel.purge
     await channel.send("bitches")
 
 
