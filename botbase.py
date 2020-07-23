@@ -18,6 +18,7 @@ client = discord.Client()
 discordEmojis = []
 primaryClassMsgId = 0
 secondaryClassMsgId = 0
+isReady = False
 
 with open('classes.json') as json_file:
 	classData = json.load(json_file)
@@ -55,9 +56,21 @@ async def on_ready():
 			await secondaryMsg.add_reaction(emoji)
 			if discordEmojis.count == 8: # 8 classes no more lookup required
 				break
+	
+	global isReady
+	isReady = True
 
 @client.event
-async def on_react(reaction,user):
+async def on_reaction_add(reaction,user):
+	if not isReady:
+		return
+
+	print(discordEmojis.count)
+	print(discordEmojis[0])
+	print(reaction.emoji)
+	print(reaction.emoji.name)
+	print(reaction.emoji not in discordEmojis)
+
 	reactMsgId = reaction.message.id
 
 	if (reaction.emoji not in discordEmojis):
