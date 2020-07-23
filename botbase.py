@@ -17,5 +17,16 @@ client = discord.Client()
 async def on_ready():
     print(f'{client.user} has connected to Discord')
 
+#@client.event
+#async def on_memeber_join(member):
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    user = await client.fetch_user(message.user_id)
+    await message.channel.send(f'Hi {user}')
+
 
 client.run(TOKEN)
