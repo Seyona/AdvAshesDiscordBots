@@ -30,10 +30,10 @@ async def on_ready():
 			break
 
 	for channel in guild.text_channels:
-		if channel == "botfuckery":
+		if channel == "class-registration":
 			break
 
-	print(channel.id)
+	print(channel.name)
 	await channel.purge()
 	await channel.send("Pick yo class fool")
 	msg = channel.last_message
