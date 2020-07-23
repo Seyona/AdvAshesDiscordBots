@@ -1,0 +1,90 @@
+{
+  "bard": 
+    {
+      "bard": "minstrel",
+      "cleric": "soulweaver",
+      "fighter": "tellsword",
+      "mage": "magician",
+      "ranger": "songwarden",
+      "rogue": "trickster",
+      "Summoner": "songcaller",
+      "tank": "siren"
+    },
+  "cleric": 
+    {
+      "bard": "scryer",
+      "cleric": "highpriest",
+      "fighter": "templar",
+      "mage": "oracle",
+      "ranger": "protector",
+      "rogue": "shadowdisciple",
+      "Summoner": "shaman",
+      "tank": "apostle"
+    },
+  "fighter": 
+    {
+      "bard": "bladedancer",
+      "cleric": "highsword",
+      "fighter": "weaponmaster",
+      "mage": "spellsword",
+      "ranger": "hunter",
+      "rogue": "shadowblade",
+      "Summoner": "bladecaller",
+      "tank": "dreadnought"
+    },
+  "mage": 
+    {
+      "bard": "sorcerer",
+      "cleric": "acolyte",
+      "fighter": "battle-mage",
+      "mage": "archwizard",
+      "ranger": "spellhunter",
+      "rogue": "shadowcaster",
+      "Summoner": "warlock",
+      "tank": "spellstone"
+    },
+  "ranger": 
+    {
+      "bard": "bowsinger",
+      "cleric": "soulbow",
+      "fighter": "strider",
+      "mage": "scion",
+      "ranger": "hawkeye",
+      "rogue": "scout",
+      "Summoner": "falconer",
+      "tank": "sentinel"
+    },
+  "rogue": 
+    {
+      "bard": "charlatan",
+      "cleric": "cultist",
+      "fighter": "duelist",
+      "mage": "nightspell",
+      "ranger": "predator",
+      "rogue": "assassin",
+      "Summoner": "shadowlord",
+      "tank": "shadowguardian"
+    },
+  "Summoner": 
+    {
+      "bard": "enchanter",
+      "cleric": "necromancer",
+      "fighter": "wildblade",
+      "mage": "spellmancer",
+      "ranger": "beastmaster",
+      "rogue": "shadowmancer",
+      "Summoner": "conjurer",
+      "tank": "broodwarden"
+    },
+  "tank": 
+    {
+      "bard": "argent",
+      "cleric": "paladin",
+      "fighter": "knight",
+      "mage": "spellshield",
+      "ranger": "warden",
+      "rogue": "nightshield",
+      "Summoner": "keeper",
+      "tank": "guardian"
+    }
+}
