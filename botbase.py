@@ -16,7 +16,8 @@ GUILD = os.getenv("DISCORD_GUILD")
 client = discord.Client()
 
 discordEmojis = []
-msgId = 0
+primaryClassMsgId = 0
+secondaryClassMsgId = 0
 
 with open('classes.json') as json_file:
 	classData = json.load(json_file)
@@ -24,6 +25,11 @@ with open('classes.json') as json_file:
 
 @client.event
 async def on_ready():
+	#global calls so we can modify these variables
+	global primaryClassMsgId
+	global secondaryClassMsgId
+	global discordEmojis
+
 	print(f'{client.user} has connected to Discord')
 	
 	for guild in client.guilds:
@@ -35,14 +41,31 @@ async def on_ready():
 			break
 
 	await channel.purge()
-	msg = await channel.send("Pick yo class fool")
-	msgId = msg.id
+
+	primaryMsg = await channel.send("Pick yo class fool")
+	secondaryMsg = await channel.send("Pick yo Second class fool")
+
+	primaryClassMsgId = primaryMsg.id
+	secondaryClassMsgId = secondaryMsg.id
 
 	for emoji in guild.emojis:
 		if emoji.name in classEmojisNames:
 			discordEmojis.append(emoji)
-			await msg.add_reaction(emoji)
+			await primaryMsg.add_reaction(emoji)
+			await secondaryMsg.add_reaction(emoji)
 			if discordEmojis.count == 8: # 8 classes no more lookup required
 				break
+
+@client.event
+async def on_react(reaction,user):
+	reactMsgId = reaction.message.id
+
+	if (reaction.emoji not in discordEmojis):
+		await reaction.message.remove_reaction(reaction.emoji, user)
+
+	if reactMsgId == primaryClassMsgId:
+		x =""
+	elif reactMsgId == secondaryClassMsgId:
+		x = ""
 
 client.run(TOKEN)
