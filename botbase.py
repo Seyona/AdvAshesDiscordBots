@@ -26,7 +26,7 @@ async def on_ready():
         if channel == "botfuckery":
             break
     
-    await channel.purge
+    await channel.purge()
     await channel.send("bitches")
 
 
