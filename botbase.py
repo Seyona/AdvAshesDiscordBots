@@ -8,6 +8,8 @@ import sys
 
 import json
 import time
+
+from asyncio import gather
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -56,14 +58,14 @@ async def on_ready():
 	for emoji in guild.emojis:
 		if emoji.name in classNames:
 			discordEmojis.append(emoji)
-			await primaryMsg.add_reaction(emoji)
-			await secondaryMsg.add_reaction(emoji)
+			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
 
 	for role in guild.roles:
 		if role.name in classNames:
 			discordRoles.append(role)
 
 	isReady = True
+	print("Setup complete")
 
 @client.event
 async def on_reaction_add(reaction,user):
