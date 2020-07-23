@@ -35,13 +35,13 @@ async def on_ready():
 			break
 
 	await channel.purge()
-	sent = await channel.send("Pick yo class fool")
-	msgId = sent.id
+	msg = await channel.send("Pick yo class fool")
+	msgId = msg.id
 
 	for emoji in guild.emojis:
 		if emoji.name in classEmojisNames:
 			discordEmojis.append(emoji)
-			await msgId.add_reaction(emoji)
+			await msg.add_reaction(emoji)
 			if discordEmojis.count == 8: # 8 classes no more lookup required
 				break
 
