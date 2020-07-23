@@ -17,13 +17,14 @@ GUILD = os.getenv("DISCORD_GUILD")
 client = discord.Client()
 
 discordEmojis = []
+discordRoles = []
 primaryClassMsgId = 0
 secondaryClassMsgId = 0
 isReady = False
 
 with open('classes.json') as json_file:
 	classData = json.load(json_file)
-	classEmojisNames = classData.keys()
+	classNames = classData.keys()
 
 @client.event
 async def on_ready():
@@ -32,6 +33,7 @@ async def on_ready():
 	global secondaryClassMsgId
 	global discordEmojis
 	global isReady
+	global discordRoles
 
 	print(f'{client.user} has connected to Discord')
 	
@@ -52,12 +54,20 @@ async def on_ready():
 	secondaryClassMsgId = secondaryMsg.id
 
 	for emoji in guild.emojis:
-		if emoji.name in classEmojisNames:
+		if emoji.name in classNames:
 			discordEmojis.append(emoji)
 			await primaryMsg.add_reaction(emoji)
 			await secondaryMsg.add_reaction(emoji)
-			if discordEmojis.count == 8: # 8 classes no more lookup required
+
+			if len(discordEmojis) == 8: # 8 classes no more lookup required
 				break
+
+	for role in guild.roles:
+		if role.name in classNames:
+			discordRoles.append(role)
+
+		if len(discordRoles) == 8:
+			break
 
 	isReady = True
 
@@ -68,16 +78,25 @@ async def on_reaction_add(reaction,user):
 
 	reactMsgId = reaction.message.id
 
+	if reactMsgId not in [primaryClassMsgId,secondaryClassMsgId]: #lock it to the channel the message are in
+		return
+
 	if (reaction.emoji not in discordEmojis):
 		await reaction.message.remove_reaction(reaction.emoji, user)
 		return
 
+	# get requested role
+	for role in discordRoles:
+		if role.name == reaction.emoji.name:
+			requestedRoleName = reaction.emoji.name
+			await role.message.channel.send(f'@{user}You selected the {requestedRoleName}')
+			break
+
 	if reactMsgId == primaryClassMsgId:
 		x =""
-		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
-
 	elif reactMsgId == secondaryClassMsgId:
 		x = ""
-		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
+
+	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 client.run(TOKEN)
