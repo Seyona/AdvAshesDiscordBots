@@ -26,7 +26,7 @@ async def on_ready():
         if channel == "botfuckery":
             break
     
-    channel.send("bitches")
+    await channel.send("bitches")
 
 
 @client.event
