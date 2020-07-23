@@ -25,7 +25,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    user = await client.fetch_user(message.user_id)
+    user = await client.fetch_user(message.author)
     await message.channel.send(f'Hi {user}')
 
 
