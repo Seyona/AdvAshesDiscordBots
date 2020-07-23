@@ -26,17 +26,22 @@ async def on_ready():
         if channel == "botfuckery":
             break
     
+    for emoji in guild.emojis:
+        if emoji.name == 'seyonirl':
+            break
+
     await channel.purge()
     await channel.send("bitches")
     msg = channel.last_message
     await msg.pin()
-    await msg.add_reaction('seyonirl')
+    await msg.add_reaction(emoji)
 
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
+    #add some checks to what channel it is in....
 
     user = await client.fetch_user(message.author.id)
     await message.channel.send(f'Hi {user}')
