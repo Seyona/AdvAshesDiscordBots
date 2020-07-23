@@ -25,7 +25,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    user = await client.fetch_user(message.author.user_id)
+    id = message.author.discriminator.split('#')[1]
+    user = await client.fetch_user(id)
     await message.channel.send(f'Hi {user}')
 
 
