@@ -57,11 +57,13 @@ async def on_ready():
 			await primaryMsg.add_reaction(emoji)
 			await secondaryMsg.add_reaction(emoji)
 			if discordEmojis.count == 8: # 8 classes no more lookup required
-				isReady = True
 				break
+			
+	isReady = True
 
 @client.event
 async def on_reaction_add(reaction,user):
+	print("in on react")
 	if not isReady:
 		return
 
