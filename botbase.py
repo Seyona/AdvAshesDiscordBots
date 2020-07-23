@@ -24,9 +24,8 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-        
-    id = message.author.discriminator
-    user = await client.fetch_user(id)
+
+    user = await client.fetch_user(message.author.id)
     await message.channel.send(f'Hi {user}')
 
 
