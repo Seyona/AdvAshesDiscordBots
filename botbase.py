@@ -28,6 +28,8 @@ async def on_ready():
     
     await channel.purge()
     await channel.send("bitches")
+    msg = await channel.history().get(author__name='Ashes_Roles')
+    print(msg)
 
 
 @client.event
