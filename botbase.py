@@ -69,7 +69,7 @@ async def on_ready():
 
 @client.event
 async def on_reaction_add(reaction,user):
-	if not isReady or user.id == "735708593294147674":
+	if not isReady or user.id == 735708593294147674:
 		return
 
 	reactMsgId = reaction.message.id
