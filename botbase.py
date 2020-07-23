@@ -59,15 +59,9 @@ async def on_ready():
 			await primaryMsg.add_reaction(emoji)
 			await secondaryMsg.add_reaction(emoji)
 
-			if len(discordEmojis) == 8: # 8 classes no more lookup required
-				break
-
 	for role in guild.roles:
 		if role.name in classNames:
 			discordRoles.append(role)
-
-		if len(discordRoles) == 8:
-			break
 
 	isReady = True
 
@@ -89,7 +83,7 @@ async def on_reaction_add(reaction,user):
 	for role in discordRoles:
 		if role.name == reaction.emoji.name:
 			requestedRoleName = reaction.emoji.name
-			await reaction.message.channel.send(f'@{user}You selected the {requestedRoleName}')
+			await reaction.message.channel.send(f'@{user} You selected the {requestedRoleName}')
 			break
 
 	if reactMsgId == primaryClassMsgId:
