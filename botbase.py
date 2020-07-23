@@ -30,7 +30,7 @@ async def on_ready():
 			break
 
 	for channel in guild.text_channels:
-		if channel == "class-registration":
+		if channel.name == "class-registration":
 			break
 
 	print(channel.name)
