@@ -10,15 +10,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+GUILD = os.getenv("DISCORD_GUILD")
 
 client = discord.Client()
 
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord')
+    
+    for guild in client.guilds:
+        if guild.name == GUILD:
+            break
 
-#@client.event
-#async def on_memeber_join(member):
+    for channel in guild.text_channels:
+        if channel == "botfuckery":
+            break
+    
+    client.channels.cache.get(channel.id).send("yeet bitches")
+
 
 @client.event
 async def on_message(message):
