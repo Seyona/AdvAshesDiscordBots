@@ -31,6 +31,7 @@ async def on_ready():
 	global primaryClassMsgId
 	global secondaryClassMsgId
 	global discordEmojis
+	global isReady
 
 	print(f'{client.user} has connected to Discord')
 	
@@ -56,7 +57,6 @@ async def on_ready():
 			await primaryMsg.add_reaction(emoji)
 			await secondaryMsg.add_reaction(emoji)
 			if discordEmojis.count == 8: # 8 classes no more lookup required
-				global isReady
 				isReady = True
 				break
 
