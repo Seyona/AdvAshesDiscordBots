@@ -85,7 +85,7 @@ async def on_reaction_add(reaction,user):
 	for role in discordRoles:
 		if role.name == reaction.emoji.name:
 			requestedRoleName = reaction.emoji.name
-			await reaction.message.channel.send(f'<@{user.id}> You selected the {requestedRoleName}')
+			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You selected the {requestedRoleName}')
 			break
 
 	if reactMsgId == primaryClassMsgId:
@@ -94,5 +94,8 @@ async def on_reaction_add(reaction,user):
 		x = ""
 
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
+	
+	time.sleep(5)
+	await reaction.message.channel.delete_messages(roleConfirmMsg)
 
 client.run(TOKEN)
