@@ -29,7 +29,8 @@ async def on_ready():
     await channel.purge()
     await channel.send("bitches")
     msg = channel.last_message
-    print(msg)
+    await msg.pin()
+    await msg.add_reaction('seyonirl')
 
 
 @client.event
