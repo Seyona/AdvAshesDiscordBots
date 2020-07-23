@@ -7,7 +7,7 @@
       "mage": "magician",
       "ranger": "songwarden",
       "rogue": "trickster",
-      "Summoner": "songcaller",
+      "summoner": "songcaller",
       "tank": "siren"
     },
   "cleric": 
@@ -18,7 +18,7 @@
       "mage": "oracle",
       "ranger": "protector",
       "rogue": "shadowdisciple",
-      "Summoner": "shaman",
+      "summoner": "shaman",
       "tank": "apostle"
     },
   "fighter": 
@@ -29,7 +29,7 @@
       "mage": "spellsword",
       "ranger": "hunter",
       "rogue": "shadowblade",
-      "Summoner": "bladecaller",
+      "summoner": "bladecaller",
       "tank": "dreadnought"
     },
   "mage": 
@@ -40,7 +40,7 @@
       "mage": "archwizard",
       "ranger": "spellhunter",
       "rogue": "shadowcaster",
-      "Summoner": "warlock",
+      "summoner": "warlock",
       "tank": "spellstone"
     },
   "ranger": 
@@ -51,7 +51,7 @@
       "mage": "scion",
       "ranger": "hawkeye",
       "rogue": "scout",
-      "Summoner": "falconer",
+      "summoner": "falconer",
       "tank": "sentinel"
     },
   "rogue": 
@@ -62,10 +62,10 @@
       "mage": "nightspell",
       "ranger": "predator",
       "rogue": "assassin",
-      "Summoner": "shadowlord",
+      "summoner": "shadowlord",
       "tank": "shadowguardian"
     },
-  "Summoner": 
+  "summoner": 
     {
       "bard": "enchanter",
       "cleric": "necromancer",
@@ -73,7 +73,7 @@
       "mage": "spellmancer",
       "ranger": "beastmaster",
       "rogue": "shadowmancer",
-      "Summoner": "conjurer",
+      "summoner": "conjurer",
       "tank": "broodwarden"
     },
   "tank": 
@@ -84,7 +84,7 @@
       "mage": "spellshield",
       "ranger": "warden",
       "rogue": "nightshield",
-      "Summoner": "keeper",
+      "summoner": "keeper",
       "tank": "guardian"
     }
 }
