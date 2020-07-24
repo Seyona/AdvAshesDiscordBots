@@ -106,7 +106,7 @@ async def on_reaction_add(reaction,user):
 		for role in user.roles:
 			if role.name in classNames:
 				currentRoleName = role.name
-				return
+				break
 			else:
 				currentRoleName = None
 		
