@@ -98,8 +98,7 @@ async def on_reaction_add(reaction,user):
 
 		await user.add_roles(requestedRole)
 
-		time.sleep(1)
-		await DeleteMessageFromReaction(reaction,roleConfirmMsg)
+		await DeleteMessageFromReaction(reaction,roleConfirmMsg, 5)
 
 	elif reactMsgId == secondaryClassMsgId:
 		#Get current role
@@ -110,7 +109,7 @@ async def on_reaction_add(reaction,user):
 			else:
 				currentRoleName = None
 		
-		await DeleteMessageFromReaction(reaction, roleConfirmMsg ,5)
+		await DeleteMessageFromReaction(reaction, roleConfirmMsg, 5)
 
 		if currentRoleName is None:
 			pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. <:seyonirl:450539097597935618>') 
