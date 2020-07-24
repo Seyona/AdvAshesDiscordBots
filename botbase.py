@@ -89,13 +89,14 @@ async def on_reaction_add(reaction,user):
 			break
 
 	if reactMsgId == primaryClassMsgId:
-		x =""
+		await user.remove_roles(discordRoles)
+		await user.add_roles(requestedRoleName)
+
+		time.sleep(1)
+		await reaction.message.channel.delete_messages([roleConfirmMsg])
 	elif reactMsgId == secondaryClassMsgId:
 		x = ""
 
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 	
-	time.sleep(5)
-	await reaction.message.channel.delete_messages(roleConfirmMsg)
-
 client.run(TOKEN)
