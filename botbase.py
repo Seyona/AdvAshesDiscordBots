@@ -86,11 +86,16 @@ async def on_reaction_add(reaction,user):
 		if role.name == reaction.emoji.name:
 			requestedRoleName = reaction.emoji.name
 			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You selected the {requestedRoleName}')
+			requestedRole = role
 			break
 
 	if reactMsgId == primaryClassMsgId:
-		await user.remove_roles(*discordRoles)
-		await user.add_roles(requestedRoleName)
+		# remove existing role
+		for role in user.roles:
+			if role.name in classNames:
+				await user.remove_roles(role)
+
+		await user.add_roles(requestedRole)
 
 		time.sleep(1)
 		await reaction.message.channel.delete_messages([roleConfirmMsg])
