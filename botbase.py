@@ -98,10 +98,27 @@ async def on_reaction_add(reaction,user):
 		await user.add_roles(requestedRole)
 
 		time.sleep(1)
-		await reaction.message.channel.delete_messages([roleConfirmMsg])
+		await DeleteMessageFromReaction(reaction,roleConfirmMsg)
+
 	elif reactMsgId == secondaryClassMsgId:
-		x = ""
+		#Get current role
+		for role in user.roles:
+			if role.name in classNames:
+				currentRoleName = role.name
+		
+		selectedCombo = classData[currentRoleName][requestedRoleName]
+		time.sleep(1)
+		await DeleteMessageFromReaction(reaction,roleConfirmMsg)
+
+		roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You are a {selectedCombo.capitalize()}?? HYPE')
+		time.sleep(1)
+		await  DeleteMessageFromReaction(reaction,roleConfirmMsg)
+		# Gotta do google spreadsheet magic here....yeepie
+
 
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
-	
+
+async def DeleteMessageFromReaction(reaction, msg):
+	await reaction.message.channel.delete_messages([msg])
+
 client.run(TOKEN)
