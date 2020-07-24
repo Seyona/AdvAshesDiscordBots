@@ -122,8 +122,7 @@ async def on_reaction_add(reaction,user):
 			comboMsg = await reaction.message.channel.send(f'<@{user.id}> You are a {selectedCombo.capitalize()}?? HYPE')
 			await  DeleteMessageFromReaction(reaction, comboMsg, 2)#might be able to remove sleep if google sheets take awhile
 		
-		# Gotta do google spreadsheet magic here....yeepie
-	
+		# Gotta do google spreadsheet magic here....yeepie	
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 async def DeleteMessageFromReaction(reaction, msg, sleepTime=0):
