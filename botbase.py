@@ -111,7 +111,7 @@ async def on_reaction_add(reaction,user):
 		await DeleteMessageFromReaction(reaction,roleConfirmMsg)
 
 		roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You are a {selectedCombo.capitalize()}?? HYPE')
-		time.sleep(1)
+		time.sleep(2)
 		await  DeleteMessageFromReaction(reaction,roleConfirmMsg)
 		# Gotta do google spreadsheet magic here....yeepie
 
