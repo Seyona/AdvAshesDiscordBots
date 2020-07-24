@@ -49,8 +49,9 @@ async def on_ready():
 
 	await channel.purge()
 
-	primaryMsg = await channel.send("Pick yo class fool")
-	secondaryMsg = await channel.send("Pick yo Second class fool")
+	primaryMsg = await channel.send("Pick a primary role --- REACT HERE FIRST")
+	await channel.send("=======================================")
+	secondaryMsg = await channel.send("Pick an agumenting role")
 
 	primaryClassMsgId = primaryMsg.id
 	secondaryClassMsgId = secondaryMsg.id
@@ -110,7 +111,7 @@ async def on_reaction_add(reaction,user):
 				currentRoleName = None
 		
 		if currentRoleName is None:
-			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a class from the top role first :smile:')
+			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first <:seyonirl:450539097597935618>')
 
 		else:
 			selectedCombo = classData[currentRoleName][requestedRoleName]
