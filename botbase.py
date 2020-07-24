@@ -86,7 +86,7 @@ async def on_reaction_add(reaction,user):
 	for role in discordRoles:
 		if role.name == reaction.emoji.name:
 			requestedRoleName = reaction.emoji.name
-			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You selected the {requestedRoleName}')
+			roleSelectionString = f'<@{user.id}> You selected the {requestedRoleName}'
 			requestedRole = role
 			break
 
@@ -96,6 +96,7 @@ async def on_reaction_add(reaction,user):
 			if role.name in classNames:
 				await user.remove_roles(role)
 
+		roleConfirmMsg = await reaction.message.channel.send(f'{roleSelectionString} as your primary role. Don\'t forget to select an augmenting class!')
 		await user.add_roles(requestedRole)
 
 		await DeleteMessageFromReaction(reaction,roleConfirmMsg, 5)
@@ -108,8 +109,6 @@ async def on_reaction_add(reaction,user):
 				break
 			else:
 				currentRoleName = None
-		
-		await DeleteMessageFromReaction(reaction, roleConfirmMsg, 5)
 
 		if currentRoleName is None:
 			pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. <:seyonirl:450539097597935618>') 
@@ -117,8 +116,7 @@ async def on_reaction_add(reaction,user):
 
 		else:
 			selectedCombo = classData[currentRoleName][requestedRoleName]
-
-			comboMsg = await reaction.message.channel.send(f'<@{user.id}> You are a {selectedCombo.capitalize()}?? HYPE')
+			comboMsg = await reaction.message.channel.send(f'{roleSelectionString} as your augment role. You are a {selectedCombo.capitalize()}! <a:Wow:694922547812368445>')
 			await  DeleteMessageFromReaction(reaction, comboMsg, 5)#might be able to remove sleep if google sheets take awhile
 		
 		# Gotta do google spreadsheet magic here....yeepie	
