@@ -115,7 +115,6 @@ async def on_reaction_add(reaction,user):
 		await  DeleteMessageFromReaction(reaction,roleConfirmMsg)
 		# Gotta do google spreadsheet magic here....yeepie
 
-
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 async def DeleteMessageFromReaction(reaction, msg):
