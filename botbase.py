@@ -111,7 +111,7 @@ async def on_reaction_add(reaction,user):
 				currentRoleName = None
 		
 		if currentRoleName is None:
-			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first <:seyonirl:450539097597935618>')
+			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first.') #<:seyonirl:450539097597935618>
 
 		else:
 			selectedCombo = classData[currentRoleName][requestedRoleName]
