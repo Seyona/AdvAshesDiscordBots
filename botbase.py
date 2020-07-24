@@ -110,17 +110,17 @@ async def on_reaction_add(reaction,user):
 			else:
 				currentRoleName = None
 		
-		await DeleteMessageFromReaction(reaction, roleConfirmMsg ,1)
+		await DeleteMessageFromReaction(reaction, roleConfirmMsg ,5)
 
 		if currentRoleName is None:
 			pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. <:seyonirl:450539097597935618>') 
-			await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 2)
+			await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 5)
 
 		else:
 			selectedCombo = classData[currentRoleName][requestedRoleName]
 
 			comboMsg = await reaction.message.channel.send(f'<@{user.id}> You are a {selectedCombo.capitalize()}?? HYPE')
-			await  DeleteMessageFromReaction(reaction, comboMsg, 2)#might be able to remove sleep if google sheets take awhile
+			await  DeleteMessageFromReaction(reaction, comboMsg, 5)#might be able to remove sleep if google sheets take awhile
 		
 		# Gotta do google spreadsheet magic here....yeepie	
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
