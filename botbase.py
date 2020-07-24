@@ -105,16 +105,24 @@ async def on_reaction_add(reaction,user):
 		for role in user.roles:
 			if role.name in classNames:
 				currentRoleName = role.name
+				return
+			else:
+				currentRoleName = None
 		
-		selectedCombo = classData[currentRoleName][requestedRoleName]
-		time.sleep(1)
-		await DeleteMessageFromReaction(reaction,roleConfirmMsg)
+		if currentRoleName is None:
+			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a class from the top role first :smile:')
 
-		roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You are a {selectedCombo.capitalize()}?? HYPE')
-		time.sleep(2)
-		await  DeleteMessageFromReaction(reaction,roleConfirmMsg)
+		else:
+			selectedCombo = classData[currentRoleName][requestedRoleName]
+			time.sleep(1)
+			await DeleteMessageFromReaction(reaction,roleConfirmMsg)
+
+			roleConfirmMsg = await reaction.message.channel.send(f'<@{user.id}> You are a {selectedCombo.capitalize()}?? HYPE')
+			
 		# Gotta do google spreadsheet magic here....yeepie
-
+	
+	time.sleep(2) # can remove sleep in good sheets stuff takes a bit to compile
+	await  DeleteMessageFromReaction(reaction,roleConfirmMsg)
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 async def DeleteMessageFromReaction(reaction, msg):
