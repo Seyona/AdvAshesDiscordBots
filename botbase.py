@@ -89,7 +89,7 @@ async def on_reaction_add(reaction,user):
 			break
 
 	if reactMsgId == primaryClassMsgId:
-		await user.remove_roles(discordRoles)
+		await user.remove_roles(*discordRoles)
 		await user.add_roles(requestedRoleName)
 
 		time.sleep(1)
