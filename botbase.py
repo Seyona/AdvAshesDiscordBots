@@ -136,7 +136,9 @@ async def on_reaction_add(reaction,user):
 # Set the primary role of a given user based on the passed reaction
 async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, roleSelectionString):
 	# remove existing role
-	await RemoveRole(user, classNames)
+	roleRemoved = await RemoveRole(user, classNames)
+	if (roleRemoved):
+		spreadsheetRemoveClass(user)
 
 	roleConfirmMsg = await reaction.message.channel.send(f'{roleSelectionString} as your primary role. Don\'t forget to select an augmenting class!')
 	await user.add_roles(requestedRole)
@@ -163,7 +165,7 @@ async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, aug
 
 
 def spreadsheetAdd(user, currentRole, selectedCombo):
-	cells = rosterSheet.findall(user.discriminator)
+	cells = rosterSheet.findall(str(user))
 
 	if (len(cells) == 0): #user does not exist in sheet yet fill in some non changing information
 		row = nextAvailableRow(rosterSheet)
@@ -173,8 +175,17 @@ def spreadsheetAdd(user, currentRole, selectedCombo):
 	else :
 		row = cells[0].row
 	
-	rosterSheet.update(f'B{row}',selectedCombo)
-	rosterSheet.update(f'C{row}',currentRole)
+	modifyClassCols(rosterSheet, row, currentRole, selectedCombo)
+
+# removes the classes from the user entry in the spreadsheet
+def spreadsheetRemoveClass(user):
+	cells = rosterSheet.findall(user)
+	if (len(cells) != 0):
+		modifyClassCols(rosterSheet, cells[0].row, '','')
+
+def modifyClassCols(worksheet, row, baseClass, augClass):
+	worksheet.update(f'B{row}', augClass)
+	worksheet.update(f'C{row}', baseClass)
 
 def nextAvailableRow(worksheet):
 	str_list = list(filter(None, worksheet.col_values(1)))
