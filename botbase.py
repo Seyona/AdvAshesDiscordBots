@@ -168,8 +168,8 @@ def spreadsheetAdd(user, currentRole, selectedCombo):
 	if (len(cells) == 0): #user does not exist in sheet yet fill in some non changing information
 		row = nextAvailableRow(rosterSheet)
 		rosterSheet.update(f'A{row}', user.name)
-		rosterSheet.update(f'E{row}', user.discriminator)
-		rosterSheet.update(f'F{row}', datetime.date.today())
+		rosterSheet.update(f'E{row}', str(user))
+		rosterSheet.update(f'F{row}', str(datetime.date.today()))
 	else :
 		row = cells[0].row
 	
