@@ -179,7 +179,7 @@ def spreadsheetAdd(user, currentRole, selectedCombo):
 
 # removes the classes from the user entry in the spreadsheet
 def spreadsheetRemoveClass(user):
-	cells = rosterSheet.findall(user)
+	cells = rosterSheet.findall(str(user))
 	if (len(cells) != 0):
 		modifyClassCols(rosterSheet, cells[0].row, '','')
 
