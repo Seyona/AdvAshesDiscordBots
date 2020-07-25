@@ -125,7 +125,7 @@ async def on_reaction_add(reaction,user):
 # Set the primary role of a given user based on the passed reaction
 async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, roleSelectionString):
 	# remove existing role
-	RemoveRole(user, classNames)
+	await RemoveRole(user, classNames)
 
 	roleConfirmMsg = await reaction.message.channel.send(f'{roleSelectionString} as your primary role. Don\'t forget to select an augmenting class!')
 	await user.add_roles(requestedRole)
@@ -136,7 +136,7 @@ async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, roleSel
 #Set the augmented class role for a given user based on the passed reaction
 async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, augmentClassRoles, roleSelectionString):
 	selectedCombo = classData[currentRole][requestedRole]
-	RemoveRole(user, augmentNames) #remove augment class, if it exists
+	await RemoveRole(user, augmentNames) #remove augment class, if it exists
 	#get augmenting role
 	for role in augmentClassRoles:
 		if role.name == selectedCombo:
