@@ -6,6 +6,11 @@ import os
 import sys
 #End Discord requirements
 
+#Gsheet stuff
+import gspread
+#end Gsheet stuff
+
+
 import json
 import time
 
@@ -25,10 +30,17 @@ primaryClassMsgId = 0
 secondaryClassMsgId = 0
 isReady = False
 
+# The ID and range of a sample spreadsheet.
+SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
+gc = gspread.service_account()
+sheet = gc.open_by_key(SPREADSHEET_ID)
+rosterSheet = sheet.worksheet("Roster")
+
 with open('classes.json') as json_file:
 	classData = json.load(json_file)
 	classNames = classData.keys()
 	augmentNames = [item for innerList in classData.values() for item in innerList.values()]
+
 
 # On ready prep function
 @client.event
@@ -56,6 +68,7 @@ async def on_ready():
 	primaryMsg = await channel.send("Pick a primary role --- REACT HERE FIRST")
 	await channel.send("=======================================")
 	secondaryMsg = await channel.send("Pick an agumenting role")
+	await channel.send("")
 
 	primaryClassMsgId = primaryMsg.id
 	secondaryClassMsgId = secondaryMsg.id
@@ -117,7 +130,6 @@ async def on_reaction_add(reaction,user):
 
 		else:
 			await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
-		
 			# Gotta do google spreadsheet magic here....yeepie	
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
@@ -145,7 +157,29 @@ async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, aug
 
 	comboMsg = await reaction.message.channel.send(f'{roleSelectionString} as your augment role. You are a {selectedCombo.capitalize()}! <a:Wow:694922547812368445>')
 	await user.add_roles(augmentClassRole)
+
+	spreadsheetAdd(user, currentRole, selectedCombo)
+
 	await  DeleteMessageFromReaction(reaction, comboMsg, 5)
+
+
+def spreadsheetAdd(user, currentRole, selectedCombo):
+	cells = rosterSheet.findall(user.discriminator)
+
+	if (len(cells) == 0): #user does not exist in sheet yet fill in some non changing information
+		row = nextAvailableRow(rosterSheet)
+		rosterSheet.update(f'A{row}', user.name)
+		rosterSheet.update(f'E{row}', user.discriminator)
+		rosterSheet.update(f'F{row}', datetime.date.today())
+	else :
+		row = cells[0].row
+	
+	rosterSheet.update(f'B{row}',selectedCombo)
+	rosterSheet.update(f'C{row}',currentRole)
+
+def nextAvailableRow(worksheet):
+	str_list = list(filter(None, worksheet.col_values(1)))
+	return str(len(str_list)+1)
 
 # Delete the message from the given reaction's channel
 async def DeleteMessageFromReaction(reaction, msg, sleepTime=0):
@@ -157,6 +191,7 @@ async def RemoveRole(user, rolesList):
 	for role in user.roles:
 			if role.name in rolesList:
 				await user.remove_roles(role)
-				return
+				return True
+	return False
 
 client.run(TOKEN)
