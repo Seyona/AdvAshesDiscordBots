@@ -99,7 +99,7 @@ async def on_reaction_add(reaction,user):
 	
 	#First Message was clicked, assign the user a role and move on
 	if reactMsgId == primaryClassMsgId: 
-		await SetPrimaryClassRole(user,reaction, classNames, requestedRoleName, roleSelectionString)
+		await SetPrimaryClassRole(user,reaction, classNames, requestedRole, roleSelectionString)
 		
 	#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
 	elif reactMsgId == secondaryClassMsgId:
