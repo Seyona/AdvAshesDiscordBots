@@ -68,7 +68,6 @@ async def on_ready():
 	primaryMsg = await channel.send("Pick a primary role --- REACT HERE FIRST")
 	await channel.send("=======================================")
 	secondaryMsg = await channel.send("Pick an agumenting role")
-	await channel.send("")
 
 	primaryClassMsgId = primaryMsg.id
 	secondaryClassMsgId = secondaryMsg.id
