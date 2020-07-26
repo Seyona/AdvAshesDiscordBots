@@ -138,7 +138,7 @@ async def on_reaction_add(reaction,user):
 
 	reactMsgId = reaction.message.id
 
-	if reactMsgId not in [primaryClassMsgId, secondaryClassMsgId, playStyleMsgId, accessMsgId]: #lock it to the channel the message are in
+	if reaction.message.channel.id != 735235717558698094: #current registration channel Id
 		return
 
 	if (reaction.emoji not in discordEmojis):
