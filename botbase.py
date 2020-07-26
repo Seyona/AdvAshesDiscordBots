@@ -44,6 +44,18 @@ with open('classes.json') as json_file:
 with open('discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
+summStr = f'❖ Summoner {discordIds["summoner"]} ❖'
+longestStr = len(summStr)
+
+bardStr    = f'❖ Bard     {discordIds["bard"]}     '.ljust(longestStr) + '❖'
+clericStr  = f'❖ Cleric   {discordIds["cleric"]}   '.ljust(longestStr) + '❖'
+fighterStr = f'❖ Fighter  {discordIds["fighter"]}  '.ljust(longestStr) + '❖'
+mageStr    = f'❖ Mage     {discordIds["mage"]}     '.ljust(longestStr) + '❖'
+rangerStr  = f'❖ Ranger   {discordIds["ranger"]}   '.ljust(longestStr) + '❖'
+rogueStr   = f'❖ Rouge    {discordIds["rogue"]}    '.ljust(longestStr) + '❖'
+tankStr    = f'❖ Tank     {discordIds["tank"]}     '.ljust(longestStr) + '❖'
+
+
 # On ready prep function
 @client.event
 async def on_ready():
@@ -70,14 +82,15 @@ async def on_ready():
 	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
 
 	classSelection = f"""
-❖ Bard     {discordIds["bard"]}     ❖ 
-❖ Cleric   {discordIds["cleric"]}   ❖
-❖ Fighter  {discordIds["fighter"]}  ❖ 
-❖ Mage     {discordIds["mage"]}     ❖ 
-❖ Ranger   {discordIds["ranger"]}   ❖
-❖ Rouge    {discordIds["rogue"]}    ❖ 
-❖ Summoner {discordIds["summoner"]} ❖ 
-❖ Tank     {discordIds["tank"]}     ❖"""
+{bardStr}
+{clericStr}
+{fighterStr}
+{mageStr}
+{rangerStr}
+{rogueStr}
+{summStr}
+{tankStr}
+"""
 
 	primaryClassStr = f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
