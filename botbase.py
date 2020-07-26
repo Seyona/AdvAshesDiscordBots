@@ -11,7 +11,6 @@ import sys
 import gspread
 #end Gsheet stuff
 
-
 import json
 import csv
 import time
@@ -62,7 +61,6 @@ mageStr    = f'❖ Mage           {discordIds["mage"]}'
 rangerStr  = f'❖ Ranger         {discordIds["ranger"]}'
 rogueStr   = f'❖ Rogue          {discordIds["rogue"]}'
 tankStr    = f'❖ Tank            {discordIds["tank"]}'
-
 
 # On ready prep function
 @client.event
@@ -203,9 +201,10 @@ async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, roleSel
 	roleRemoved = await RemoveRole(user, classNames)
 	if (roleRemoved):
 		spreadsheetRemoveClass(user)
-
-	roleConfirmMsg = await reaction.message.channel.send(f'{roleSelectionString} as your primary role. Don\'t forget to select an augmenting class!')
+	
 	await user.add_roles(requestedRole)
+	roleConfirmMsg = await reaction.message.channel.send(f'{roleSelectionString} as your primary role. Don\'t forget to select an augmenting class!')
+	
 
 	await DeleteMessageFromReaction(reaction,roleConfirmMsg, 5)
 
