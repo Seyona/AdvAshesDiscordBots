@@ -37,7 +37,6 @@ accessMsgId = 0
 isReady = False
 cleanBoot = False
 
-
 #initialize the Gsheet api
 SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
 gc = gspread.service_account()
@@ -45,13 +44,13 @@ sheet = gc.open_by_key(SPREADSHEET_ID)
 rosterSheet = sheet.worksheet("Roster")
 
 # pull classes file into memory
-with open('classes.json') as json_file:
+with open('./classes.json') as json_file:
 	classData = json.load(json_file)
 	classNames = classData.keys()
 	augmentNames = [item for innerList in classData.values() for item in innerList.values()]
 
 # pull ids into memory
-with open('discordIds.json') as json_file:
+with open('./discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
 summStr    = f'❖ Summoner {discordIds["summoner"]}'
