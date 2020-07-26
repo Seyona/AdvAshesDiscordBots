@@ -45,15 +45,15 @@ with open('discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
 summStr = f'❖ Summoner {discordIds["summoner"]} ❖'
-longestStr = len(summStr)
+longestStr = len('❖ Summoner ')
 
-bardStr    = f'❖ Bard     {discordIds["bard"]}     '.ljust(longestStr) + '❖'
-clericStr  = f'❖ Cleric   {discordIds["cleric"]}   '.ljust(longestStr) + '❖'
-fighterStr = f'❖ Fighter  {discordIds["fighter"]}  '.ljust(longestStr) + '❖'
-mageStr    = f'❖ Mage     {discordIds["mage"]}     '.ljust(longestStr) + '❖'
-rangerStr  = f'❖ Ranger   {discordIds["ranger"]}   '.ljust(longestStr) + '❖'
-rogueStr   = f'❖ Rouge    {discordIds["rogue"]}    '.ljust(longestStr) + '❖'
-tankStr    = f'❖ Tank     {discordIds["tank"]}     '.ljust(longestStr) + '❖'
+bardStr    = f'❖ Bard'.ljust(longestStr) + f'{discordIds["bard"]}'
+clericStr  = f'❖ Cleric'.ljust(longestStr) + f'{discordIds["cleric"]}'
+fighterStr = f'❖ Fighter'.ljust(longestStr) + f'{discordIds["fighter"]}'
+mageStr    = f'❖ Mage'.ljust(longestStr) + f'{discordIds["mage"]}'
+rangerStr  = f'❖ Ranger'.ljust(longestStr) + f'{discordIds["ranger"]}'
+rogueStr   = f'❖ Rouge'.ljust(longestStr) + f'{discordIds["rogue"]}'
+tankStr    = f'❖ Tank'.ljust(longestStr) + f'{discordIds["tank"]}'
 
 
 # On ready prep function
