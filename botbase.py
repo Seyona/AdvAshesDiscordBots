@@ -171,7 +171,7 @@ async def on_reaction_add(reaction,user):
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
 		elif reactMsgId == msgIds["secondaryClassMsgId"]:
-			time.sleep(1) #sleep command because people don't like to click slowly...
+			time.sleep(2) #sleep command because people don't like to click slowly...
 			#Get current role
 			for role in user.roles:
 				if role.name in classNames:
@@ -182,17 +182,17 @@ async def on_reaction_add(reaction,user):
 
 			if currentRoleName is None:
 				pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}>, you need to select a primary class first. {discordIds["seyonirl"]}') 
-				await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 5)
+				await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 4)
 
 			else:
 				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
 
 		elif reactMsgId == msgIds["playStyleMsgId"]:
-			time.sleep(1) #sleep command because people don't like to click slowly...
+			time.sleep(2) #sleep command because people don't like to click slowly...
 			await SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, your prefered play style is: {reaction.emoji.name}. Excellent choice!')
 
 		elif reactMsgId == msgIds["accessMsgId"]:	
-			time.sleep(1) #sleep command because people don't like to click slowly...
+			time.sleep(2) #sleep command because people don't like to click slowly...
 			await SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, we will see you in {reaction.emoji.name}? Awesome glad to have you!')
 
 		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
@@ -202,14 +202,14 @@ async def on_reaction_add(reaction,user):
 async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, roleSelectionString):
 	# remove existing role
 	roleRemoved = await RemoveRole(user, classNames)
+
+	await user.add_roles(requestedRole)
+	roleConfirmMsg = await reaction.message.channel.send(f'{roleSelectionString} as your primary role. Don\'t forget to select an augmenting class!')
+
 	if (roleRemoved):
 		spreadsheetRemoveClass(user)
 	
-	await user.add_roles(requestedRole)
-	roleConfirmMsg = await reaction.message.channel.send(f'{roleSelectionString} as your primary role. Don\'t forget to select an augmenting class!')
-	
-
-	await DeleteMessageFromReaction(reaction,roleConfirmMsg, 5)
+	await DeleteMessageFromReaction(reaction,roleConfirmMsg, 4)
 
 
 #Set the augmented class role for a given user based on the passed reaction
@@ -274,10 +274,11 @@ async def DeleteMessageFromReaction(reaction, msg, sleepTime=0):
 
 # Remove a user's role if it is in the passed roles list
 async def RemoveRole(user, rolesList):
+	roleRemoved = False
 	for role in user.roles:
 			if role.name in rolesList:
 				await user.remove_roles(role)
-				return True
-	return False
+				roleRemoved = True
+	return roleRemoved
 
 client.run(TOKEN)
