@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3.8
 # Discord requirements
 import discord
 import asyncio
