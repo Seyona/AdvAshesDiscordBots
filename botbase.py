@@ -44,13 +44,13 @@ sheet = gc.open_by_key(SPREADSHEET_ID)
 rosterSheet = sheet.worksheet("Roster")
 
 # pull classes file into memory
-with open('./classes.json') as json_file:
+with open('/repositories/AdvAshesDiscordBots/classes.json') as json_file:
 	classData = json.load(json_file)
 	classNames = classData.keys()
 	augmentNames = [item for innerList in classData.values() for item in innerList.values()]
 
 # pull ids into memory
-with open('./discordIds.json') as json_file:
+with open('/repositories/AdvAshesDiscordBots/discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
 summStr    = f'❖ Summoner {discordIds["summoner"]}'
