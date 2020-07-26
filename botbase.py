@@ -180,10 +180,10 @@ async def on_reaction_add(reaction,user):
 				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
 
 		elif reactMsgId == playStyleMsgId:
-			await SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, You prefered play style is: {reaction.emoji.name}. Excellent choice!)')
+			await SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, You prefered play style is: {reaction.emoji.name}. Excellent choice!')
 
 		elif reactMsgId == accessMsgId:	
-			await SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, We will see you in {reaction.emoji.name}? Awesome glad to have you!)')
+			await SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, We will see you in {reaction.emoji.name}? Awesome glad to have you!')
 
 		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
