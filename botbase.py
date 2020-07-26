@@ -172,7 +172,7 @@ async def on_reaction_add(reaction,user):
 		
 		#First Message was clicked, assign the user a role and move on
 		if reactMsgId == msgIds["primaryClassMsgId"]: 
-			await SetPrimaryClassRole(user, reaction, classNames, requestedRole)
+			await SetPrimaryClassRole(user, reaction, classNames, requestedRole, requestedRoleName)
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
 		elif reactMsgId == msgIds["secondaryClassMsgId"]:
@@ -216,10 +216,10 @@ async def on_message(message):
 
 
 # Set the primary role of a given user based on the passed reaction
-async def SetPrimaryClassRole(user, reaction, classNames, requestedRole):
+async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, requestedRoleName):
 	# remove existing role
 	roleRemoved = await RemoveRole(user, classNames)
-	summaryDict[str(user)]['primary'] = requestedRole
+	summaryDict[str(user)]['primary'] = requestedRoleName
 	await user.add_roles(requestedRole)
 	
 	#if (roleRemoved):
