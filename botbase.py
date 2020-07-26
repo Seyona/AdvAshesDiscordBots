@@ -42,7 +42,7 @@ isReady = False
 cleanBoot = False
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--cleanboot", help="Something with terribly wrong, clean up the discord channel and do afresh slate")
+parser.add_argument("--cleanboot", help="Something with terribly wrong, clean up the discord channel and do afresh slate", action="store_true")
 
 args = parser.parse_args()
 if args.cleanboot:
