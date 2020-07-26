@@ -217,12 +217,11 @@ async def on_message(message):
 			msgSender = str(message.author)
 			innerdict = summaryDict[msgSender]
 			errors = "None"
-			response = f'Summary for {msgSender}: \n \
-				Class: {innerdict["secondary"].capitalize()} \n \
-				Base Class: {innerdict["primary"].capitalize()} \n \
-				Playstyle: {innerdict["playstyle"].capitalize()} \n \
-				Access: {innerdict["alpha"].capitalize()} \n\n \
-				Issues: {errors}'
+			response = f'Summary for {msgSender}: \n'+
+				f'Class: {innerdict["secondary"].capitalize()} \n'+
+				f'Base Class: {innerdict["primary"].capitalize()} \n'+
+				f'Playstyle: {innerdict["playstyle"].capitalize()} \n'+
+				f'Access: {innerdict["alpha"].capitalize()} \n\n'
 
 			msg = await channel.send(response)
 			await DeleteMessageFromChannel(channel, msg, 4)
