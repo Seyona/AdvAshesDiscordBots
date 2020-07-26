@@ -98,7 +98,7 @@ What is your Primary class: """
 
 	primaryMsg = await channel.send(f"{primaryClassStr} {classSelection}")
 	await channel.send("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ")
-	secondaryMsg = await channel.send("Pick an agumenting role")
+	secondaryMsg = await channel.send(f'What is your Secondary class {classSelection}')
 
 	primaryClassMsgId = primaryMsg.id
 	secondaryClassMsgId = secondaryMsg.id
