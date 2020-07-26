@@ -81,6 +81,7 @@ async def on_ready():
 
 	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
 
+	cleanLine = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ "
 	classSelection = f"""
 {bardStr}
 {clericStr}
@@ -93,13 +94,13 @@ async def on_ready():
 """
 
 	primaryClassStr = f"""
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+{cleanLine}
 What is your Primary class: """
 
 	primaryMsg = await channel.send(f"{primaryClassStr} {classSelection}")
-	await channel.send("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ")
+	await channel.send(cleanLine)
 	secondaryMsg = await channel.send(f'What is your Secondary class {classSelection}')
-	await channel.send("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ")
+	await channel.send(cleanLine)
 
 	primaryClassMsgId = primaryMsg.id
 	secondaryClassMsgId = secondaryMsg.id
