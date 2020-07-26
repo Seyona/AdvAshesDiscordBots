@@ -23,7 +23,7 @@ GUILD = os.getenv("DISCORD_GUILD")
 
 client = discord.Client()
 
-discordEmojis = []
+emojiWhiteList = []
 primaryClassRoles = []
 augmentClassRoles = []
 primaryClassMsgId = 0
@@ -65,7 +65,7 @@ async def on_ready():
 	#global calls so we can modify these variables
 	global primaryClassMsgId
 	global secondaryClassMsgId, playStyleMsgId, accessMsgId
-	global discordEmojis
+	global emojiWhiteList
 	global isReady
 	global primaryClassRoles
 	global augmentClassRoles
@@ -116,10 +116,10 @@ async def on_ready():
 
 	for emoji in guild.emojis:
 		if emoji.name in classNames:
-			discordEmojis.append(emoji)
+			emojiWhiteList.append(emoji)
 			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
-		elif emoji.name in ["Wow","NoP2W","Handi"]:	#TEMP
-			discordEmojis.append(emoji)
+		elif emoji.name in discordIds.keys():
+			emojiWhiteList.append(emoji)
 
 	for role in guild.roles:
 		if role.name in classNames:
@@ -143,7 +143,7 @@ async def on_reaction_add(reaction,user):
 	if reaction.message.channel.id != 735235717558698094: #current registration channel Id
 		return
 
-	if (reaction.emoji not in discordEmojis):
+	if (reaction.emoji not in emojiWhiteList):
 		await reaction.message.remove_reaction(reaction.emoji, user)
 		return
 
