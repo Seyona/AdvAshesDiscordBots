@@ -53,7 +53,7 @@ clericStr  = f'❖ Cleric           {discordIds["cleric"]}'
 fighterStr = f'❖ Fighter         {discordIds["fighter"]}'
 mageStr    = f'❖ Mage           {discordIds["mage"]}'
 rangerStr  = f'❖ Ranger         {discordIds["ranger"]}'
-rogueStr   = f'❖ Rouge          {discordIds["rogue"]}'
+rogueStr   = f'❖ Rogue          {discordIds["rogue"]}'
 tankStr    = f'❖ Tank            {discordIds["tank"]}'
 
 
