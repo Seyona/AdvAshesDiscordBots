@@ -118,6 +118,8 @@ async def on_ready():
 		if emoji.name in classNames:
 			discordEmojis.append(emoji)
 			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
+		elif emoji.name in ["Wow","NoP2W","Handi"]:	#TEMP
+			discordEmojis.append(emoji)
 
 	for role in guild.roles:
 		if role.name in classNames:
@@ -125,7 +127,6 @@ async def on_ready():
 		if role.name in augmentNames:
 			augmentClassRoles.append(role)
 
-	discordEmojis.extend([discordIds["pve"],discordIds["pvp"],discordIds["lifeskiller"]])
 	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 
 	isReady = True
