@@ -206,7 +206,7 @@ async def on_message(message):
 			msgSender = str(message.author)
 			innerdict = summaryDict[msgSender]
 			response = f'Summary for {msgSender}: \n Class: {innerdict["secondary"].capitalize()} \n \
-			Base Class: {innerdict["primaty"].capitalize()} \n \
+			Base Class: {innerdict["primary"].capitalize()} \n \
 			Playstyle: {innerdict["playstyle"].capitalize()} \n \
 			Access: {innerdict["alpha"].capitalize()}'
 
