@@ -30,17 +30,19 @@ primaryClassMsgId = 0
 secondaryClassMsgId = 0
 isReady = False
 
-# The ID and range of a sample spreadsheet.
+#initialize the Gsheet api
 SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
 gc = gspread.service_account()
 sheet = gc.open_by_key(SPREADSHEET_ID)
 rosterSheet = sheet.worksheet("Roster")
 
+# pull classes file into memory
 with open('classes.json') as json_file:
 	classData = json.load(json_file)
 	classNames = classData.keys()
 	augmentNames = [item for innerList in classData.values() for item in innerList.values()]
 
+# pull ids into memory
 with open('discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
@@ -94,9 +96,15 @@ async def on_ready():
 
 	await channel.send(cleanLine)
 	primaryMsg = await channel.send(f"What is your Primary class: {classSelection}")
-	
+
 	await channel.send(cleanLine)
 	secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
+	await channel.send(cleanLine)
+
+	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
+	await channel.send(cleanLine)
+
+	accessMsg = await channel.send('Do you have any early access to the game?: \n Alpha 1: {} \n Alpha 2: {} \n Beta 1: {} \n Beta2: {}')
 	await channel.send(cleanLine)
 
 	primaryClassMsgId = primaryMsg.id
