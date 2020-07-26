@@ -121,7 +121,7 @@ async def on_ready():
 		if role.name in augmentNames:
 			augmentClassRoles.append(role)
 
-	await gather(playStyleMsg.add_reaction({discordIds["pve"]}),playStyleMsg.add_reaction({discordIds["pvp"]}),playStyleMsg.add_reaction({discordIds["lifeskiller"]}))
+	await gather(playStyleMsg.add_reaction(discordIds["pve"].split(':')[2].replace(">","")),playStyleMsg.add_reaction(discordIds["pvp"].split(':')[2].replace(">","")),playStyleMsg.add_reaction(discordIds["lifeskiller"].split(':')[2].replace(">","")))
 
 	isReady = True
 	print("Setup complete")
