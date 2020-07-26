@@ -145,55 +145,47 @@ async def on_reaction_add(reaction,user):
 
 	reactMsgId = reaction.message.id
 
-	if reaction.message.channel.id != 735235717558698094: #current registration channel Id
-		return
+	if reaction.message.channel.id == 735235717558698094: #current registration channel Id
+		if (reaction.emoji not in emojiWhiteList):
+			await reaction.message.remove_reaction(reaction.emoji, user)
+			return
 
-	if (reaction.emoji not in emojiWhiteList):
-		await reaction.message.remove_reaction(reaction.emoji, user)
-		return
-
-	# get requested role
-	for role in primaryClassRoles:
-		if role.name == reaction.emoji.name:
-			requestedRoleName = reaction.emoji.name
-			roleSelectionString = f'<@{user.id}> You selected the {requestedRoleName}'
-			requestedRole = role
-			break
-	
-	#First Message was clicked, assign the user a role and move on
-	if reactMsgId == primaryClassMsgId: 
-		await SetPrimaryClassRole(user,reaction, classNames, requestedRole, roleSelectionString)
-		
-	#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
-	elif reactMsgId == secondaryClassMsgId:
-		#Get current role
-		for role in user.roles:
-			if role.name in classNames:
-				currentRoleName = role.name
+		# get requested role
+		for role in primaryClassRoles:
+			if role.name == reaction.emoji.name:
+				requestedRoleName = reaction.emoji.name
+				roleSelectionString = f'<@{user.id}> You selected the {requestedRoleName}'
+				requestedRole = role
 				break
+		
+		#First Message was clicked, assign the user a role and move on
+		if reactMsgId == primaryClassMsgId: 
+			await SetPrimaryClassRole(user,reaction, classNames, requestedRole, roleSelectionString)
+			
+		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
+		elif reactMsgId == secondaryClassMsgId:
+			#Get current role
+			for role in user.roles:
+				if role.name in classNames:
+					currentRoleName = role.name
+					break
+				else:
+					currentRoleName = None
+
+			if currentRoleName is None:
+				pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. {discordIds["seyonirl"]}') 
+				await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 5)
+
 			else:
-				currentRoleName = None
+				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
 
-		if currentRoleName is None:
-			pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. {discordIds["seyonirl"]}') 
-			await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 5)
+		elif reactMsgId == playStyleMsgId:
+			SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, You prefered play style is: {reaction.emoji.name}. Excellent choice!)')
 
-		else:
-			await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
+		elif reactMsgId == accessMsgId:	
+			SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, We will see you in {reaction.emoji.name}? Awesome glad to have you!)')
 
-	elif reactMsgId == playStyleMsgId:
-		cells = rosterSheet.findall(str(user))
-		if len(cells) == 0:
-			await reaction.message.channel.send(f'<@{user.id}> You need to respond to the primary AND secondary class prompts before selecting this option')
-		else:
-			playStyle = reaction.emoji.name
-			playStyleMsg = await reaction.message.channel.send(f'<@{user.id}> You prefered play style is: {playStyle}. Excellent choice!')
-			rosterSheet.update(f'D{cells[0].row}', playStyle)
-			await DeleteMessageFromReaction(reaction, playStyleMsg, 3)
-
-	#elif reactMsgId == accessMsgId:	
-	
-	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
+		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 
 # Set the primary role of a given user based on the passed reaction
@@ -226,6 +218,15 @@ async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, aug
 
 	await  DeleteMessageFromReaction(reaction, comboMsg, 5)
 
+async def SingleReactAndSpreadsheetEdit(user, reaction, cellLetterToFill, successStr):
+	cells = rosterSheet.findall(str(user))
+	if len(cells) == 0:
+		await reaction.message.channel.send(f'<@{user.id}> You need to respond to the primary AND secondary class prompts before selecting this option')
+	else:
+		emojiName = reaction.emoji.name
+		responseMsg = await reaction.message.channel.send(successStr)
+		rosterSheet.update(f'{cellLetterToFill}{cells[0].row}', emojiName)
+		await DeleteMessageFromReaction(reaction, responseMsg, 4)
 
 def spreadsheetAdd(user, currentRole, selectedCombo):
 	cells = rosterSheet.findall(str(user))
@@ -234,7 +235,7 @@ def spreadsheetAdd(user, currentRole, selectedCombo):
 		row = nextAvailableRow(rosterSheet)
 		rosterSheet.update(f'A{row}', user.name)
 		rosterSheet.update(f'F{row}', str(user))
-		rosterSheet.update(f'G{row}', str(datetime.date.today()))
+		rosterSheet.update(f'H{row}', str(datetime.date.today()))
 	else :
 		row = cells[0].row
 	
@@ -249,6 +250,8 @@ def spreadsheetRemoveClass(user):
 def modifyClassCols(worksheet, row, baseClass, augClass):
 	worksheet.update(f'B{row}', augClass)
 	worksheet.update(f'C{row}', baseClass)
+
+
 
 def nextAvailableRow(worksheet):
 	str_list = list(filter(None, worksheet.col_values(1)))
