@@ -92,13 +92,11 @@ async def on_ready():
 {tankStr}
 """
 
-	primaryClassStr = f"""
-{cleanLine}
-What is your Primary class: """
-
-	primaryMsg = await channel.send(f"{primaryClassStr} {classSelection}")
 	await channel.send(cleanLine)
-	secondaryMsg = await channel.send(f'What is your Secondary class {classSelection}')
+	primaryMsg = await channel.send(f"What is your Primary class: {classSelection}")
+	
+	await channel.send(cleanLine)
+	secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
 	await channel.send(cleanLine)
 
 	primaryClassMsgId = primaryMsg.id
