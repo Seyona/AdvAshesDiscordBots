@@ -67,11 +67,10 @@ async def on_ready():
 
 	await channel.purge()
 
-	await channel.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
+	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
 
-	primaryClassStr = f"""
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
-What is your Primary class: 
+	classSelection = f"""
+
 ❖ Bard     {discordIds["bard"]} ❖ 
 ❖ Cleric   {discordIds["cleric"]} ❖
 ❖ Fighter  {discordIds["fighter"]} ❖ 
@@ -79,9 +78,15 @@ What is your Primary class:
 ❖ Ranger   {discordIds["ranger"]} ❖
 ❖ Rouge    {discordIds["rogue"]} ❖ 
 ❖ Summoner {discordIds["summoner"]} ❖ 
-❖ Tank     {discordIds["tank"]} ❖"""
+❖ Tank     {discordIds["tank"]} ❖
+	"""
 
-	primaryMsg = await channel.send(primaryClassStr)
+	primaryClassStr = f"""
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
+What is your Primary class: 
+"""
+
+	primaryMsg = await channel.send(f"{primaryClassStr} {classSelection}")
 	await channel.send("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ")
 	secondaryMsg = await channel.send("Pick an agumenting role")
 
