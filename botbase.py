@@ -45,7 +45,6 @@ with open('discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
 summStr = f'❖ Summoner {discordIds["summoner"]}'
-longestStr = len('❖ Summoner ')
 
 bardStr    = f'❖ Bard             {discordIds["bard"]}'
 clericStr  = f'❖ Cleric           {discordIds["cleric"]}'
