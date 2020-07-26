@@ -183,11 +183,11 @@ async def on_ready():
 
 		with open(primaryClassRolesFile, 'w', newline='') as fp:
 			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			writer.writerows(primaryClassRoles)
+			for role in primaryClassRoles: writer.writerow([role])
 
 		with open(augmentClassRolesFile, 'w', newline='') as fp:
 			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			writer.writerows(augmentClassRoles)
+			for role in augmentClassRoles: writer.writerow([role])
 
 		await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 
