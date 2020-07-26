@@ -41,6 +41,8 @@ with open('classes.json') as json_file:
 	classNames = classData.keys()
 	augmentNames = [item for innerList in classData.values() for item in innerList.values()]
 
+with open('discordIds.json') as json_file:
+	discordIds = json.load(json_file)
 
 # On ready prep function
 @client.event
@@ -65,7 +67,23 @@ async def on_ready():
 
 	await channel.purge()
 
-	primaryMsg = await channel.send("Pick a primary role --- REACT HERE FIRST")
+	await channel.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
+
+	primaryClassStr = f"""
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n 
+			What is your Primary class: 
+			❖ Bard     {discordIds["bard"]} ❖ 
+			❖ Cleric   {discordIds["cleric"]} ❖
+			❖ Fighter  {discordIds["fighter"]} ❖ 
+			❖ Mage     {discordIds["mage"]} ❖ 
+			❖ Ranger   {discordIds["ranger"]} ❖
+			❖ Rouge    {discordIds["rogue"]} ❖ 
+			❖ Summoner {discordIds["summoner"]} ❖ 
+			❖ Tank     {discordIds["tank"]} ❖
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n 
+	"""
+
+	primaryMsg = await channel.send(primaryClassStr)
 	await channel.send("=======================================")
 	secondaryMsg = await channel.send("Pick an agumenting role")
 
