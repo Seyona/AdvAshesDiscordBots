@@ -121,7 +121,7 @@ async def on_ready():
 		elif emoji.name in discordIds.keys():
 			emojiWhiteList.append(emoji)
 
-	emojiWhiteList.sort(key= lambda x: x.name, reverse=True)
+	emojiWhiteList.sort(key= lambda x: x.name, reverse=False)
 	for emoji in emojiWhiteList:
 		if emoji.name in classNames:
 			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
