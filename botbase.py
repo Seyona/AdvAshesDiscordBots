@@ -125,7 +125,7 @@ async def on_ready():
 		if role.name in augmentNames:
 			augmentClassRoles.append(role)
 
-	discordEmojis.extend(discordIds["pve"],discordIds["pvp"],discordIds["lifeskiller"])
+	discordEmojis.extend([discordIds["pve"],discordIds["pvp"],discordIds["lifeskiller"]])
 	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 
 	isReady = True
