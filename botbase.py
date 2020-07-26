@@ -101,7 +101,7 @@ async def on_ready():
 	secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
 	await channel.send(cleanLine)
 
-	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
+	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: :dragon: \n PVP: :crossed_swords: \n Lifeskiller: :evergreen_tree: \n')
 	await channel.send(cleanLine)
 
 	accessMsg = await channel.send('Do you have any early access to the game?: \n Alpha 1: {} \n Alpha 2: {} \n Beta 1: {} \n Beta2: {}')
@@ -162,7 +162,7 @@ async def on_reaction_add(reaction,user):
 				currentRoleName = None
 
 		if currentRoleName is None:
-			pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. <:seyonirl:450539097597935618>') 
+			pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. {discordIds["seyonirl"]}') 
 			await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 5)
 
 		else:
@@ -194,7 +194,7 @@ async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, aug
 			augmentClassRole = role
 			break
 
-	comboMsg = await reaction.message.channel.send(f'{roleSelectionString} as your augment role. You are a {selectedCombo.capitalize()}! <a:Wow:694922547812368445>')
+	comboMsg = await reaction.message.channel.send(f'{roleSelectionString} as your augment role. You are a {selectedCombo.capitalize()}! {discordIds["wow"]}')
 	await user.add_roles(augmentClassRole)
 
 	spreadsheetAdd(user, currentRole, selectedCombo)
