@@ -138,7 +138,7 @@ async def on_reaction_add(reaction,user):
 
 	reactMsgId = reaction.message.id
 
-	if reactMsgId not in [primaryClassMsgId,secondaryClassMsgId]: #lock it to the channel the message are in
+	if reactMsgId not in [primaryClassMsgId, secondaryClassMsgId, playStyleMsgId, accessMsgId]: #lock it to the channel the message are in
 		return
 
 	if (reaction.emoji not in discordEmojis):
@@ -173,6 +173,7 @@ async def on_reaction_add(reaction,user):
 
 		else:
 			await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
+
 	elif reactMsgId == playStyleMsgId:
 		cells = rosterSheet.findall(str(user))
 		if len(cells) == 0:
