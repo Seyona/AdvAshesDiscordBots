@@ -28,6 +28,8 @@ primaryClassRoles = []
 augmentClassRoles = []
 primaryClassMsgId = 0
 secondaryClassMsgId = 0
+playStyleMsgId = 0
+accessMsgId = 0
 isReady = False
 
 #initialize the Gsheet api
@@ -62,7 +64,7 @@ tankStr    = f'❖ Tank            {discordIds["tank"]}'
 async def on_ready():
 	#global calls so we can modify these variables
 	global primaryClassMsgId
-	global secondaryClassMsgId
+	global secondaryClassMsgId, playStyleMsgId, accessMsgId
 	global discordEmojis
 	global isReady
 	global primaryClassRoles
@@ -109,6 +111,8 @@ async def on_ready():
 
 	primaryClassMsgId = primaryMsg.id
 	secondaryClassMsgId = secondaryMsg.id
+	playStyleMsgId = playStyleMsg.id
+	accessMsgId = accessMsg.id
 
 	for emoji in guild.emojis:
 		if emoji.name in classNames:
@@ -169,9 +173,23 @@ async def on_reaction_add(reaction,user):
 
 		else:
 			await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
-	#elif reactMsgId == playStyleMsg.id:
+	elif reactMsgId == playStyleMsgId:
+		cells = rosterSheet.findall(str(user))
+		if len(cells) == 0:
+			await reaction.message.channel.send(f'<@{user.id}> You need to respond to the primary AND secondary class prompts before selecting this option')
+		else:
+			playStyle = ""
+			if reaction.emoji == discordIds["pve"]:
+				playStyle = "pve"
+			elif reaction.emoji == discordIds["pvp"]:
+				playStyle = "pvp"
+			else:
+				playStyle = "lifeskiller"
 
-	#elif reactMsgId == accessMsg.id:	
+			rosterSheet.update(f'D{cells[0].row}', playStyle)
+
+	#elif reactMsgId == accessMsgId:	
+	
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 
@@ -212,8 +230,8 @@ def spreadsheetAdd(user, currentRole, selectedCombo):
 	if (len(cells) == 0): #user does not exist in sheet yet fill in some non changing information
 		row = nextAvailableRow(rosterSheet)
 		rosterSheet.update(f'A{row}', user.name)
-		rosterSheet.update(f'E{row}', str(user))
-		rosterSheet.update(f'F{row}', str(datetime.date.today()))
+		rosterSheet.update(f'F{row}', str(user))
+		rosterSheet.update(f'G{row}', str(datetime.date.today()))
 	else :
 		row = cells[0].row
 	
