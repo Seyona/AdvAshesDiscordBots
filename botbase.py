@@ -187,7 +187,9 @@ async def on_reaction_add(reaction,user):
 			await reaction.message.channel.send(f'<@{user.id}> You need to respond to the primary AND secondary class prompts before selecting this option')
 		else:
 			playStyle = reaction.emoji.name
+			playStyleMsg = await reaction.message.channel.send(f'<@{user.id}> You prefered play style is: {playStyle}. Excellent choice!')
 			rosterSheet.update(f'D{cells[0].row}', playStyle)
+			await DeleteMessageFromReaction(reaction, playStyleMsg, 3)
 
 	#elif reactMsgId == accessMsgId:	
 	
