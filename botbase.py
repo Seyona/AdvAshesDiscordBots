@@ -150,12 +150,12 @@ async def on_reaction_add(reaction,user):
 
 	currentUser = str(user)
 	if currentUser not in summaryDict.keys():
-		summaryDict.update( currentUser = {
+		summaryDict.update( {currentUser : {
 			"primary" : "",
 			"secondary" : "",
 			"playstyle" : "",
 			"alpha":""
-		})
+		}})
 
 
 	if reaction.message.channel.id == 735235717558698094: #current registration channel Id
