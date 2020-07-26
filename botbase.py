@@ -105,12 +105,12 @@ async def on_ready():
 	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
 	await channel.send(cleanLine)
 
-	accessMsg = await channel.send(f'Do you have any early access to the game?: \n \
-	Alpha 1: {discordIds["alpha1"]} \n \
-	Alpha 2: {discordIds["alpha2"]} \n \
-	Beta 1: {discordIds["beta1"]} \n \
-	Beta 2: {discordIds["beta2"]} \n \
-	No Access {discordIds["noaccess"]}')
+	accessMsg = await channel.send(f'Do you have any early access to the game?: \n' +
+		f'Alpha 1: {discordIds["alpha1"]} \n' +
+		f'Alpha 2: {discordIds["alpha2"]} \n' +
+		f'Beta 1: {discordIds["beta1"]} \n' +
+		f'Beta 2: {discordIds["beta2"]} \n' +
+		f'No Access {discordIds["noaccess"]}')
 	await channel.send(cleanLine)
 
 	msgIds = {
