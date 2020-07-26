@@ -121,6 +121,8 @@ async def on_ready():
 		if role.name in augmentNames:
 			augmentClassRoles.append(role)
 
+	await gather(playStyleMsg.add_reaction({discordIds["pve"]}),playStyleMsg.add_reaction({discordIds["pvp"]}),playStyleMsg.add_reaction({discordIds["lifeskiller"]}))
+
 	isReady = True
 	print("Setup complete")
 
@@ -167,7 +169,9 @@ async def on_reaction_add(reaction,user):
 
 		else:
 			await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
-			# Gotta do google spreadsheet magic here....yeepie	
+	#elif reactMsgId == playStyleMsg.id:
+
+	#elif reactMsgId == accessMsg.id:	
 	await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
 
