@@ -154,7 +154,7 @@ async def on_reaction_add(reaction,user):
 		for role in primaryClassRoles:
 			if role.name == reaction.emoji.name:
 				requestedRoleName = reaction.emoji.name
-				roleSelectionString = f'<@{user.id}> You selected the {requestedRoleName}'
+				roleSelectionString = f'<@{user.id}>, you selected the {requestedRoleName}'
 				requestedRole = role
 				break
 		
@@ -173,17 +173,17 @@ async def on_reaction_add(reaction,user):
 					currentRoleName = None
 
 			if currentRoleName is None:
-				pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}> You need to select a primary class first. {discordIds["seyonirl"]}') 
+				pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}>, you need to select a primary class first. {discordIds["seyonirl"]}') 
 				await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 5)
 
 			else:
 				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
 
 		elif reactMsgId == playStyleMsgId:
-			await SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, You prefered play style is: {reaction.emoji.name}. Excellent choice!')
+			await SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, your prefered play style is: {reaction.emoji.name}. Excellent choice!')
 
 		elif reactMsgId == accessMsgId:	
-			await SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, We will see you in {reaction.emoji.name}? Awesome glad to have you!')
+			await SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, we will see you in {reaction.emoji.name}? Awesome glad to have you!')
 
 		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
@@ -221,7 +221,7 @@ async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, aug
 async def SingleReactAndSpreadsheetEdit(user, reaction, cellLetterToFill, successStr):
 	cells = rosterSheet.findall(str(user))
 	if len(cells) == 0:
-		await reaction.message.channel.send(f'<@{user.id}> You need to respond to the primary AND secondary class prompts before selecting this option')
+		await reaction.message.channel.send(f'<@{user.id}>, you need to respond to the primary AND secondary class prompts before selecting this option')
 	else:
 		emojiName = reaction.emoji.name
 		responseMsg = await reaction.message.channel.send(successStr)
