@@ -13,6 +13,7 @@ import gspread
 
 import json
 import time
+import argparse
 
 from asyncio import gather
 from dotenv import load_dotenv
@@ -24,13 +25,47 @@ GUILD = os.getenv("DISCORD_GUILD")
 client = discord.Client()
 
 emojiWhiteList = []
+emojiWhiteListFile = "emojiWhiteList.json"
 primaryClassRoles = []
+primaryClassRolesFile = "primaryClassRoles.json"
 augmentClassRoles = []
+augmentClassRolesFile = "augmentClassRoles.json"
+
+msgIds = None
+msgIdsFileName = "messageIds.json"
 primaryClassMsgId = 0
 secondaryClassMsgId = 0
 playStyleMsgId = 0
 accessMsgId = 0
+
 isReady = False
+cleanBoot = False
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--cleanboot", help="Something with terribly wrong, clean up the discord channel and do afresh slate")
+
+args = parser.parse_args()
+if args.cleanboot:
+	print("Clean boot started")
+	cleanBoot = True
+	os.remove(emojiWhiteList)
+	os.remove(msgIdsFileName)
+	os.remove(primaryClassRolesFile)
+	os.remove(augmentClassRolesFile)
+else:
+	with open(emojiWhiteListFile) as jsonFile:
+		emojiWhiteList = json.load(jsonFile)
+
+	with open(msgIdsFileName) as jsonFile:
+		msgIds = json.load(jsonFile)
+	
+	with open(primaryClassRolesFile) as jsonFile:
+		primaryClassRoles = json.load(jsonFile)
+
+	with open(augmentClassRolesFile) as jsonFile:
+		augmentClassRoles = json.load(jsonFile)
+
+	isReady = True
 
 #initialize the Gsheet api
 SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
@@ -48,8 +83,7 @@ with open('classes.json') as json_file:
 with open('discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
-summStr = f'❖ Summoner {discordIds["summoner"]}'
-
+summStr    = f'❖ Summoner {discordIds["summoner"]}'
 bardStr    = f'❖ Bard             {discordIds["bard"]}'
 clericStr  = f'❖ Cleric           {discordIds["cleric"]}'
 fighterStr = f'❖ Fighter         {discordIds["fighter"]}'
@@ -63,6 +97,7 @@ tankStr    = f'❖ Tank            {discordIds["tank"]}'
 @client.event
 async def on_ready():
 	#global calls so we can modify these variables
+	global msgIds
 	global primaryClassMsgId
 	global secondaryClassMsgId, playStyleMsgId, accessMsgId
 	global emojiWhiteList
@@ -80,12 +115,13 @@ async def on_ready():
 		if channel.name == "class-registration":
 			break
 
-	await channel.purge()
+	if cleanBoot:
+		await channel.purge()
 
-	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
+		await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
 
-	cleanLine = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ "
-	classSelection = f"""
+		cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
+		classSelection = f"""
 {bardStr}
 {clericStr}
 {fighterStr}
@@ -96,45 +132,62 @@ async def on_ready():
 {tankStr}
 """
 
-	await channel.send(cleanLine)
-	primaryMsg = await channel.send(f"What is your Primary class: {classSelection}")
+		await channel.send(cleanLine)
+		primaryMsg = await channel.send(f"What is your Primary class: {classSelection}")
 
-	await channel.send(cleanLine)
-	secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
-	await channel.send(cleanLine)
+		await channel.send(cleanLine)
+		secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
+		await channel.send(cleanLine)
 
-	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
-	await channel.send(cleanLine)
+		playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
+		await channel.send(cleanLine)
 
-	accessMsg = await channel.send('Do you have any early access to the game?: \n Alpha 1: {} \n Alpha 2: {} \n Beta 1: {} \n Beta2: {}')
-	await channel.send(cleanLine)
+		accessMsg = await channel.send('Do you have any early access to the game?: \n Alpha 1: {} \n Alpha 2: {} \n Beta 1: {} \n Beta2: {}')
+		await channel.send(cleanLine)
 
-	primaryClassMsgId = primaryMsg.id
-	secondaryClassMsgId = secondaryMsg.id
-	playStyleMsgId = playStyleMsg.id
-	accessMsgId = accessMsg.id
+		msgIds = {
+			"primaryClassMsgId": primaryMsg.id,
+			"secondaryClassMsgId": secondaryMsg.id,
+			"playStyleMsgId": playStyleMsg.id,
+			"accessMsgId": accessMsg.id,
+		}
 
-	#construct a white list
-	for emoji in guild.emojis:
-		if emoji.name in classNames:
-			emojiWhiteList.append(emoji)	
-		elif emoji.name in discordIds.keys():
-			emojiWhiteList.append(emoji)
+		# write ids to file
+		with open(msgIdsFileName, 'w') as fp:
+			json.dump(msgIds, fp)
 
-	emojiWhiteList.sort(key= lambda x: x.name, reverse=False)
-	for emoji in emojiWhiteList:
-		if emoji.name in classNames:
-			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
+		#construct a white list
+		for emoji in guild.emojis:
+			if emoji.name in classNames:
+				emojiWhiteList.append(emoji)	
+			elif emoji.name in discordIds.keys():
+				emojiWhiteList.append(emoji)
 
-	for role in guild.roles:
-		if role.name in classNames:
-			primaryClassRoles.append(role)
-		if role.name in augmentNames:
-			augmentClassRoles.append(role)
+		emojiWhiteList.sort(key= lambda x: x.name, reverse=False)
 
-	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
+		# write emoji whitelist to file
+		with open(emojiWhiteListFile, 'w') as fp:
+			json.dump(emojiWhiteList, fp)
 
-	isReady = True
+		for emoji in emojiWhiteList:
+			if emoji.name in classNames:
+				await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
+
+		for role in guild.roles:
+			if role.name in classNames:
+				primaryClassRoles.append(role)
+			if role.name in augmentNames:
+				augmentClassRoles.append(role)
+
+		with open(primaryClassRolesFile, 'w') as fp:
+			json.dump(primaryClassRoles, fp)
+
+		with open(augmentClassRolesFile, 'w') as fp:
+			json.dump(augmentClassRoles, fp)
+
+		await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
+
+		isReady = True
 	print("Setup complete")
 
 # How the bot will handle reactions
@@ -159,11 +212,11 @@ async def on_reaction_add(reaction,user):
 				break
 		
 		#First Message was clicked, assign the user a role and move on
-		if reactMsgId == primaryClassMsgId: 
-			await SetPrimaryClassRole(user,reaction, classNames, requestedRole, roleSelectionString)
+		if reactMsgId == msgIds["primaryClassMsgId"]: 
+			await SetPrimaryClassRole(user, reaction, classNames, requestedRole, roleSelectionString)
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
-		elif reactMsgId == secondaryClassMsgId:
+		elif reactMsgId == msgIds["secondaryClassMsgId"]:
 			#Get current role
 			for role in user.roles:
 				if role.name in classNames:
@@ -179,10 +232,10 @@ async def on_reaction_add(reaction,user):
 			else:
 				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
 
-		elif reactMsgId == playStyleMsgId:
+		elif reactMsgId == msgIds["playStyleMsgId"]:
 			await SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, your prefered play style is: {reaction.emoji.name}. Excellent choice!')
 
-		elif reactMsgId == accessMsgId:	
+		elif reactMsgId == msgIds["accessMsgId"]:	
 			await SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, we will see you in {reaction.emoji.name}? Awesome glad to have you!')
 
 		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
@@ -250,7 +303,6 @@ def spreadsheetRemoveClass(user):
 def modifyClassCols(worksheet, row, baseClass, augClass):
 	worksheet.update(f'B{row}', augClass)
 	worksheet.update(f'C{row}', baseClass)
-
 
 
 def nextAvailableRow(worksheet):

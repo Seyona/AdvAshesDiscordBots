@@ -1,2 +1,6 @@
 .vscode/
 .env
+emojiWhiteList.json
+primaryClassRoles.json
+augmentClassRoles.json
+messageIds.json
