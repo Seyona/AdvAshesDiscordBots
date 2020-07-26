@@ -54,17 +54,20 @@ if args.cleanboot:
 	os.remove(primaryClassRolesFile)
 	os.remove(augmentClassRolesFile)
 else:
-	with open(emojiWhiteListFile) as jsonFile:
-		emojiWhiteList = json.load(jsonFile)
+	with open(emojiWhiteListFile, newline='') as csvF:
+		reader = csv.reader(csvF)
+		emojiWhiteList = list(reader)
 
 	with open(msgIdsFileName) as jsonFile:
 		msgIds = json.load(jsonFile)
 	
-	with open(primaryClassRolesFile) as jsonFile:
-		primaryClassRoles = json.load(jsonFile)
+	with open(primaryClassRolesFile) as csvF:
+		reader = csv.reader(csvF)
+		primaryClassRoles = list(reader)
 
-	with open(augmentClassRolesFile) as jsonFile:
-		augmentClassRoles = json.load(jsonFile)
+	with open(augmentClassRolesFile) as csvF:
+		reader = csv.reader(csvF)
+		augmentClassRoles = list(reader)
 
 	isReady = True
 
