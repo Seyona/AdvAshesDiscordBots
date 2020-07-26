@@ -181,14 +181,7 @@ async def on_reaction_add(reaction,user):
 		if len(cells) == 0:
 			await reaction.message.channel.send(f'<@{user.id}> You need to respond to the primary AND secondary class prompts before selecting this option')
 		else:
-			playStyle = ""
-			if reaction.emoji == discordIds["pve"]:
-				playStyle = "pve"
-			elif reaction.emoji == discordIds["pvp"]:
-				playStyle = "pvp"
-			else:
-				playStyle = "lifeskiller"
-
+			playStyle = reaction.emoji.name
 			rosterSheet.update(f'D{cells[0].row}', playStyle)
 
 	#elif reactMsgId == accessMsgId:	
