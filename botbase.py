@@ -44,16 +44,16 @@ with open('classes.json') as json_file:
 with open('discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
-summStr = f'❖ Summoner {discordIds["summoner"]} ❖'
+summStr = f'❖ Summoner {discordIds["summoner"]}'
 longestStr = len('❖ Summoner ')
 
-bardStr    = f'❖ Bard'.ljust(longestStr) + f'{discordIds["bard"]}'
-clericStr  = f'❖ Cleric'.ljust(longestStr) + f'{discordIds["cleric"]}'
-fighterStr = f'❖ Fighter'.ljust(longestStr) + f'{discordIds["fighter"]}'
-mageStr    = f'❖ Mage'.ljust(longestStr) + f'{discordIds["mage"]}'
-rangerStr  = f'❖ Ranger'.ljust(longestStr) + f'{discordIds["ranger"]}'
-rogueStr   = f'❖ Rouge'.ljust(longestStr) + f'{discordIds["rogue"]}'
-tankStr    = f'❖ Tank'.ljust(longestStr) + f'{discordIds["tank"]}'
+bardStr    = f'❖ Bard {discordIds["bard"]}'
+clericStr  = f'❖ Cleric {discordIds["cleric"]}'
+fighterStr = f'❖ Fighter {discordIds["fighter"]}'
+mageStr    = f'❖ Mage {discordIds["mage"]}'
+rangerStr  = f'❖ Ranger {discordIds["ranger"]}'
+rogueStr   = f'❖ Rouge {discordIds["rogue"]}'
+tankStr    = f'❖ Tank {discordIds["tank"]}'
 
 
 # On ready prep function
