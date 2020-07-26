@@ -94,8 +94,7 @@ async def on_ready():
 
 	primaryClassStr = f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 
-What is your Primary class: 
-"""
+What is your Primary class: """
 
 	primaryMsg = await channel.send(f"{primaryClassStr} {classSelection}")
 	await channel.send("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◦ ❖ ◦━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ")
