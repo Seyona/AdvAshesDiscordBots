@@ -26,14 +26,9 @@ GUILD = os.getenv("DISCORD_GUILD")
 client = discord.Client()
 
 emojiWhiteList = []
-emojiWhiteListFile = "emojiWhiteList.csv"
 primaryClassRoles = []
-primaryClassRolesFile = "primaryClassRoles.csv"
 augmentClassRoles = []
-augmentClassRolesFile = "augmentClassRoles.csv"
-
 msgIds = None
-msgIdsFileName = "messageIds.json"
 primaryClassMsgId = 0
 secondaryClassMsgId = 0
 playStyleMsgId = 0
@@ -42,34 +37,6 @@ accessMsgId = 0
 isReady = False
 cleanBoot = False
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--cleanboot", help="Something with terribly wrong, clean up the discord channel and do afresh slate", action="store_true")
-
-args = parser.parse_args()
-if args.cleanboot:
-	print("Clean boot started")
-	cleanBoot = True
-	os.remove(emojiWhiteListFile)
-	os.remove(msgIdsFileName)
-	os.remove(primaryClassRolesFile)
-	os.remove(augmentClassRolesFile)
-else:
-	with open(emojiWhiteListFile, newline='') as csvF:
-		reader = csv.reader(csvF)
-		emojiWhiteList = list(reader)
-
-	with open(msgIdsFileName) as jsonFile:
-		msgIds = json.load(jsonFile)
-	
-	with open(primaryClassRolesFile) as csvF:
-		reader = csv.reader(csvF)
-		primaryClassRoles = list(reader)
-
-	with open(augmentClassRolesFile) as csvF:
-		reader = csv.reader(csvF)
-		augmentClassRoles = list(reader)
-
-	isReady = True
 
 #initialize the Gsheet api
 SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
@@ -119,13 +86,12 @@ async def on_ready():
 		if channel.name == "class-registration":
 			break
 
-	if cleanBoot:
-		await channel.purge()
+	await channel.purge()
 
-		await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
+	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
 
-		cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
-		classSelection = f"""
+	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
+	classSelection = f"""
 {bardStr}
 {clericStr}
 {fighterStr}
@@ -136,65 +102,48 @@ async def on_ready():
 {tankStr}
 """
 
-		await channel.send(cleanLine)
-		primaryMsg = await channel.send(f"What is your Primary class: {classSelection}")
+	await channel.send(cleanLine)
+	primaryMsg = await channel.send(f"What is your Primary class: {classSelection}")
 
-		await channel.send(cleanLine)
-		secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
-		await channel.send(cleanLine)
+	await channel.send(cleanLine)
+	secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
+	await channel.send(cleanLine)
 
-		playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
-		await channel.send(cleanLine)
+	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
+	await channel.send(cleanLine)
 
-		accessMsg = await channel.send('Do you have any early access to the game?: \n Alpha 1: {} \n Alpha 2: {} \n Beta 1: {} \n Beta2: {}')
-		await channel.send(cleanLine)
+	accessMsg = await channel.send('Do you have any early access to the game?: \n Alpha 1: {} \n Alpha 2: {} \n Beta 1: {} \n Beta2: {}')
+	await channel.send(cleanLine)
 
-		msgIds = {
-			"primaryClassMsgId": primaryMsg.id,
-			"secondaryClassMsgId": secondaryMsg.id,
-			"playStyleMsgId": playStyleMsg.id,
-			"accessMsgId": accessMsg.id,
-		}
+	msgIds = {
+		"primaryClassMsgId": primaryMsg.id,
+		"secondaryClassMsgId": secondaryMsg.id,
+		"playStyleMsgId": playStyleMsg.id,
+		"accessMsgId": accessMsg.id,
+	}
 
-		# write ids to file
-		with open(msgIdsFileName, 'w') as fp:
-			json.dump(msgIds, fp)
+	#construct a white list
+	for emoji in guild.emojis:
+		if emoji.name in classNames:
+			emojiWhiteList.append(emoji)	
+		elif emoji.name in discordIds.keys():
+			emojiWhiteList.append(emoji)
 
-		#construct a white list
-		for emoji in guild.emojis:
-			if emoji.name in classNames:
-				emojiWhiteList.append(emoji)	
-			elif emoji.name in discordIds.keys():
-				emojiWhiteList.append(emoji)
+	emojiWhiteList.sort(key= lambda x: x.name, reverse=False)
 
-		emojiWhiteList.sort(key= lambda x: x.name, reverse=False)
+	for emoji in emojiWhiteList:
+		if emoji.name in classNames:
+			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
 
-		# write emoji whitelist to file
-		with open(emojiWhiteListFile, 'w', newline='') as fp:
-			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			writer.writerows(emojiWhiteList)
+	for role in guild.roles:
+		if role.name in classNames:
+			primaryClassRoles.append(role)
+		if role.name in augmentNames:
+			augmentClassRoles.append(role)
 
-		for emoji in emojiWhiteList:
-			if emoji.name in classNames:
-				await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
+	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 
-		for role in guild.roles:
-			if role.name in classNames:
-				primaryClassRoles.append(role)
-			if role.name in augmentNames:
-				augmentClassRoles.append(role)
-
-		with open(primaryClassRolesFile, 'w', newline='') as fp:
-			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			for role in primaryClassRoles: writer.writerow([role])
-
-		with open(augmentClassRolesFile, 'w', newline='') as fp:
-			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			for role in augmentClassRoles: writer.writerow([role])
-
-		await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
-
-		isReady = True
+	isReady = True
 	print("Setup complete")
 
 # How the bot will handle reactions
