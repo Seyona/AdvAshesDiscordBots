@@ -114,12 +114,17 @@ async def on_ready():
 	playStyleMsgId = playStyleMsg.id
 	accessMsgId = accessMsg.id
 
+	#construct a white list
 	for emoji in guild.emojis:
 		if emoji.name in classNames:
-			emojiWhiteList.append(emoji)
-			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
+			emojiWhiteList.append(emoji)	
 		elif emoji.name in discordIds.keys():
 			emojiWhiteList.append(emoji)
+
+	emojiWhiteList.sort(key= lambda x: x.name, reverse=True)
+	for emoji in emojiWhiteList:
+		if emoji.name in classNames:
+			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
 
 	for role in guild.roles:
 		if role.name in classNames:
