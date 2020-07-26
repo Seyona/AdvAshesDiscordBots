@@ -48,7 +48,7 @@ args = parser.parse_args()
 if args.cleanboot:
 	print("Clean boot started")
 	cleanBoot = True
-	os.remove(emojiWhiteList)
+	os.remove(emojiWhiteListFile)
 	os.remove(msgIdsFileName)
 	os.remove(primaryClassRolesFile)
 	os.remove(augmentClassRolesFile)
