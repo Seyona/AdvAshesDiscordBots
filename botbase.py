@@ -182,7 +182,7 @@ async def on_reaction_add(reaction,user):
 
 			if currentRoleName is None:
 				pickFromtheFirstMsg = await reaction.message.channel.send(f'<@{user.id}>, you need to select a primary class first. {discordIds["seyonirl"]}') 
-				await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 4)
+				await DeleteMessageFromReaction(reaction, pickFromtheFirstMsg, 2)
 
 			else:
 				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
@@ -209,7 +209,7 @@ async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, roleSel
 	if (roleRemoved):
 		spreadsheetRemoveClass(user)
 	
-	await DeleteMessageFromReaction(reaction,roleConfirmMsg, 4)
+	await DeleteMessageFromReaction(reaction,roleConfirmMsg, 2)
 
 
 #Set the augmented class role for a given user based on the passed reaction
@@ -227,7 +227,7 @@ async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, aug
 
 	spreadsheetAdd(user, currentRole, selectedCombo)
 
-	await  DeleteMessageFromReaction(reaction, comboMsg, 5)
+	await  DeleteMessageFromReaction(reaction, comboMsg, 2)
 
 async def SingleReactAndSpreadsheetEdit(user, reaction, cellLetterToFill, successStr):
 	cells = rosterSheet.findall(str(user))
@@ -237,7 +237,7 @@ async def SingleReactAndSpreadsheetEdit(user, reaction, cellLetterToFill, succes
 		emojiName = reaction.emoji.name
 		responseMsg = await reaction.message.channel.send(successStr)
 		rosterSheet.update(f'{cellLetterToFill}{cells[0].row}', emojiName)
-		await DeleteMessageFromReaction(reaction, responseMsg, 4)
+		await DeleteMessageFromReaction(reaction, responseMsg, 2)
 
 def spreadsheetAdd(user, currentRole, selectedCombo):
 	cells = rosterSheet.findall(str(user))
