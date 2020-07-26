@@ -171,6 +171,7 @@ async def on_reaction_add(reaction,user):
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
 		elif reactMsgId == msgIds["secondaryClassMsgId"]:
+			time.sleep(1) #sleep command because people don't like to click slowly...
 			#Get current role
 			for role in user.roles:
 				if role.name in classNames:
@@ -187,9 +188,11 @@ async def on_reaction_add(reaction,user):
 				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles, roleSelectionString)
 
 		elif reactMsgId == msgIds["playStyleMsgId"]:
+			time.sleep(1) #sleep command because people don't like to click slowly...
 			await SingleReactAndSpreadsheetEdit(user, reaction,'D', f'<@{user.id}>, your prefered play style is: {reaction.emoji.name}. Excellent choice!')
 
 		elif reactMsgId == msgIds["accessMsgId"]:	
+			time.sleep(1) #sleep command because people don't like to click slowly...
 			await SingleReactAndSpreadsheetEdit(user, reaction, 'G',f'<@{user.id}>, we will see you in {reaction.emoji.name}? Awesome glad to have you!')
 
 		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
