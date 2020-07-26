@@ -12,6 +12,7 @@ import gspread
 
 
 import json
+import csv
 import time
 import argparse
 
@@ -25,11 +26,11 @@ GUILD = os.getenv("DISCORD_GUILD")
 client = discord.Client()
 
 emojiWhiteList = []
-emojiWhiteListFile = "emojiWhiteList.json"
+emojiWhiteListFile = "emojiWhiteList.csv"
 primaryClassRoles = []
-primaryClassRolesFile = "primaryClassRoles.json"
+primaryClassRolesFile = "primaryClassRoles.csv"
 augmentClassRoles = []
-augmentClassRolesFile = "augmentClassRoles.json"
+augmentClassRolesFile = "augmentClassRoles.csv"
 
 msgIds = None
 msgIdsFileName = "messageIds.json"
@@ -166,8 +167,9 @@ async def on_ready():
 		emojiWhiteList.sort(key= lambda x: x.name, reverse=False)
 
 		# write emoji whitelist to file
-		with open(emojiWhiteListFile, 'w') as fp:
-			json.dump(emojiWhiteList, fp)
+		with open(emojiWhiteListFile, 'w', newline='') as fp:
+			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			writer.writerows(emojiWhiteList)
 
 		for emoji in emojiWhiteList:
 			if emoji.name in classNames:
@@ -179,11 +181,13 @@ async def on_ready():
 			if role.name in augmentNames:
 				augmentClassRoles.append(role)
 
-		with open(primaryClassRolesFile, 'w') as fp:
-			json.dump(primaryClassRoles, fp)
+		with open(primaryClassRolesFile, 'w', newline='') as fp:
+			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			writer.writerows(primaryClassRoles)
 
-		with open(augmentClassRolesFile, 'w') as fp:
-			json.dump(augmentClassRoles, fp)
+		with open(augmentClassRolesFile, 'w', newline='') as fp:
+			writer = csv.writer(fp, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			writer.writerows(augmentClassRoles)
 
 		await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 
