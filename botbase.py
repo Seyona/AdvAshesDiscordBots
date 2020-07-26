@@ -47,12 +47,12 @@ with open('discordIds.json') as json_file:
 summStr = f'❖ Summoner {discordIds["summoner"]}'
 longestStr = len('❖ Summoner ')
 
-bardStr    = f'❖ Bard            {discordIds["bard"]}'
-clericStr  = f'❖ Cleric          {discordIds["cleric"]}'
+bardStr    = f'❖ Bard              {discordIds["bard"]}'
+clericStr  = f'❖ Cleric            {discordIds["cleric"]}'
 fighterStr = f'❖ Fighter         {discordIds["fighter"]}'
-mageStr    = f'❖ Mage            {discordIds["mage"]}'
-rangerStr  = f'❖ Ranger          {discordIds["ranger"]}'
-rogueStr   = f'❖ Rouge           {discordIds["rogue"]}'
+mageStr    = f'❖ Mage           {discordIds["mage"]}'
+rangerStr  = f'❖ Ranger        {discordIds["ranger"]}'
+rogueStr   = f'❖ Rouge          {discordIds["rogue"]}'
 tankStr    = f'❖ Tank            {discordIds["tank"]}'
 
 
