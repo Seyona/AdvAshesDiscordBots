@@ -69,7 +69,8 @@ async def on_ready():
 
 	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
 
-	classSelection = f"""❖ Bard     {discordIds["bard"]} ❖ 
+	classSelection = f"""
+❖ Bard     {discordIds["bard"]}     ❖ 
 ❖ Cleric   {discordIds["cleric"]}   ❖
 ❖ Fighter  {discordIds["fighter"]}  ❖ 
 ❖ Mage     {discordIds["mage"]}     ❖ 
