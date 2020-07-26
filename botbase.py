@@ -105,7 +105,12 @@ async def on_ready():
 	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
 	await channel.send(cleanLine)
 
-	accessMsg = await channel.send('Do you have any early access to the game?: \n Alpha 1: {} \n Alpha 2: {} \n Beta 1: {} \n Beta2: {}')
+	accessMsg = await channel.send(f'Do you have any early access to the game?: \n \
+		Alpha 1: {discordIds["alpha1"]} \n \
+		Alpha 2: {discordIds["alpha2"]} \n \
+		Beta 1: {discordIds["beta1"]} \n \
+		Beta 2: {discordIds["beta2"]} \n \
+		No Access {discordIds["noaccess"]}')
 	await channel.send(cleanLine)
 
 	msgIds = {
@@ -135,6 +140,12 @@ async def on_ready():
 			augmentClassRoles.append(role)
 
 	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
+	
+	await gather(accessMsg.add_reaction(discordIds["alpha1"]),\
+		accessMsg.add_reaction(discordIds["alpha2"]),\
+		accessMsg.add_reaction(discordIds["beta1"]),\
+		accessMsg.add_reaction(discordIds["beta2"]),\
+		accessMsg.add_reaction(discordIds["noaccess"]))
 
 	isReady = True
 	print("Setup complete")
@@ -205,13 +216,17 @@ async def on_message(message):
 		if channel.id == 735235717558698094:
 			msgSender = str(message.author)
 			innerdict = summaryDict[msgSender]
-			response = f'Summary for {msgSender}: \n Class: {innerdict["secondary"].capitalize()} \n \
-			Base Class: {innerdict["primary"].capitalize()} \n \
-			Playstyle: {innerdict["playstyle"].capitalize()} \n \
-			Access: {innerdict["alpha"].capitalize()}'
+			errors = "None"
+			response = f'Summary for {msgSender}: \n \
+				Class: {innerdict["secondary"].capitalize()} \n \
+				Base Class: {innerdict["primary"].capitalize()} \n \
+				Playstyle: {innerdict["playstyle"].capitalize()} \n \
+				Access: {innerdict["alpha"].capitalize()} \n\n \
+				Issues: {errors}'
 
 			msg = await channel.send(response)
 			await DeleteMessageFromChannel(channel, msg, 4)
+			await DeleteMessageFromChannel(channel, message)
 			#send data to spreadsheet
 
 
