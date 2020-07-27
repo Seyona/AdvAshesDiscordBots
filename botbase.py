@@ -243,11 +243,13 @@ async def on_message(message):
 				f'Access: {alpha} \n\n')
 
 			if len(missingItems) != 0:
-				errors = "Missing" + ','.join(missingItems)
+				errors = "Missing" + ', '.join(missingItems)
 				response = response + errors
+			else:
+				response = response + "You are already in the spreadsheet. These changes will be commited"
 
 			msg = await channel.send(response)
-			await DeleteMessageFromChannel(channel, msg, 4)
+			await DeleteMessageFromChannel(channel, msg, 6)
 			await DeleteMessageFromChannel(channel, message)
 			#send data to spreadsheet
 
