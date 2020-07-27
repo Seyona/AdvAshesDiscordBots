@@ -246,7 +246,7 @@ async def on_message(message):
 				errors = "Missing" + ', '.join(missingItems)
 				response = response + errors
 			else:
-				response = response + "You are already in the spreadsheet. These changes will be commited"
+				response = response + "You are already in the spreadsheet. The non-blank changes will be updated."
 
 			msg = await channel.send(response)
 			await DeleteMessageFromChannel(channel, msg, 6)
