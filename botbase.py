@@ -109,7 +109,7 @@ async def on_ready():
 		f'❖Alpha 1:      {discordIds["alpha1"]} \n' +
 		f'❖Alpha 2:     {discordIds["alpha2"]} \n' +
 		f'❖Beta 1:         {discordIds["beta1"]} \n' +
-		f'Beta 2:        {discordIds["beta2"]} \n' +
+		f'❖Beta 2:        {discordIds["beta2"]} \n' +
 		f'❖No Access {discordIds["noaccess"]}')
 	await channel.send(cleanLine)
 
