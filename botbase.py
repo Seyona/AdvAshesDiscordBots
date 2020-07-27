@@ -265,7 +265,8 @@ async def on_message(message):
 
 				if errors == "": # No problem run spreadsheet update
 					SendDictToSpreadsheet(innerdict, message.author)
-					response += "There are no issues with your inputs and they have been added to the roster."
+					if NeedsAllInputs:
+						response += "There are no issues with your inputs and they have been added to the roster."
 
 				msg = await channel.send(response)
 				await DeleteMessageFromChannel(channel, msg, 6)
