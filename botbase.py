@@ -238,22 +238,22 @@ async def on_message(message):
 				if alpha == '':
 					missingItems.append("Access level")
 
-				response += ( f'Class     : {classStr} \n'+
+				response += ( f'Class: {classStr} \n'+
 				f'Base Class: {baseClass} \n'+
-				f'Playstyle : {playstyle} \n'+
-				f'Access    : {alpha} \n\n')
+				f'Playstyle: {playstyle} \n'+
+				f'Access: {alpha} \n\n')
 			else:
 				if classStr == '' and baseClass != '':
 					missingItems.append("Secondary class")
 
 				if classStr != '' or baseClass != '':
-					response += (f'Class     : {classStr} \n'+
+					response += (f'Class: {classStr} \n'+
 				f'Base Class: {baseClass} \n')	
 
 				if playstyle != '':
-					response += f'Playstyle : {playstyle} \n'
+					response += f'Playstyle: {playstyle} \n'
 				if alpha != '':
-					response += f'Access    : {alpha} \n\n'
+					response += f'Access: {alpha} \n\n'
 			
 
 			if len(missingItems) != 0 :
