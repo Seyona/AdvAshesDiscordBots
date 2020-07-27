@@ -82,6 +82,7 @@ async def on_ready():
 	await channel.purge()
 
 	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once and type **!submit**. If everything looks good you\'ll be entered into the guild!')
+	await channel.send(f'Do not panic if your reaction goes away it has been recorded!')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
 	classSelection = f"""
