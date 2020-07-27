@@ -216,7 +216,6 @@ async def on_message(message):
 		if channel.id == 735235717558698094:
 			msgSender = str(message.author)
 			innerdict = summaryDict[msgSender]
-			errors = ""
 			missingItems = []
 
 			cells = rosterSheet.findall(msgSender)
@@ -245,7 +244,7 @@ async def on_message(message):
 
 			if len(missingItems) != 0:
 				errors = "Missing" + ','.join(missingItems)
-				response = response + missingItems
+				response = response + errors
 
 			msg = await channel.send(response)
 			await DeleteMessageFromChannel(channel, msg, 4)
