@@ -106,8 +106,8 @@ async def on_ready():
 	await channel.send(cleanLine)
 
 	accessMsg = await channel.send(f'Do you have any early access to the game?: \n' +
-		f'❖Alpha 1:      {discordIds["alpha1"]} \n' +
-		f'❖Alpha 2:     {discordIds["alpha2"]} \n' +
+		f'❖Alpha 1:       {discordIds["alpha1"]} \n' +
+		f'❖Alpha 2:      {discordIds["alpha2"]} \n' +
 		f'❖Beta 1:         {discordIds["beta1"]} \n' +
 		f'❖Beta 2:        {discordIds["beta2"]} \n' +
 		f'❖No Access {discordIds["noaccess"]}')
