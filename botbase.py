@@ -108,13 +108,6 @@ async def on_ready():
 	f'❖ Lifeskiller: {discordIds["lifeskiller"]} \n')
 	await channel.send(cleanLine)
 
-	""" 
-	❖ PVE:           :pve: 
-❖ PVP:           :pvp: 
-❖ Lifeskiller: :lifeskiller:
-
-	"""
-
 	accessMsg = await channel.send(f'Do you have any early access to the game?: \n' +
 		f'❖ Alpha 1:      {discordIds["alpha1"]} \n' +
 		f'❖ Alpha 2:     {discordIds["alpha2"]} \n' +
@@ -124,7 +117,7 @@ async def on_ready():
 	await channel.send(cleanLine)
 
 	await channel.send('If you are new here be sure you have selected one emoji from each selection before typing **!submit** \n')
-	await channel.send('If you are updating your info, just click the info that you want updated (if you change your Primary class you will need to select another Secondary class!')
+	await channel.send('If you are updating your info, just click the info that you want updated (if you change your Primary class you will need to select another Secondary class!)')
 
 	msgIds = {
 		"primaryClassMsgId": primaryMsg.id,
