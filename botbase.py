@@ -81,7 +81,7 @@ async def on_ready():
 
 	await channel.purge()
 
-	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once and type **!submit**. If everything looks good you\'ll be entered into the guild!')
+	await channel.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message and once and type **!submit**. If everything looks good you\'ll be entered into the guild!')
 	await channel.send(f'Do not panic if your reaction goes away it has been recorded!')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
@@ -280,7 +280,8 @@ async def on_message(message):
 				msg = await channel.send(f'<@{message.author.id}>, You haven not clicked any reactions yet!')
 				await DeleteMessageFromChannel(channel, msg, 3)
 				await DeleteMessageFromChannel(channel, message)
-
+	elif message.content.startswith('!submit') and message.channel.id == 735235717558698094:
+		await DeleteMessageFromChannel(message.channel, message)
 			
 
 
