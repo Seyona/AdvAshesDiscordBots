@@ -262,12 +262,14 @@ async def on_message(message):
 			elif not NeedsAllInputs:
 				response = response + "You are already in the spreadsheet. The non-blank changes will be updated."
 
+			if errors == "": # No problem run spreadsheet update
+				SendDictToSpreadsheet(innerdict, message.author)
+
 			msg = await channel.send(response)
 			await DeleteMessageFromChannel(channel, msg, 6)
 			await DeleteMessageFromChannel(channel, message)
 
-			if errors == "": # No problem run spreadsheet update
-				SendDictToSpreadsheet(innerdict, message.author)
+			
 
 
 def SendDictToSpreadsheet(personInfo, user):
@@ -293,6 +295,9 @@ def SendDictToSpreadsheet(personInfo, user):
 
 	if personInfo['alpha'] != '':
 		rosterSheet.update(f'F{row}', personInfo['alpha'])
+
+	if discordNameWithTag in summaryDict:
+		del summaryDict[discordNameWithTag]
 
 
 # Set the primary role of a given user based on the passed reaction
