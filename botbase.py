@@ -113,7 +113,8 @@ async def on_ready():
 		f'No Access {discordIds["noaccess"]}')
 	await channel.send(cleanLine)
 
-	await channel.send('After you have clicked everything once')
+	await channel.send('If you are knew here be sure you have selected one emoji from each selection before typing !submit \n')
+	await channel.send('If you are updating your info, just click the info that you want updated (if you change your Primary class you will need to select another secondary!')
 
 	msgIds = {
 		"primaryClassMsgId": primaryMsg.id,
@@ -244,8 +245,6 @@ async def on_message(message):
 			else:
 				if classStr == '' and baseClass != '':
 					missingItems.append("Secondary class")
-				elif classStr != '' and baseClass == '':
-					missingItems.append("Primary class")
 
 				if classStr != '' or baseClass != '':
 					response += (f'Class     : {classStr} \n'+
