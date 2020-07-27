@@ -280,7 +280,7 @@ async def on_message(message):
 				msg = await channel.send(f'<@{message.author.id}>, You haven not clicked any reactions yet!')
 				await DeleteMessageFromChannel(channel, msg, 3)
 				await DeleteMessageFromChannel(channel, message)
-	elif message.content.startswith('!submit') and message.channel.id == 735235717558698094:
+	elif not message.content.startswith('!submit') and message.channel.id == 735235717558698094:
 		await DeleteMessageFromChannel(message.channel, message)
 			
 
