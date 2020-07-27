@@ -216,12 +216,36 @@ async def on_message(message):
 		if channel.id == 735235717558698094:
 			msgSender = str(message.author)
 			innerdict = summaryDict[msgSender]
-			errors = "None"
-			response = f'Summary for {msgSender}: \n'+
-				f'Class: {innerdict["secondary"].capitalize()} \n'+
-				f'Base Class: {innerdict["primary"].capitalize()} \n'+
-				f'Playstyle: {innerdict["playstyle"].capitalize()} \n'+
-				f'Access: {innerdict["alpha"].capitalize()} \n\n'
+			errors = ""
+			missingItems = []
+
+			cells = rosterSheet.findall(message.author)
+			NeedsAllInputs = len(cells) == 0 # not in spreadsheet needs all inputs
+			
+			classStr = innerdict["secondary"].capitalize()
+			baseClass = innerdict["primary"].capitalize()
+			playstyle = innerdict["playstyle"].capitalize()
+			alpha = innerdict["alpha"].capitalize()
+
+			if (NeedsAllInputs):
+				if classStr == '':
+					missingItems.append("Augment Class")
+				if baseClass == '':
+					missingItems.append("Primary class")
+				if playstyle == '':
+					missingItems.append("Play style")
+				if alpha == '':
+					missingItems.append("Access level")
+					
+			response = (f'Summary for {msgSender}: \n' +
+				f'Class: {classStr} \n'+
+				f'Base Class: {baseClass} \n'+
+				f'Playstyle: {playstyle} \n'+
+				f'Access: {alpha} \n\n')
+
+			if len(missingItems) != 0:
+				errors = "Missing" + ','.join(missingItems)
+				response = response + missingItems
 
 			msg = await channel.send(response)
 			await DeleteMessageFromChannel(channel, msg, 4)
@@ -232,7 +256,7 @@ async def on_message(message):
 # Set the primary role of a given user based on the passed reaction
 async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, requestedRoleName):
 	# remove existing role
-	roleRemoved = await RemoveRole(user, classNames)
+	await RemoveRole(user, classNames)
 	summaryDict[str(user)]['primary'] = requestedRoleName
 	await user.add_roles(requestedRole)
 	
