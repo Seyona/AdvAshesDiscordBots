@@ -219,7 +219,7 @@ async def on_message(message):
 			errors = ""
 			missingItems = []
 
-			cells = rosterSheet.findall(message.author)
+			cells = rosterSheet.findall(msgSender)
 			NeedsAllInputs = len(cells) == 0 # not in spreadsheet needs all inputs
 			
 			classStr = innerdict["secondary"].capitalize()
