@@ -81,7 +81,7 @@ async def on_ready():
 
 	await channel.purge()
 
-	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once and type !submit. If everything looks good you\'ll be entered into the guild!')
+	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once and type **!submit**. If everything looks good you\'ll be entered into the guild!')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
 	classSelection = f"""
@@ -102,18 +102,28 @@ async def on_ready():
 	secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
 	await channel.send(cleanLine)
 
-	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n PVE: {discordIds["pve"]} \n PVP: {discordIds["pvp"]} \n Lifeskiller: {discordIds["lifeskiller"]} \n')
+	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n'+
+	f'❖ PVE:           {discordIds["pve"]} \n' +
+	f'❖ PVP:           {discordIds["pvp"]} \n '+
+	f'❖ Lifeskiller: {discordIds["lifeskiller"]} \n')
 	await channel.send(cleanLine)
+
+	""" 
+	❖ PVE:           :pve: 
+❖ PVP:           :pvp: 
+❖ Lifeskiller: :lifeskiller:
+
+	"""
 
 	accessMsg = await channel.send(f'Do you have any early access to the game?: \n' +
-		f'❖Alpha 1:       {discordIds["alpha1"]} \n' +
-		f'❖Alpha 2:      {discordIds["alpha2"]} \n' +
-		f'❖Beta 1:         {discordIds["beta1"]} \n' +
-		f'❖Beta 2:        {discordIds["beta2"]} \n' +
-		f'❖No Access {discordIds["noaccess"]}')
+		f'❖ Alpha 1:      {discordIds["alpha1"]} \n' +
+		f'❖ Alpha 2:     {discordIds["alpha2"]} \n' +
+		f'❖ Beta 1:         {discordIds["beta1"]} \n' +
+		f'❖ Beta 2:        {discordIds["beta2"]} \n' +
+		f'❖ No Access {discordIds["noaccess"]}')
 	await channel.send(cleanLine)
 
-	await channel.send('If you are new here be sure you have selected one emoji from each selection before typing !submit \n')
+	await channel.send('If you are new here be sure you have selected one emoji from each selection before typing **!submit** \n')
 	await channel.send('If you are updating your info, just click the info that you want updated (if you change your Primary class you will need to select another Secondary class!')
 
 	msgIds = {
