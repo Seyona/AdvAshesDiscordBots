@@ -261,10 +261,11 @@ async def on_message(message):
 					errors = "Missing: " + ', '.join(missingItems)
 					response = response + errors
 				elif not NeedsAllInputs:
-					response = response + "You are already in the spreadsheet. The non-blank changes will be updated."
+					response = response + "Your roster entry will be updated"
 
 				if errors == "": # No problem run spreadsheet update
 					SendDictToSpreadsheet(innerdict, message.author)
+					response += "There are no issues with your inputs and they have been added to the roster."
 
 				msg = await channel.send(response)
 				await DeleteMessageFromChannel(channel, msg, 6)
