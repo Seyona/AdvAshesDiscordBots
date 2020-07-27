@@ -81,7 +81,7 @@ async def on_ready():
 
 	await channel.purge()
 
-	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once you\'re done you\'ll be entered into the guild!')
+	await channel.send(f'Welcome to the guild! Before you can tagged up as a () You\'ll need to complete this form. It\'s pretty quick, just react to each message and once and type !submit. If everything looks good you\'ll be entered into the guild!')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
 	classSelection = f"""
@@ -112,6 +112,8 @@ async def on_ready():
 		f'Beta 2: {discordIds["beta2"]} \n' +
 		f'No Access {discordIds["noaccess"]}')
 	await channel.send(cleanLine)
+
+	await channel.send('After you have clicked everything once')
 
 	msgIds = {
 		"primaryClassMsgId": primaryMsg.id,
@@ -217,7 +219,7 @@ async def on_message(message):
 			msgSender = str(message.author)
 			innerdict = summaryDict[msgSender]
 			missingItems = []
-
+			errors = ""
 			cells = rosterSheet.findall(msgSender)
 			NeedsAllInputs = len(cells) == 0 # not in spreadsheet needs all inputs
 			
@@ -225,6 +227,8 @@ async def on_message(message):
 			baseClass = innerdict["primary"].capitalize()
 			playstyle = innerdict["playstyle"].capitalize()
 			alpha = innerdict["alpha"].capitalize()
+
+			response = f'Summary for {msgSender}: \n'
 
 			if (NeedsAllInputs):
 				if classStr == '':
@@ -235,12 +239,26 @@ async def on_message(message):
 					missingItems.append("Play style")
 				if alpha == '':
 					missingItems.append("Access level")
-					
-			response = (f'Summary for {msgSender}: \n' +
-				f'Class     : {classStr} \n'+
+
+				response += ( f'Class     : {classStr} \n'+
 				f'Base Class: {baseClass} \n'+
 				f'Playstyle : {playstyle} \n'+
 				f'Access    : {alpha} \n\n')
+			else:
+				if classStr == '' and baseClass != '':
+					missingItems.append("Secondary class")
+				elif classStr != '' and baseClass == '':
+					missingItems.append("Primary class")
+
+				if classStr != '' or baseClass != '':
+					response += (f'Class     : {classStr} \n'+
+				f'Base Class: {baseClass} \n')	
+
+				if playstyle != '':
+					response += f'Playstyle : {playstyle} \n'
+				if alpha != '':
+					response += f'Access    : {alpha} \n\n'
+			
 
 			if len(missingItems) != 0 :
 				errors = "Missing: " + ', '.join(missingItems)
@@ -251,7 +269,34 @@ async def on_message(message):
 			msg = await channel.send(response)
 			await DeleteMessageFromChannel(channel, msg, 6)
 			await DeleteMessageFromChannel(channel, message)
-			#send data to spreadsheet
+
+			if errors == "": # No problem run spreadsheet update
+				SendDictToSpreadsheet(innerdict, message.author)
+
+
+def SendDictToSpreadsheet(personInfo, user):
+	discordNameWithTag = str(user)
+	cells = rosterSheet.findall(discordNameWithTag)
+
+	if len(cells) == 0: #new entry
+		row = nextAvailableRow(rosterSheet)
+		rosterSheet.update(f'A{row}', user.name)
+		rosterSheet.update(f'G{row}', discordNameWithTag)
+		rosterSheet.update(f'H{row}', str(datetime.date.today()))
+	else:
+		row = cells[0].row
+
+	if personInfo['secondary'] != '':
+		rosterSheet.update(f'B{row}', personInfo['secondary'])
+
+	if personInfo['primary'] != '':
+		rosterSheet.update(f'C{row}', personInfo['primary'])
+
+	if personInfo['playstyle'] != '':
+		rosterSheet.update(f'E{row}', personInfo['playstyle'])
+
+	if personInfo['alpha'] != '':
+		rosterSheet.update(f'F{row}', personInfo['alpha'])
 
 
 # Set the primary role of a given user based on the passed reaction
@@ -260,10 +305,6 @@ async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, request
 	await RemoveRole(user, classNames)
 	summaryDict[str(user)]['primary'] = requestedRoleName
 	await user.add_roles(requestedRole)
-	
-	#if (roleRemoved):
-	#	spreadsheetRemoveClass(user)
-
 
 #Set the augmented class role for a given user based on the passed reaction
 async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, augmentClassRoles):
@@ -278,36 +319,8 @@ async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, aug
 	summaryDict[str(user)]['secondary'] = selectedCombo
 	await user.add_roles(augmentClassRole)
 
-	#spreadsheetAdd(user, currentRole, selectedCombo)
-
 async def SingleReactAddToDict(user, reaction, dictKey):
 	summaryDict[str(user)][dictKey] = reaction.emoji.name
-	#rosterSheet.update(f'{cellLetterToFill}{cells[0].row}', emojiName)
-
-
-def spreadsheetAdd(user, currentRole, selectedCombo):
-	cells = rosterSheet.findall(str(user))
-
-	if (len(cells) == 0): #user does not exist in sheet yet fill in some non changing information
-		row = nextAvailableRow(rosterSheet)
-		rosterSheet.update(f'A{row}', user.name)
-		rosterSheet.update(f'F{row}', str(user))
-		rosterSheet.update(f'H{row}', str(datetime.date.today()))
-	else :
-		row = cells[0].row
-	
-	modifyClassCols(rosterSheet, row, currentRole, selectedCombo)
-
-# removes the classes from the user entry in the spreadsheet
-def spreadsheetRemoveClass(user):
-	cells = rosterSheet.findall(str(user))
-	if (len(cells) != 0):
-		modifyClassCols(rosterSheet, cells[0].row, '','')
-
-def modifyClassCols(worksheet, row, baseClass, augClass):
-	worksheet.update(f'B{row}', augClass)
-	worksheet.update(f'C{row}', baseClass)
-
 
 def nextAvailableRow(worksheet):
 	str_list = list(filter(None, worksheet.col_values(1)))
