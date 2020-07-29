@@ -194,7 +194,7 @@ async def on_reaction_add(reaction,user):
 
 		for react in reaction.message.reactions:
 			async for reacter in react.users():
-				if str(reacter) = str(user) and react.emoji.name != reaction.emoji.name:
+				if str(reacter) == str(user) and react.emoji.name != reaction.emoji.name:
 					await reaction.message.remove_reaction(react.emoji, reacter)
 		
 		#First Message was clicked, assign the user a role and move on
