@@ -219,12 +219,12 @@ async def on_reaction_add(reaction,user):
 			summaryDict[str(user)]["alpha"] = reaction.emoji.name
 			success = await submit(reaction.message.channel, user)
 			if success:
-				reaction = summaryDict["secondaryClassMsg"]
-				reaction.message.remove_reaction(reaction.emoji,user)
-				reaction = summaryDict["baseClassMsg"]
-				reaction.message.remove_reaction(reaction.emoji,user)
-				reaction = summaryDict["playstyleMsg"]
-				reaction.message.remove_reaction(reaction.emoji,user)
+				old = summaryDict["secondaryClassMsg"]
+				old.message.remove_reaction(old.emoji,user)
+				old = summaryDict["baseClassMsg"]
+				old.message.remove_reaction(old.emoji,user)
+				old = summaryDict["playstyleMsg"]
+				old.message.remove_reaction(old.emoji,user)
 
 			await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
