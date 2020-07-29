@@ -250,45 +250,27 @@ async def submit(channel, user):
 		response = f'Summary for <@{user.id}>: \n'
 
 		if (NeedsAllInputs):
-			if classStr == '':
-				missingItems.append("Augment Class")
-			if baseClass == '':
-				missingItems.append("Primary class")
-			if playstyle == '':
-				missingItems.append("Play style")
-			if alpha == '':
-				missingItems.append("Access level")
+		if classStr == '':
+			missingItems.append("Augment Class")
+		if baseClass == '':
+			missingItems.append("Primary class")
+		if playstyle == '':
+			missingItems.append("Play style")
+		if alpha == '':
+			missingItems.append("Access level")
 
-			response += ( f'Class: {classStr} \n'+
-			f'Base Class: {baseClass} \n'+
-			f'Playstyle: {playstyle} \n'+
-			f'Access: {alpha} \n\n')
-		else:
-			if classStr == '' and baseClass != '':
-				missingItems.append("Secondary class")
-
-			if classStr != '' or baseClass != '':
-				response += (f'Class: {classStr} \n'+
-			f'Base Class: {baseClass} \n')	
-
-			if playstyle != '':
-				response += f'Playstyle: {playstyle} \n'
-			if alpha != '':
-				response += f'Access: {alpha} \n\n'
+		response += ( f'Class: {classStr} \n'+
+		f'Base Class: {baseClass} \n'+
+		f'Playstyle: {playstyle} \n'+
+		f'Access: {alpha} \n\n')
 		
-
 		if len(missingItems) != 0 :
 			errors = "Missing: " + ', '.join(missingItems)
 			response = response + errors
-		elif not NeedsAllInputs:
-			response = response + "Your roster entry will be updated"
-			success = True
 
 		if errors == "": # No problem run spreadsheet update
 			SendDictToSpreadsheet(innerdict, user)
-			if NeedsAllInputs:
-				response += "There are no issues with your inputs and they have been added to the roster."
-				success = True
+			success = True # maybe new respond message depending what channel they are in
 
 		msg = await channel.send(response)
 		await DeleteMessageFromChannel(channel, msg, 6)
