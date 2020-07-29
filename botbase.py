@@ -231,7 +231,7 @@ async def on_reaction_add(reaction,user):
 		
 
 # Discord channel and user
-def submit(channel, user): 
+async def submit(channel, user): 
 	success = False
 	if channel.id == 735235717558698094:
 		submitter = str(user)
