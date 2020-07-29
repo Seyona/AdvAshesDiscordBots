@@ -220,11 +220,11 @@ async def on_reaction_add(reaction,user):
 			success = await submit(reaction.message.channel, user)
 			if success:
 				old = summaryDict["secondaryClassMsg"]
-				old.message.remove_reaction(old.emoji,user)
+				await old.message.remove_reaction(old.emoji,user)
 				old = summaryDict["baseClassMsg"]
-				old.message.remove_reaction(old.emoji,user)
+				await old.message.remove_reaction(old.emoji,user)
 				old = summaryDict["playstyleMsg"]
-				old.message.remove_reaction(old.emoji,user)
+				await old.message.remove_reaction(old.emoji,user)
 
 			await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
