@@ -240,7 +240,6 @@ async def submit(channel, user):
 		missingItems = []
 		errors = ""
 		cells = rosterSheet.findall(submitter)
-		NeedsAllInputs = len(cells) == 0 # not in spreadsheet needs all inputs
 		
 		classStr = innerdict["secondary"].capitalize()
 		baseClass = innerdict["primary"].capitalize()
