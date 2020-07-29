@@ -239,7 +239,6 @@ async def submit(channel, user):
 		innerdict = summaryDict[submitter]
 		missingItems = []
 		errors = ""
-		cells = rosterSheet.findall(submitter)
 		
 		classStr = innerdict["secondary"].capitalize()
 		baseClass = innerdict["primary"].capitalize()
@@ -249,7 +248,7 @@ async def submit(channel, user):
 		response = f'Summary for <@{user.id}>: \n'
 
 		if classStr == '':
-			missingItems.append("Augment Class")
+			missingItems.append("Secondary Class")
 		if baseClass == '':
 			missingItems.append("Primary class")
 		if playstyle == '':
