@@ -217,7 +217,7 @@ async def on_reaction_add(reaction,user):
 
 		elif reactMsgId == msgIds["accessMsgId"]:
 			summaryDict[str(user)]["alpha"] = reaction.emoji.name
-			success = submit(reaction.message.channel, user)
+			success = await submit(reaction.message.channel, user)
 			if success:
 				reaction = summaryDict["secondaryClassMsgId"]
 				reaction.message.remove_reaction(reaction.emoji,user)
