@@ -249,7 +249,6 @@ async def submit(channel, user):
 
 		response = f'Summary for <@{user.id}>: \n'
 
-		if (NeedsAllInputs):
 		if classStr == '':
 			missingItems.append("Augment Class")
 		if baseClass == '':
