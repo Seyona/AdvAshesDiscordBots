@@ -170,9 +170,13 @@ async def on_reaction_add(reaction,user):
 	if currentUser not in summaryDict.keys():
 		summaryDict.update( {currentUser : {
 			"primary" : "",
+			"baseClassMsg" : None,
 			"secondary" : "",
+			"secondaryClassMsg" : None,
 			"playstyle" : "",
-			"alpha":""
+			"playstyleMsg" : None,
+			"alpha":"",
+			"alphaMsg" : None
 		}})
 
 
@@ -191,6 +195,7 @@ async def on_reaction_add(reaction,user):
 		#First Message was clicked, assign the user a role and move on
 		if reactMsgId == msgIds["primaryClassMsgId"]: 
 			await SetPrimaryClassRole(user, reaction, classNames, requestedRole, requestedRoleName)
+			summaryDict["baseClassMsg"] = reaction
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
 		elif reactMsgId == msgIds["secondaryClassMsgId"]:
@@ -204,85 +209,96 @@ async def on_reaction_add(reaction,user):
 
 			if currentRoleName is not None:
 				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles)
+				summaryDict["secondaryClassMsg"] = reaction
 
 		elif reactMsgId == msgIds["playStyleMsgId"]:
 			summaryDict[str(user)]["playstyle"] = reaction.emoji.name
+			summaryDict["playstyleMsg"] = reaction
 
 		elif reactMsgId == msgIds["accessMsgId"]:
 			summaryDict[str(user)]["alpha"] = reaction.emoji.name
+			success = submit(reaction.message.channel, user)
+			if success:
+				reaction = summaryDict["secondaryClassMsgId"]
+				reaction.message.remove_reaction(reaction.emoji,user)
+				reaction = summaryDict["baseClassMsg"]
+				reaction.message.remove_reaction(reaction.emoji,user)
+				reaction = summaryDict["playstyleMsg"]
+				reaction.message.remove_reaction(reaction.emoji,user)
 
-		await reaction.message.remove_reaction(reaction.emoji, user) #clean up
+			await reaction.message.remove_reaction(reaction.emoji, user) #clean up
+
+		
+
+# Discord channel and user
+def submit(channel, user): 
+	success = False
+	if channel.id == 735235717558698094:
+		submitter = str(user)
+	
+		innerdict = summaryDict[submitter]
+		missingItems = []
+		errors = ""
+		cells = rosterSheet.findall(submitter)
+		NeedsAllInputs = len(cells) == 0 # not in spreadsheet needs all inputs
+		
+		classStr = innerdict["secondary"].capitalize()
+		baseClass = innerdict["primary"].capitalize()
+		playstyle = innerdict["playstyle"].capitalize()
+		alpha = innerdict["alpha"].capitalize()
+
+		response = f'Summary for <@{user.id}>: \n'
+
+		if (NeedsAllInputs):
+			if classStr == '':
+				missingItems.append("Augment Class")
+			if baseClass == '':
+				missingItems.append("Primary class")
+			if playstyle == '':
+				missingItems.append("Play style")
+			if alpha == '':
+				missingItems.append("Access level")
+
+			response += ( f'Class: {classStr} \n'+
+			f'Base Class: {baseClass} \n'+
+			f'Playstyle: {playstyle} \n'+
+			f'Access: {alpha} \n\n')
+		else:
+			if classStr == '' and baseClass != '':
+				missingItems.append("Secondary class")
+
+			if classStr != '' or baseClass != '':
+				response += (f'Class: {classStr} \n'+
+			f'Base Class: {baseClass} \n')	
+
+			if playstyle != '':
+				response += f'Playstyle: {playstyle} \n'
+			if alpha != '':
+				response += f'Access: {alpha} \n\n'
+		
+
+		if len(missingItems) != 0 :
+			errors = "Missing: " + ', '.join(missingItems)
+			response = response + errors
+		elif not NeedsAllInputs:
+			response = response + "Your roster entry will be updated"
+			success = True
+
+		if errors == "": # No problem run spreadsheet update
+			SendDictToSpreadsheet(innerdict, user)
+			if NeedsAllInputs:
+				response += "There are no issues with your inputs and they have been added to the roster."
+				success = True
+
+		msg = await channel.send(response)
+		await DeleteMessageFromChannel(channel, msg, 6)
+		return success
+
 
 @client.event
 async def on_message(message):
-	if(message.content.startswith('!submit')):
-		channel = message.channel
-		if channel.id == 735235717558698094:
-			msgSender = str(message.author)
-			try:
-				innerdict = summaryDict[msgSender]
-				missingItems = []
-				errors = ""
-				cells = rosterSheet.findall(msgSender)
-				NeedsAllInputs = len(cells) == 0 # not in spreadsheet needs all inputs
-				
-				classStr = innerdict["secondary"].capitalize()
-				baseClass = innerdict["primary"].capitalize()
-				playstyle = innerdict["playstyle"].capitalize()
-				alpha = innerdict["alpha"].capitalize()
-
-				response = f'Summary for <@{message.author.id}>: \n'
-
-				if (NeedsAllInputs):
-					if classStr == '':
-						missingItems.append("Augment Class")
-					if baseClass == '':
-						missingItems.append("Primary class")
-					if playstyle == '':
-						missingItems.append("Play style")
-					if alpha == '':
-						missingItems.append("Access level")
-
-					response += ( f'Class: {classStr} \n'+
-					f'Base Class: {baseClass} \n'+
-					f'Playstyle: {playstyle} \n'+
-					f'Access: {alpha} \n\n')
-				else:
-					if classStr == '' and baseClass != '':
-						missingItems.append("Secondary class")
-
-					if classStr != '' or baseClass != '':
-						response += (f'Class: {classStr} \n'+
-					f'Base Class: {baseClass} \n')	
-
-					if playstyle != '':
-						response += f'Playstyle: {playstyle} \n'
-					if alpha != '':
-						response += f'Access: {alpha} \n\n'
-				
-
-				if len(missingItems) != 0 :
-					errors = "Missing: " + ', '.join(missingItems)
-					response = response + errors
-				elif not NeedsAllInputs:
-					response = response + "Your roster entry will be updated"
-
-				if errors == "": # No problem run spreadsheet update
-					SendDictToSpreadsheet(innerdict, message.author)
-					if NeedsAllInputs:
-						response += "There are no issues with your inputs and they have been added to the roster."
-
-				msg = await channel.send(response)
-				await DeleteMessageFromChannel(channel, msg, 6)
-				await DeleteMessageFromChannel(channel, message)
-
-			except KeyError:
-				msg = await channel.send(f'<@{message.author.id}>, You haven not clicked any reactions yet!')
-				await DeleteMessageFromChannel(channel, msg, 3)
-				await DeleteMessageFromChannel(channel, message)
-	elif not message.content.startswith('!submit') and message.channel.id == 735235717558698094 and message.author.id != 735708593294147674:
+	if message.channel.id == 735235717558698094 and message.author.id != 735708593294147674:
 		await DeleteMessageFromChannel(message.channel, message)
-			
 
 
 def SendDictToSpreadsheet(personInfo, user):
