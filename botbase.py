@@ -230,6 +230,7 @@ async def on_reaction_add(reaction,user):
 				await old.message.remove_reaction(old.emoji,user)
 				old = summaryDict["playstyleMsg"]
 				await old.message.remove_reaction(old.emoji,user)
+				await user.add_roles(discordIds["guildmembers"])
 
 			await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
