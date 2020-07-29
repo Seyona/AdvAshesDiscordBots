@@ -81,7 +81,7 @@ async def on_ready():
 
 	await channel.purge()
 
-	await channel.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message and once and type **!submit**. If everything looks good you\'ll be entered into the guild!')
+	await channel.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message once (start from the top!). If everything looks good you\'ll be entered into the guild!')
 	await channel.send(f'Do not panic if your reaction goes away it has been recorded!')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
@@ -116,9 +116,6 @@ async def on_ready():
 		f'❖ Beta 2:        {discordIds["beta2"]} \n' +
 		f'❖ No Access {discordIds["noaccess"]}')
 	await channel.send(cleanLine)
-
-	await channel.send('If you are new here be sure you have selected one emoji from each selection before typing **!submit** \n')
-	await channel.send('If you are updating your info, just click the info that you want updated (if you change your Primary class you will need to select another Secondary class!)')
 
 	msgIds = {
 		"primaryClassMsgId": primaryMsg.id,
