@@ -147,8 +147,6 @@ async def on_ready():
 		if role.name == discordIds["guildmembersRoleName"]:
 			guildMemberRole = role
 
-	print(guildMemberRole)
-
 	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 	
 	await gather(accessMsg.add_reaction(discordIds["alpha1"]),\
