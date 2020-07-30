@@ -172,19 +172,29 @@ async def on_ready():
 
 	for emoji in emojiWhiteList:
 		if emoji.name in classNames:
-			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
+			await gather(primaryMsg.add_reaction(emoji),\
+				secondaryMsg.add_reaction(emoji),\
+				updatePrimMsg.add_reaction(emoji),\
+				updateSecMsg.add_recation(emoji))
 
 	for role in guild.roles:
 		if role.name == discordIds["guildmembersRoleName"]:
 			guildMemberRole = role
 
 	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
+	await gather(updatePlyMsg.add_reaction(discordIds["pve"]),updatePlyMsg.add_reaction(discordIds["pvp"]),updatePlyMsg.add_reaction(discordIds["lifeskiller"]))
 	
 	await gather(accessMsg.add_reaction(discordIds["alpha1"]),\
 		accessMsg.add_reaction(discordIds["alpha2"]),\
 		accessMsg.add_reaction(discordIds["beta1"]),\
 		accessMsg.add_reaction(discordIds["beta2"]),\
 		accessMsg.add_reaction(discordIds["noaccess"]))
+	
+	await gather(updateAccMsg.add_reaction(discordIds["alpha1"]),\
+		updateAccMsg.add_reaction(discordIds["alpha2"]),\
+		updateAccMsg.add_reaction(discordIds["beta1"]),\
+		updateAccMsg.add_reaction(discordIds["beta2"]),\
+		updateAccMsg.add_reaction(discordIds["noaccess"]))
 
 	isReady = True
 	print("Setup complete")
