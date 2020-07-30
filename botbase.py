@@ -27,7 +27,6 @@ client = discord.Client()
 
 emojiWhiteList = []
 primaryClassRoles = []
-augmentClassRoles = []
 msgIds = None
 isReady = False
 cleanBoot = False
@@ -68,7 +67,6 @@ async def on_ready():
 	global emojiWhiteList
 	global isReady
 	global primaryClassRoles
-	global augmentClassRoles
 	global guildMemberRole
 
 	print(f'{client.user} has connected to Discord')
@@ -142,8 +140,6 @@ async def on_ready():
 	for role in guild.roles:
 		if role.name in classNames:
 			primaryClassRoles.append(role)
-		if role.name in augmentNames:
-			augmentClassRoles.append(role)
 		if role.name == discordIds["guildmembersRoleName"]:
 			guildMemberRole = role
 
@@ -214,7 +210,7 @@ async def on_reaction_add(reaction,user):
 					currentRoleName = None
 
 			if currentRoleName is not None:
-				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName, augmentClassRoles)
+				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName)
 				summaryDict["secondaryClassMsg"] = reaction
 
 		elif reactMsgId == msgIds["playStyleMsgId"]:
@@ -323,17 +319,9 @@ async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, request
 	await user.add_roles(requestedRole)
 
 #Set the augmented class role for a given user based on the passed reaction
-async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole, augmentClassRoles):
+async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole):
 	selectedCombo = classData[currentRole][requestedRole]
-	await RemoveRole(user, augmentNames) #remove augment class, if it exists
-	#get augmenting role
-	for role in augmentClassRoles:
-		if role.name == selectedCombo:
-			augmentClassRole = role
-			break
-
 	summaryDict[str(user)]['secondary'] = selectedCombo
-	await user.add_roles(augmentClassRole)
 
 async def SingleReactAddToDict(user, reaction, dictKey):
 	summaryDict[str(user)][dictKey] = reaction.emoji.name
