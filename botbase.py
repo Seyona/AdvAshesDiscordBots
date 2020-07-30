@@ -144,6 +144,10 @@ async def on_ready():
 			primaryClassRoles.append(role)
 		if role.name in augmentNames:
 			augmentClassRoles.append(role)
+		if role.name == discordIds["guildmembersRoleName"]:
+			guildMemberRole = role
+
+	print(guildMemberRole)
 
 	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 	
@@ -152,11 +156,6 @@ async def on_ready():
 		accessMsg.add_reaction(discordIds["beta1"]),\
 		accessMsg.add_reaction(discordIds["beta2"]),\
 		accessMsg.add_reaction(discordIds["noaccess"]))
-
-	for role in guild.roles:
-		if role.name == discordIds["guildmembersRoleName"]:
-			guildMemberRole = role
-			break
 
 	isReady = True
 	print("Setup complete")
