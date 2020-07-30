@@ -355,6 +355,8 @@ def SendDictToSpreadsheet(personInfo, user):
 	if personInfo['alpha'] != '':
 		rosterSheet.update(f'F{row}', personInfo['alpha'])
 
+	rosterSheet.update(f'I{row}', str(datetime.datetime.now()))
+
 	if discordNameWithTag in summaryDict:
 		del summaryDict[discordNameWithTag]
 
