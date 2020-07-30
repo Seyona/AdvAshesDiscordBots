@@ -80,14 +80,14 @@ async def on_ready():
 		if guild.name == GUILD:
 			break
 
-	registrationChan = None
-	updateChan = None
-
-	for channel in guild.text_channels:
-		if channel.name == "class-registration":
-			registrationChan = channel
-		if channel.name == "update-roster":
-			updateChan = channel
+	for registrationChan in guild.text_channels:
+		if registrationChan.name == "class-registration":
+			registrationChan = registrationChan
+			break
+	
+	for updateChan in guild.text_channels:
+		if updateChan.name == "update-roster":
+			break
 
 	await registrationChan.purge()
 	await updateChan.purge()
