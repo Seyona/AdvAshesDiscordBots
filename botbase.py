@@ -175,7 +175,7 @@ async def on_ready():
 			await gather(primaryMsg.add_reaction(emoji),\
 				secondaryMsg.add_reaction(emoji),\
 				updatePrimMsg.add_reaction(emoji),\
-				updateSecMsg.add_recation(emoji))
+				updateSecMsg.add_reaction(emoji))
 
 	for role in guild.roles:
 		if role.name == discordIds["guildmembersRoleName"]:
