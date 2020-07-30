@@ -138,8 +138,6 @@ async def on_ready():
 			await gather(primaryMsg.add_reaction(emoji),secondaryMsg.add_reaction(emoji))
 
 	for role in guild.roles:
-		if role.name in classNames:
-			primaryClassRoles.append(role)
 		if role.name == discordIds["guildmembersRoleName"]:
 			guildMemberRole = role
 
@@ -196,22 +194,23 @@ async def on_reaction_add(reaction,user):
 		
 		#First Message was clicked, assign the user a role and move on
 		if reactMsgId == msgIds["primaryClassMsgId"]: 
-			await SetPrimaryClassRole(user, reaction, classNames, requestedRole, requestedRoleName)
+			await SetPrimaryClassRole(user, reaction.emoji.name)
 			summaryDict["baseClassMsg"] = reaction
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
 		elif reactMsgId == msgIds["secondaryClassMsgId"]:
-			#Get current role
-			for role in user.roles:
-				if role.name in classNames:
-					currentRoleName = role.name
-					break
-				else:
-					currentRoleName = None
+			#Get base class
+			try:
+				baseClass = summaryDict[currentUser]["primary"]
 
-			if currentRoleName is not None:
-				await SetAugmentingClassRole(user, reaction, currentRoleName, requestedRoleName)
-				summaryDict["secondaryClassMsg"] = reaction
+				if baseClass != "":
+					await SetAugmentingClassRole(user, baseClass, reaction.emoji.name)
+					summaryDict["secondaryClassMsg"] = reaction
+				else:
+					await reaction.message.remove_reaction(reaction.emoji, user)
+					
+			except KeyError:
+				print(f'{currentUser} attempting to select a secondary class when entry is not in dictionary. (probably spamming)')
 
 		elif reactMsgId == msgIds["playStyleMsgId"]:
 			summaryDict[str(user)]["playstyle"] = reaction.emoji.name
@@ -273,7 +272,7 @@ async def submit(channel, user):
 			success = True # maybe new respond message depending what channel they are in
 
 		msg = await channel.send(response)
-		await DeleteMessageFromChannel(channel, msg, 6)
+		await DeleteMessageFromChannel(channel, msg, 5)
 		return success
 
 
@@ -312,14 +311,11 @@ def SendDictToSpreadsheet(personInfo, user):
 
 
 # Set the primary role of a given user based on the passed reaction
-async def SetPrimaryClassRole(user, reaction, classNames, requestedRole, requestedRoleName):
-	# remove existing role
-	await RemoveRole(user, classNames)
+async def SetPrimaryClassRole(user, requestedRoleName):
 	summaryDict[str(user)]['primary'] = requestedRoleName
-	await user.add_roles(requestedRole)
 
 #Set the augmented class role for a given user based on the passed reaction
-async def SetAugmentingClassRole(user, reaction, currentRole, requestedRole):
+async def SetAugmentingClassRole(user, currentRole, requestedRole):
 	selectedCombo = classData[currentRole][requestedRole]
 	summaryDict[str(user)]['secondary'] = selectedCombo
 
