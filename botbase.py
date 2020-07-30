@@ -283,7 +283,7 @@ async def on_reaction_add(reaction,user):
 # Discord channel and user
 async def submit(channel, user): 
 	success = False
-	if chanId == chanIds["registration"] or chanId == chanIds["update"]:
+	if channel.id == chanIds["registration"] or channel.id == chanIds["update"]:
 		submitter = str(user)
 	
 		innerdict = summaryDict[submitter]
