@@ -31,6 +31,7 @@ augmentClassRoles = []
 msgIds = None
 isReady = False
 cleanBoot = False
+guildMemberRole = None
 
 summaryDict = {}
 
@@ -68,6 +69,7 @@ async def on_ready():
 	global isReady
 	global primaryClassRoles
 	global augmentClassRoles
+	global guildMemberRole
 
 	print(f'{client.user} has connected to Discord')
 	
@@ -151,6 +153,7 @@ async def on_ready():
 		accessMsg.add_reaction(discordIds["beta2"]),\
 		accessMsg.add_reaction(discordIds["noaccess"]))
 
+	guildMemberRole = next(role for x in guild.roles if x.id == discordIds["guildmembersid"])
 	isReady = True
 	print("Setup complete")
 
@@ -227,7 +230,7 @@ async def on_reaction_add(reaction,user):
 				await old.message.remove_reaction(old.emoji,user)
 				old = summaryDict["playstyleMsg"]
 				await old.message.remove_reaction(old.emoji,user)
-				await user.add_roles(discordIds["guildmembersid"])
+				await user.add_roles(guildMemberRole)
 
 			await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
