@@ -34,6 +34,11 @@ guildMemberRole = None
 
 summaryDict = {}
 
+chanIds = {
+	"registration": 735235717558698094,
+	"update": 735729573865586708
+}
+
 #initialize the Gsheet api
 SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
 gc = gspread.service_account()
@@ -75,14 +80,22 @@ async def on_ready():
 		if guild.name == GUILD:
 			break
 
+	registrationChan = None
+	updateChan = None
+
 	for channel in guild.text_channels:
 		if channel.name == "class-registration":
-			break
+			registrationChan = channel
+		if channel.name == "update-roster"
+			updateChan = channel
 
-	await channel.purge()
+	await registrationChan.purge()
+	await updateChan.purge()
 
-	await channel.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message once (start from the top!). If everything looks good you\'ll be entered into the guild!')
-	await channel.send(f'Do not panic if your reaction goes away it has been recorded!')
+	await registrationChan.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message once (start from the top!). If everything looks good you\'ll be entered into the guild!')
+	await registrationChan.send(f'Do not panic if your reaction goes away it has been recorded!')
+
+	await updateChan.send('To update your roster information click a reaction from each reaction set. You will be given a brief message to confirm your entry has been updated.')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
 	classSelection = f"""
@@ -96,32 +109,56 @@ async def on_ready():
 {tankStr}
 """
 
-	await channel.send(cleanLine)
-	primaryMsg = await channel.send(f"What is your Primary class: {classSelection}")
+	await registrationChan.send(cleanLine)
+	await updateChan.send(cleanLine)
 
-	await channel.send(cleanLine)
-	secondaryMsg = await channel.send(f'What is your Secondary class: {classSelection}')
-	await channel.send(cleanLine)
+	primClassStr = f'What is your Primary class: {classSelection}'
+	primaryMsg = await registrationChan.send(primClassStr)
+	updatePrimMsg = await updateChan.send(primClassStr)
 
-	playStyleMsg = await channel.send(f'Select your Main playstyle (Select only 1): \n'+
+	await registrationChan.send(cleanLine)
+	await updateChan.send(cleanLine)
+
+	updateSecStr = f'What is your Secondary class: {classSelection}'
+	secondaryMsg = await registrationChan.send(updateSecStr)
+	updateSecMsg = await updateChan.send(updateSecStr)
+
+	await registrationChan.send(cleanLine)
+	await updateChan.send(cleanLine)
+
+	playStyleStr = f'Select your Main playstyle (Select only 1): \n'+
 	f'❖ PVE:           {discordIds["pve"]} \n' +
 	f'❖ PVP:           {discordIds["pvp"]} \n '+
-	f'❖ Lifeskiller: {discordIds["lifeskiller"]} \n')
-	await channel.send(cleanLine)
+	f'❖ Lifeskiller: {discordIds["lifeskiller"]} \n'
 
-	accessMsg = await channel.send(f'Do you have any early access to the game?: \n' +
+	playStyleMsg = await registrationChan.send(playStyleStr)
+	updatePlyMsg = await updateChan.send(playStyleStr)
+
+	await registrationChan.send(cleanLine)
+	await updateChan.send(cleanLine)
+
+	accessStr = f'Do you have any early access to the game?: \n' +
 		f'❖ Alpha 1:      {discordIds["alpha1"]} \n' +
 		f'❖ Alpha 2:     {discordIds["alpha2"]} \n' +
 		f'❖ Beta 1:         {discordIds["beta1"]} \n' +
 		f'❖ Beta 2:        {discordIds["beta2"]} \n' +
-		f'❖ No Access {discordIds["noaccess"]}')
-	await channel.send(cleanLine)
+		f'❖ No Access {discordIds["noaccess"]}'
+
+	accessMsg = await registrationChan.send(accessStr)
+	updateAccMsg = await updateChan.send(accessStr)
+
+	await registrationChan.send(cleanLine)
+	await updateChan.send(cleanLine)
 
 	msgIds = {
 		"primaryClassMsgId": primaryMsg.id,
+		"updatePrimaryMsgId": updatePrimMsg.id,
 		"secondaryClassMsgId": secondaryMsg.id,
+		"updateSecondaryMsgId": updateSecMsg.id,
 		"playStyleMsgId": playStyleMsg.id,
+		"updatePlayStyleMsgId": updatePlyMsg.id,
 		"accessMsgId": accessMsg.id,
+		"updateAccessMsgId": updateAccMsg.id
 	}
 
 	#construct a white list
@@ -175,7 +212,8 @@ async def on_reaction_add(reaction,user):
 		}})
 
 
-	if reaction.message.channel.id == 735235717558698094: #current registration channel Id
+	chanId = reaction.message.channel.id
+	if chanId == chanIds["registration"] or chanId == chanIds["update"]: 
 		if (reaction.emoji not in emojiWhiteList):
 			await reaction.message.remove_reaction(reaction.emoji, user)
 			return
@@ -193,12 +231,12 @@ async def on_reaction_add(reaction,user):
 					await reaction.message.remove_reaction(react.emoji, reacter)
 		
 		#First Message was clicked, assign the user a role and move on
-		if reactMsgId == msgIds["primaryClassMsgId"]: 
+		if reactMsgId == msgIds["primaryClassMsgId"] or reactMsgId == msgIds["updatePrimaryMsgId"]: 
 			await SetPrimaryClassRole(user, reaction.emoji.name)
 			summaryDict["baseClassMsg"] = reaction
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
-		elif reactMsgId == msgIds["secondaryClassMsgId"]:
+		elif reactMsgId == msgIds["secondaryClassMsgId"] or reactMsgId == msgIds["updateSecondaryMsgId"]:
 			#Get base class
 			try:
 				baseClass = summaryDict[currentUser]["primary"]
@@ -208,15 +246,15 @@ async def on_reaction_add(reaction,user):
 					summaryDict["secondaryClassMsg"] = reaction
 				else:
 					await reaction.message.remove_reaction(reaction.emoji, user)
-					
+
 			except KeyError:
 				print(f'{currentUser} attempting to select a secondary class when entry is not in dictionary. (probably spamming)')
 
-		elif reactMsgId == msgIds["playStyleMsgId"]:
+		elif reactMsgId == msgIds["playStyleMsgId"] or reactMsgId == msgIds["updatePlayStyleMsgId"]:
 			summaryDict[str(user)]["playstyle"] = reaction.emoji.name
 			summaryDict["playstyleMsg"] = reaction
 
-		elif reactMsgId == msgIds["accessMsgId"]:
+		elif reactMsgId == msgIds["accessMsgId"] or reactMsgId == msgIds["updateAccessMsgId"]:
 			summaryDict[str(user)]["alpha"] = reaction.emoji.name
 			success = await submit(reaction.message.channel, user)
 			if success:
@@ -235,7 +273,7 @@ async def on_reaction_add(reaction,user):
 # Discord channel and user
 async def submit(channel, user): 
 	success = False
-	if channel.id == 735235717558698094:
+	if chanId == chanIds["registration"] or chanId == chanIds["update"]:
 		submitter = str(user)
 	
 		innerdict = summaryDict[submitter]
@@ -278,7 +316,8 @@ async def submit(channel, user):
 
 @client.event
 async def on_message(message):
-	if message.channel.id == 735235717558698094 and message.author.id != 735708593294147674:
+	chanId = message.channel.id
+	if (chanId == chanIds["registration"] or chanId == chanIds["update"]) and message.author.id != 735708593294147674:
 		await DeleteMessageFromChannel(message.channel, message)
 
 
