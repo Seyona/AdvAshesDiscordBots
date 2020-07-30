@@ -126,10 +126,10 @@ async def on_ready():
 	await registrationChan.send(cleanLine)
 	await updateChan.send(cleanLine)
 
-	playStyleStr = f'Select your Main playstyle (Select only 1): \n'+
+	playStyleStr = (f'Select your Main playstyle (Select only 1): \n'+
 	f'❖ PVE:           {discordIds["pve"]} \n' +
 	f'❖ PVP:           {discordIds["pvp"]} \n '+
-	f'❖ Lifeskiller: {discordIds["lifeskiller"]} \n'
+	f'❖ Lifeskiller: {discordIds["lifeskiller"]} \n')
 
 	playStyleMsg = await registrationChan.send(playStyleStr)
 	updatePlyMsg = await updateChan.send(playStyleStr)
@@ -137,12 +137,12 @@ async def on_ready():
 	await registrationChan.send(cleanLine)
 	await updateChan.send(cleanLine)
 
-	accessStr = f'Do you have any early access to the game?: \n' +
+	accessStr = (f'Do you have any early access to the game?: \n' +
 		f'❖ Alpha 1:      {discordIds["alpha1"]} \n' +
 		f'❖ Alpha 2:     {discordIds["alpha2"]} \n' +
 		f'❖ Beta 1:         {discordIds["beta1"]} \n' +
 		f'❖ Beta 2:        {discordIds["beta2"]} \n' +
-		f'❖ No Access {discordIds["noaccess"]}'
+		f'❖ No Access {discordIds["noaccess"]}')
 
 	accessMsg = await registrationChan.send(accessStr)
 	updateAccMsg = await updateChan.send(accessStr)
