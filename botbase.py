@@ -153,7 +153,11 @@ async def on_ready():
 		accessMsg.add_reaction(discordIds["beta2"]),\
 		accessMsg.add_reaction(discordIds["noaccess"]))
 
-	guildMemberRole = next(role for x in guild.roles if x.name == discordIds["guildmembersRoleName"])
+	for role in guild.roles:
+		if role.name == discordIds["guildmembersRoleName"]:
+			guildMemberRole = role
+			break
+
 	isReady = True
 	print("Setup complete")
 
