@@ -31,6 +31,7 @@ msgIds = None
 isReady = False
 cleanBoot = False
 guildMemberRole = None
+newbieRole = None
 
 summaryDict = {}
 
@@ -73,6 +74,7 @@ async def on_ready():
 	global isReady
 	global primaryClassRoles
 	global guildMemberRole
+	global newbieRole
 
 	print(f'{client.user} has connected to Discord')
 	
@@ -180,6 +182,8 @@ async def on_ready():
 	for role in guild.roles:
 		if role.name == discordIds["guildmembersRoleName"]:
 			guildMemberRole = role
+		if role.name == discordIds["newbieRoleName"]:
+			newbieRole = role
 
 	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
 	await gather(updatePlyMsg.add_reaction(discordIds["pve"]),updatePlyMsg.add_reaction(discordIds["pvp"]),updatePlyMsg.add_reaction(discordIds["lifeskiller"]))
@@ -274,7 +278,7 @@ async def on_reaction_add(reaction,user):
 				await old.message.remove_reaction(old.emoji,user)
 				old = summaryDict["playstyleMsg"]
 				await old.message.remove_reaction(old.emoji,user)
-				await user.add_roles(guildMemberRole)
+				await gather(user.add_roles(guildMemberRole), user.remove_roles(newbieRole))
 
 			await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
