@@ -329,13 +329,13 @@ async def on_message(message):
 
 				timeErrStr = f'Time is invalid or non-existant :: {properFormat}'
 				if not re.match(r"^[0-2][0-3][0-5][0-9]$", timeOfEvent):
-					await timeErrStr
+					await message.channel.send(timeErrStr)
 					return
 				
 				eventTimeAsInt = int(timeOfEvent)
 
 				if not re.match(r"^\d{1,2}\/\d{1,2}", dateOfEvent):
-					await f'Date is invalid or non-existant :: {properFormat}'
+					await message.channel.send(f'Date is invalid or non-existant :: {properFormat}')
 					return
 
 
