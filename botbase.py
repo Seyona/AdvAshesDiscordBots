@@ -323,7 +323,7 @@ async def on_message(message):
 
 				timeOfEvent = eventSplit[lenOfSplit - 1]
 				dateOfEvent = eventSplit[lenOfSplit - 2]
-				eventName = eventSplit[1:(lenOfSplit-2)]
+				eventName = ''.join(eventSplit[1:(lenOfSplit-2)])
 
 				properFormat = "!create Event Name mm/dd hhmm (military time)"
 
