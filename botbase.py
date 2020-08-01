@@ -338,7 +338,6 @@ async def on_message(message):
 					await message.channel.send(f'Date is invalid or non-existant :: {properFormat}')
 					return
 
-
 				events[message.id] = eventName 
 				eventsWorksheet = sheet.add_worksheet(title=eventName, rows=500, cols=7)
 				eventsWorksheet.update('A1:G1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
