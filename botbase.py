@@ -15,6 +15,7 @@ import json
 import csv
 import time
 import argparse
+import re
 
 from asyncio import gather
 from dotenv import load_dotenv
@@ -36,9 +37,13 @@ newbieRole = None
 summaryDict = {}
 
 chanIds = {
-	"registration": 735235717558698094,
-	"update": 735729573865586708
+	"roster": 735729573865586708,
+	"events": 738276488851226715
 }
+
+# Events stored by ID mapping to a string. 
+# Users will react to the message and the message ID will add them to a spreadsheet
+events = {}
 
 #initialize the Gsheet api
 SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
@@ -82,22 +87,15 @@ async def on_ready():
 		if guild.name == GUILD:
 			break
 
-	registrationChan = None
-	updateChan = None
+	rosterChan = None
 
 	for channel in guild.text_channels:
-		if channel.id == chanIds["registration"]:
-			registrationChan = channel
-		if channel.id == chanIds["update"]:
-			updateChan = channel
+		if channel.id == chanIds["roster"]:
+			rosterChan = channel
 
-	await registrationChan.purge()
-	await updateChan.purge()
+	await rosterChan.purge()
 
-	await registrationChan.send(f'Welcome to the guild! Before you can tagged up as a {discordIds["guildmembers"]} You\'ll need to complete this form. It\'s pretty quick, just react to each message once (start from the top!). If everything looks good you\'ll be entered into the guild!')
-	await registrationChan.send(f'Do not panic if your reaction goes away it has been recorded!')
-
-	await updateChan.send('To update your roster information click a reaction from each reaction set. You will be given a brief message to confirm your entry has been updated.')
+	await rosterChan.send('To add/update your roster information click a reaction from each reaction set. You will be given a brief message to confirm your entry has been updated.')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
 	classSelection = f"""
@@ -111,33 +109,26 @@ async def on_ready():
 {tankStr}
 """
 
-	await registrationChan.send(cleanLine)
-	await updateChan.send(cleanLine)
+	await rosterChan.send(cleanLine)
 
 	primClassStr = f'What is your Primary class: {classSelection}'
-	primaryMsg = await registrationChan.send(primClassStr)
-	updatePrimMsg = await updateChan.send(primClassStr)
+	rosterPrimaryMsg = await rosterChan.send(primClassStr)
 
-	await registrationChan.send(cleanLine)
-	await updateChan.send(cleanLine)
+	await rosterChan.send(cleanLine)
 
 	updateSecStr = f'What is your Secondary class: {classSelection}'
-	secondaryMsg = await registrationChan.send(updateSecStr)
-	updateSecMsg = await updateChan.send(updateSecStr)
+	rosterSecondaryMsg = await rosterChan.send(updateSecStr)
 
-	await registrationChan.send(cleanLine)
-	await updateChan.send(cleanLine)
+	await rosterChan.send(cleanLine)
 
 	playStyleStr = (f'Select your Main playstyle (Select only 1): \n'+
 	f'❖ PVE:           {discordIds["pve"]} \n' +
 	f'❖ PVP:           {discordIds["pvp"]} \n '+
 	f'❖ Lifeskiller: {discordIds["lifeskiller"]} \n')
 
-	playStyleMsg = await registrationChan.send(playStyleStr)
-	updatePlyMsg = await updateChan.send(playStyleStr)
+	rosterPlyMsg = await rosterChan.send(playStyleStr)
 
-	await registrationChan.send(cleanLine)
-	await updateChan.send(cleanLine)
+	await rosterChan.send(cleanLine)
 
 	accessStr = (f'Do you have any early access to the game?: \n' +
 		f'❖ Alpha 1:      {discordIds["alpha1"]} \n' +
@@ -146,21 +137,14 @@ async def on_ready():
 		f'❖ Beta 2:        {discordIds["beta2"]} \n' +
 		f'❖ No Access {discordIds["noaccess"]}')
 
-	accessMsg = await registrationChan.send(accessStr)
-	updateAccMsg = await updateChan.send(accessStr)
-
-	await registrationChan.send(cleanLine)
-	await updateChan.send(cleanLine)
+	rosterAccMsg = await rosterChan.send(accessStr)
+	await rosterChan.send(cleanLine)
 
 	msgIds = {
-		"primaryClassMsgId": primaryMsg.id,
-		"updatePrimaryMsgId": updatePrimMsg.id,
-		"secondaryClassMsgId": secondaryMsg.id,
-		"updateSecondaryMsgId": updateSecMsg.id,
-		"playStyleMsgId": playStyleMsg.id,
-		"updatePlayStyleMsgId": updatePlyMsg.id,
-		"accessMsgId": accessMsg.id,
-		"updateAccessMsgId": updateAccMsg.id
+		"updatePrimaryMsgId": rosterPrimaryMsg.id,
+		"updateSecondaryMsgId": rosterSecondaryMsg.id,
+		"updatePlayStyleMsgId": rosterPlyMsg.id,
+		"updateAccessMsgId": rosterAccMsg.id
 	}
 
 	#construct a white list
@@ -174,10 +158,8 @@ async def on_ready():
 
 	for emoji in emojiWhiteList:
 		if emoji.name in classNames:
-			await gather(primaryMsg.add_reaction(emoji),\
-				secondaryMsg.add_reaction(emoji),\
-				updatePrimMsg.add_reaction(emoji),\
-				updateSecMsg.add_reaction(emoji))
+			await gather(rosterPrimaryMsg.add_reaction(emoji),\
+				rosterSecondaryMsg.add_reaction(emoji))
 
 	for role in guild.roles:
 		if role.name == discordIds["guildmembersRoleName"]:
@@ -185,20 +167,13 @@ async def on_ready():
 		if role.name == discordIds["newbieRoleName"]:
 			newbieRole = role
 
-	await gather(playStyleMsg.add_reaction(discordIds["pve"]),playStyleMsg.add_reaction(discordIds["pvp"]),playStyleMsg.add_reaction(discordIds["lifeskiller"]))
-	await gather(updatePlyMsg.add_reaction(discordIds["pve"]),updatePlyMsg.add_reaction(discordIds["pvp"]),updatePlyMsg.add_reaction(discordIds["lifeskiller"]))
+	await gather(rosterPlyMsg.add_reaction(discordIds["pve"]),rosterPlyMsg.add_reaction(discordIds["pvp"]),rosterPlyMsg.add_reaction(discordIds["lifeskiller"]))
 	
-	await gather(accessMsg.add_reaction(discordIds["alpha1"]),\
-		accessMsg.add_reaction(discordIds["alpha2"]),\
-		accessMsg.add_reaction(discordIds["beta1"]),\
-		accessMsg.add_reaction(discordIds["beta2"]),\
-		accessMsg.add_reaction(discordIds["noaccess"]))
-	
-	await gather(updateAccMsg.add_reaction(discordIds["alpha1"]),\
-		updateAccMsg.add_reaction(discordIds["alpha2"]),\
-		updateAccMsg.add_reaction(discordIds["beta1"]),\
-		updateAccMsg.add_reaction(discordIds["beta2"]),\
-		updateAccMsg.add_reaction(discordIds["noaccess"]))
+	await gather(rosterAccMsg.add_reaction(discordIds["alpha1"]),\
+		rosterAccMsg.add_reaction(discordIds["alpha2"]),\
+		rosterAccMsg.add_reaction(discordIds["beta1"]),\
+		rosterAccMsg.add_reaction(discordIds["beta2"]),\
+		rosterAccMsg.add_reaction(discordIds["noaccess"]))
 
 	isReady = True
 	print("Setup complete")
@@ -213,21 +188,22 @@ async def on_reaction_add(reaction,user):
 	reactMsgId = reaction.message.id
 
 	currentUser = str(user)
-	if currentUser not in summaryDict.keys():
-		summaryDict.update( {currentUser : {
-			"primary" : "",
-			"baseClassMsg" : None,
-			"secondary" : "",
-			"secondaryClassMsg" : None,
-			"playstyle" : "",
-			"playstyleMsg" : None,
-			"alpha":"",
-			"alphaMsg" : None
-		}})
-
 
 	chanId = reaction.message.channel.id
-	if chanId == chanIds["registration"] or chanId == chanIds["update"]: 
+	if chanId == chanIds["roster"]: 
+
+		if currentUser not in summaryDict.keys():
+			summaryDict.update( {currentUser : {
+				"primary" : "",
+				"baseClassMsg" : None,
+				"secondary" : "",
+				"secondaryClassMsg" : None,
+				"playstyle" : "",
+				"playstyleMsg" : None,
+				"alpha":"",
+				"alphaMsg" : None
+			}})
+
 		if (reaction.emoji not in emojiWhiteList):
 			await reaction.message.remove_reaction(reaction.emoji, user)
 			return
@@ -282,12 +258,14 @@ async def on_reaction_add(reaction,user):
 
 			await reaction.message.remove_reaction(reaction.emoji, user) #clean up
 
+	elif chanId == chanIds["events"]:
+		return
 		
 
 # Discord channel and user
 async def submit(channel, user): 
 	success = False
-	if channel.id == chanIds["registration"] or channel.id == chanIds["update"]:
+	if channel.id == chanIds["roster"]:
 		submitter = str(user)
 	
 		innerdict = summaryDict[submitter]
@@ -331,8 +309,49 @@ async def submit(channel, user):
 @client.event
 async def on_message(message):
 	chanId = message.channel.id
-	if (chanId == chanIds["registration"] or chanId == chanIds["update"]) and message.author.id != 735708593294147674:
+	if chanId == chanIds["roster"] and message.author.id != 735708593294147674:
 		await DeleteMessageFromChannel(message.channel, message)
+	
+	elif chanId == chanIds["events"]:
+		global events
+
+		if message.content.startswith('!create'):
+			event = events.get(message.id)
+			if event is None:
+				eventSplit = message.content.split('!create')
+				lenOfSplit = len(eventSplit)
+
+				timeOfEvent = eventSplit[lenOfSplit - 1]
+				dateOfEvent = eventSplit[lenOfSplit - 2]
+				eventName = eventSplit[1:(lenOfSplit-2)]
+
+				properFormat = "!create Event Name mm/dd hhmm (military time)"
+
+				timeErrStr = f'Time is invalid or non-existant :: {properFormat}'
+				if not re.match(r"^[0-2][0-3][0-5][0-9]$", timeOfEvent):
+					await timeErrStr
+					return
+				
+				eventTimeAsInt = int(timeOfEvent)
+
+				if not re.match(r"^\d{1,2}\/\d{1,2}", dateOfEvent):
+					await f'Date is invalid or non-existant :: {properFormat}'
+					return
+
+
+				events[message.id] = eventName 
+				eventsWorksheet = sheet.add_worksheet(title=eventName, rows=500, cols=7)
+				eventsWorksheet.update('A1:G1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
+
+				await message.channel.send(f'An event called <{eventName}> has been scheduled for {dateOfEvent} at {eventTimeAsInt}')
+				return
+			else:
+				await message.channel.send("There is already an event of that name created")
+
+		elif message.content.startswith('!events'):
+			return
+		elif message.content.startswith('!startevent'):
+			return
 
 
 def SendDictToSpreadsheet(personInfo, user):
