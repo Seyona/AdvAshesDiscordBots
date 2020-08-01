@@ -340,7 +340,7 @@ async def on_message(message):
 
 
 				events[message.id] = eventName 
-				eventsWorksheet = sheet.add_worksheet(eventName, 500, 7)
+				eventsWorksheet = sheet.add_worksheet(title=eventName, rows=500, cols=7)
 				eventsWorksheet.update('A1:G1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
 
 				await message.channel.send(f'An event called <{eventName}> has been scheduled for {dateOfEvent} at {eventTimeAsInt}')
