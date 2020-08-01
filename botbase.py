@@ -318,7 +318,7 @@ async def on_message(message):
 		if message.content.startswith('!create'):
 			event = events.get(message.id)
 			if event is None:
-				eventSplit = message.content.split('!create')
+				eventSplit = message.content.split(' ')
 				lenOfSplit = len(eventSplit)
 
 				timeOfEvent = eventSplit[lenOfSplit - 1]
