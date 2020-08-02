@@ -221,12 +221,12 @@ async def on_reaction_add(reaction,user):
 					await reaction.message.remove_reaction(react.emoji, reacter)
 		
 		#First Message was clicked, assign the user a role and move on
-		if reactMsgId == msgIds["primaryClassMsgId"] or reactMsgId == msgIds["updatePrimaryMsgId"]: 
+		if reactMsgId == msgIds["updatePrimaryMsgId"]: 
 			await SetPrimaryClassRole(user, reaction.emoji.name)
 			summaryDict["baseClassMsg"] = reaction
 			
 		#second message was clicked, make sure they have a primary class role assigned, assign an augment class role
-		elif reactMsgId == msgIds["secondaryClassMsgId"] or reactMsgId == msgIds["updateSecondaryMsgId"]:
+		elif reactMsgId == msgIds["updateSecondaryMsgId"]:
 			#Get base class
 			try:
 				baseClass = summaryDict[currentUser]["primary"]
@@ -240,11 +240,11 @@ async def on_reaction_add(reaction,user):
 			except KeyError:
 				print(f'{currentUser} attempting to select a secondary class when entry is not in dictionary. (probably spamming)')
 
-		elif reactMsgId == msgIds["playStyleMsgId"] or reactMsgId == msgIds["updatePlayStyleMsgId"]:
+		elif reactMsgId == msgIds["updatePlayStyleMsgId"]:
 			summaryDict[str(user)]["playstyle"] = reaction.emoji.name
 			summaryDict["playstyleMsg"] = reaction
 
-		elif reactMsgId == msgIds["accessMsgId"] or reactMsgId == msgIds["updateAccessMsgId"]:
+		elif reactMsgId == msgIds["updateAccessMsgId"]:
 			summaryDict[str(user)]["alpha"] = reaction.emoji.name
 			success = await submit(reaction.message.channel, user)
 			if success:
@@ -340,10 +340,9 @@ async def on_message(message):
 
 				events[message.id] = eventName 
 				eventsWorksheet = sheet.add_worksheet(title=eventName, rows=500, cols=7)
-				eventsWorksheet.update('A1:G1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
+				eventsWorksheet.update('A1:F1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
 
 				await message.channel.send(f'An event called <{eventName}> has been scheduled for {dateOfEvent} at {eventTimeAsInt}')
-				return
 			else:
 				await message.channel.send("There is already an event of that name created")
 
