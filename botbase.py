@@ -45,6 +45,8 @@ chanIds = {
 # Users will react to the message and the message ID will add them to a spreadsheet
 events = {}
 
+eventsFile = 'events.json'
+
 #initialize the Gsheet api
 SPREADSHEET_ID = '1kTPhqosR0DRoVzccjOpFB2b2OmT-yxj6K4j_te_qBxg'
 gc = gspread.service_account()
@@ -80,6 +82,8 @@ async def on_ready():
 	global primaryClassRoles
 	global guildMemberRole
 	global newbieRole
+
+	loadEventsFromFile()
 
 	print(f'{client.user} has connected to Discord')
 	
@@ -342,6 +346,7 @@ async def on_message(message):
 				eventsWorksheet = sheet.add_worksheet(title=eventName, rows=500, cols=7)
 				eventsWorksheet.update('A1:F1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
 
+				writeEventsToFile() # save the current events dict to file in case of program crash
 				await message.channel.send(f'An event called <{eventName}> has been scheduled for {dateOfEvent} at {eventTimeAsInt}')
 			else:
 				await message.channel.send("There is already an event of that name created")
@@ -411,5 +416,19 @@ async def RemoveRole(user, rolesList):
 				await user.remove_roles(role)
 				roleRemoved = True
 	return roleRemoved
+
+#removes an existing events.json file and replaces it with an updated version of the events dictionary
+def writeEventsToFile():
+	os.remove(f'/repositories/AdvAshesDiscordBots/{eventsFile}')
+	with open(eventsFile,'w') as file:
+		json.dump(events, file)
+
+def loadEventsFromFile():
+	global events
+	if os.path.isfile(eventsFile):
+		with open(eventsFile) as file:
+			events = json.load(file)
+	else:
+		print("No event file found")
 
 client.run(TOKEN)
