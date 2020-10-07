@@ -299,7 +299,9 @@ async def submit(channel, user):
 		
 		if len(missingItems) != 0 :
 			errors = "Missing: " + ', '.join(missingItems)
-			response = response + errors
+			response = response + errors + 
+			'\n This request is Incomplete. Please go back to the channel to and react to the sections that were missed.' +
+			'\n Direct link to channel : https://discord.com/channels/379498643721420800/735729573865586708/' # Should programtically pull out information for URL, but this is a one guild operation.
 
 		if errors == "": # No problem run spreadsheet update
 			SendDictToSpreadsheet(innerdict, user)
