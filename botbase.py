@@ -99,7 +99,7 @@ async def on_ready():
 
 	await rosterChan.purge()
 
-	await rosterChan.send('To add/update your roster information click a reaction from each reaction set. You will be given a brief message to confirm your entry has been updated.')
+	await rosterChan.send('To add/update your roster information click a reaction from each reaction set. \n A summary will be DM\'d to you.')
 
 	cleanLine = "━━━━━━━━━━━━━━━◦❖◦━━━━━━━━━━━━━━━"
 	classSelection = f"""
@@ -266,7 +266,7 @@ async def on_reaction_add(reaction,user):
 		return
 		
 
-# Discord channel and user
+# Discord channel and user, user is Union[Member, User]
 async def submit(channel, user): 
 	success = False
 	if channel.id == chanIds["roster"]:
@@ -305,8 +305,7 @@ async def submit(channel, user):
 			SendDictToSpreadsheet(innerdict, user)
 			success = True # maybe new respond message depending what channel they are in
 
-		msg = await channel.send(response)
-		await DeleteMessageFromChannel(channel, msg, 5)
+		await user.send(response)
 		return success
 
 
