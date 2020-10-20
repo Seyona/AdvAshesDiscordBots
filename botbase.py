@@ -54,13 +54,13 @@ sheet = gc.open_by_key(SPREADSHEET_ID)
 rosterSheet = sheet.worksheet("Roster")
 
 # pull classes file into memory
-with open('/repositories/AdvAshesDiscordBots/classes.json') as json_file:
+with open('./AdvAshesDiscordBots/classes.json') as json_file:
 	classData = json.load(json_file)
 	classNames = classData.keys()
 	augmentNames = [item for innerList in classData.values() for item in innerList.values()]
 
 # pull ids into memory
-with open('/repositories/AdvAshesDiscordBots/discordIds.json') as json_file:
+with open('./AdvAshesDiscordBots/discordIds.json') as json_file:
 	discordIds = json.load(json_file)
 
 summStr    = f'❖ Summoner {discordIds["summoner"]}'
@@ -420,7 +420,7 @@ async def RemoveRole(user, rolesList):
 
 #removes an existing events.json file and replaces it with an updated version of the events dictionary
 def writeEventsToFile():
-	os.remove(f'/repositories/AdvAshesDiscordBots/{eventsFile}')
+	os.remove(f'./AdvAshesDiscordBots/{eventsFile}')
 	with open(eventsFile,'w') as file:
 		json.dump(events, file)
 
