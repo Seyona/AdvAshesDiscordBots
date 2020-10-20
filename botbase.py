@@ -166,9 +166,9 @@ async def on_ready():
 				rosterSecondaryMsg.add_reaction(emoji))
 
 	for role in guild.roles:
-		if role.name == discordIds["guildmembersRoleName"]:
+		if role.id == int(discordIds["guildMemberId"]):
 			guildMemberRole = role
-		if role.name == discordIds["newbieRoleName"]:
+		if role.id == int(discordIds["newbieId"]):
 			newbieRole = role
 
 	await gather(rosterPlyMsg.add_reaction(discordIds["pve"]),rosterPlyMsg.add_reaction(discordIds["pvp"]),rosterPlyMsg.add_reaction(discordIds["lifeskiller"]))
