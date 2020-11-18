@@ -69,6 +69,7 @@ async def on_ready():
 
     googleSheet = Spreadsheet(os.getenv('SHEET_IDENTIFIER'))
     RolesManager = AshesRolesManager(rosterChan, discordIds, googleSheet)
+    await RolesManager.init(discordIds, guild)
 
     isReady = True
     print("Setup complete")
