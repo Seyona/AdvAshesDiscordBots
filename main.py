@@ -32,7 +32,7 @@ chanIds = {
     "events": 738276488851226715
 }
 
-# Events stored by ID mapping to a string. 
+# Events stored by ID mapping to a string.
 # Users will react to the message and the message ID will add them to a spreadsheet
 events = {}
 
@@ -66,6 +66,7 @@ async def on_ready():
     for channel in guild.text_channels:
         if channel.id == chanIds["roster"]:
             rosterChan = channel
+
     googleSheet = Spreadsheet(os.getenv('SHEET_IDENTIFIER'))
     RolesManager = AshesRolesManager(rosterChan, discordIds, googleSheet)
 
