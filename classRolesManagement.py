@@ -219,7 +219,7 @@ class AshesUserSummary:
         playStyle = self.playstyle.capitalize()
         alpha = self.playstyle.capitalize()
 
-        response = f'Summary for <@{user.id}: \n'
+        response = f'Summary for <@{user.id}>: \n'
 
         if classStr == "":
             missingItems.append("Secondary Class")
