@@ -180,7 +180,7 @@ class AshesRolesManager:
         elif messageId == self.msgIds["updateAccessMsgId"]:
             self.summaryDict[currentUser].alpha = reaction.emoji.name
             self.summaryDict[currentUser].alphaMsg = reaction
-            success = self.summaryDict[currentUser].SubmitSummary(user, self.spreadsheet)
+            success = await self.summaryDict[currentUser].SubmitSummary(user, self.spreadsheet)
             if success:
                 userData = self.summaryDict[currentUser]
                 await userData.baseClassMsg.remove_reaction(userData.baseClassMsg.emoji, user)
@@ -207,7 +207,7 @@ class AshesUserSummary:
         self.alpha = ""
         self.alphaMsg = None
 
-    def SubmitSummary(self, user: Union[Member, User], spreadsheet) -> bool:
+    async def SubmitSummary(self, user: Union[Member, User], spreadsheet) -> bool:
         """ Submits the summary information to a spreadsheet (eventually a database?) """
 
         success = False
