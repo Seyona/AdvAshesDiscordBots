@@ -217,7 +217,7 @@ class AshesUserSummary:
         classStr = self.secondary.capitalize()
         baseClass = self.primary.capitalize()
         playStyle = self.playstyle.capitalize()
-        alpha = self.playstyle.capitalize()
+        alpha = self.alpha.capitalize()
 
         response = f'Summary for <@{user.id}>: \n'
 
