@@ -58,7 +58,6 @@ class AshesRolesManager:
     async def init(self, discordIds, discGuild: Guild):
         """ Cleans up the roster channel and sets up variables & data that will be needed later """
         await self.channel.purge()
-        await self.channel.send()
 
         await self.channel.send(self.cleanLine)
         primClassStr = f'What is your Primary class: {self.classSelectionMsg}'
