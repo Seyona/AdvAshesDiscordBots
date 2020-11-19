@@ -4,3 +4,4 @@ emojiWhiteList.json
 primaryClassRoles.json
 augmentClassRoles.json
 messageIds.json
+__pycache__/
