@@ -207,7 +207,7 @@ class AshesUserSummary:
         self.alpha = ""
         self.alphaMsg = None
 
-    async def SubmitSummary(self, user: Union[Member, User], spreadsheet) -> bool:
+    def SubmitSummary(self, user: Union[Member, User], spreadsheet) -> bool:
         """ Submits the summary information to a spreadsheet (eventually a database?) """
 
         success = False
