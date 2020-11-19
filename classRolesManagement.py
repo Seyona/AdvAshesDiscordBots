@@ -156,7 +156,7 @@ class AshesRolesManager:
         # First Message was clicked
         if messageId == self.msgIds["updatePrimaryMsgId"]:
             self.summaryDict[currentUser].primary = reaction.emoji.name
-            self.summaryDict[currentUser].baseClassMsg = reaction
+            self.summaryDict[currentUser].baseClassMsg = reaction.message
 
         elif messageId == self.msgIds["updateSecondaryMsgId"]:
             try:
@@ -165,7 +165,7 @@ class AshesRolesManager:
                 if baseClass != "":
                     selectedCombo = self.classData[baseClass][reaction.emoji.name]
                     self.summaryDict[currentUser].secondary = selectedCombo
-                    self.summaryDict[currentUser].secondaryClassMsg = reaction
+                    self.summaryDict[currentUser].secondaryClassMsg = reaction.message
                 else:
                     await reaction.message.remove_reaction(reaction.emoji, user)
 
@@ -175,11 +175,11 @@ class AshesRolesManager:
 
         elif messageId == self.msgIds["updatePlayStyleMsgId"]:
             self.summaryDict[currentUser].playstyle = reaction.emoji.name
-            self.summaryDict[currentUser].playstyleMsg = reaction
+            self.summaryDict[currentUser].playstyleMsg = reaction.message
 
         elif messageId == self.msgIds["updateAccessMsgId"]:
             self.summaryDict[currentUser].alpha = reaction.emoji.name
-            self.summaryDict[currentUser].alphaMsg = reaction
+            self.summaryDict[currentUser].alphaMsg = reaction.message
             success = await self.summaryDict[currentUser].SubmitSummary(user, self.spreadsheet)
             if success:
                 userData = self.summaryDict[currentUser]
