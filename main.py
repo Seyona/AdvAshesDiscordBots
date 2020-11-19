@@ -87,7 +87,7 @@ async def on_reaction_add(reaction, user):
     chanId = reaction.message.channel.id
 
     if chanId == chanIds["roster"]:
-        RolesManager.ReactionAdded(reaction.message, user)
+        await RolesManager.ReactionAdded(reaction.message, user)
 
     elif chanId == chanIds["events"]:
         return
