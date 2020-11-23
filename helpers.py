@@ -1,0 +1,1 @@
+baseDir = "/discordBot/AdvAshesDiscordBots/"

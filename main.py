@@ -9,6 +9,7 @@ import time
 import re
 from classRolesManagement import AshesRolesManager
 from spreadsheet import Spreadsheet
+from helpers import baseDir
 
 from dotenv import load_dotenv
 
@@ -39,7 +40,7 @@ events = {}
 eventsFile = 'events.json'
 
 # pull ids into memory
-with open('/discordBot/AdvAshesDiscordBots/NonPythonFiles/discordIds.json') as json_file:
+with open(baseDir + 'NonPythonFiles/discordIds.json') as json_file:
     discordIds = json.load(json_file)
 
 RolesManager = None

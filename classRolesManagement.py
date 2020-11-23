@@ -1,5 +1,6 @@
 from asyncio import gather
 
+from helpers import baseDir
 import discord
 from discord import TextChannel, Guild, Member, User
 import json
@@ -94,7 +95,7 @@ class AshesRolesManager:
         }
 
         # pull classes file into memory
-        with open('/discordBot/AdvAshesDiscordBots/NonPythonFiles/classes.json') as json_file:
+        with open(baseDir + 'NonPythonFiles/classes.json') as json_file:
             self.classData = json.load(json_file)
             self.classNames = self.classData.keys()
             self.augmentNames = [item for innerList in self.classData.values() for item in innerList.values()]
