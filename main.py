@@ -39,7 +39,7 @@ events = {}
 eventsFile = 'events.json'
 
 # pull ids into memory
-with open('/discordBot/AdvAshesDiscordBots/discordIds.json') as json_file:
+with open('/discordBot/AdvAshesDiscordBots/NonPythonFiles/discordIds.json') as json_file:
     discordIds = json.load(json_file)
 
 RolesManager = None
