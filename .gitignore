@@ -5,3 +5,4 @@ primaryClassRoles.json
 augmentClassRoles.json
 messageIds.json
 __pycache__/
+database.ini
