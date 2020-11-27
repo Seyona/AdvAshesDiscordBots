@@ -20,7 +20,7 @@ class Event:
 
     def isValid(self):
         valid = self.id != 0 and self.event_name != "" and self.event_date is not None and self.description != ""
-        if self.recurring:
+        if not self.recurring:
             return valid
         else:
             return valid and self.recurrence_rate != 0
