@@ -1,3 +1,6 @@
+import re
+from helpers import eventFormatMessage
+
 class EventData:
     """ Object for event data transfer """
     def __init__(self):
@@ -28,6 +31,30 @@ class Event:
         self.recurring = data.recurring
         self.recurrence_rate = data.recurrence_rate
         self.description = data.description
+        self.disc_messageId = data.disc_messageId
+
+    def from_message(self, message):
+        """ Sets fields to values parsed from the given message """
+
+        errors = []
+        eventSplit = message.content.split(' ')
+        lenOfSplit = len(eventSplit)
+
+        timeOfEvent = eventSplit[lenOfSplit - 1]
+        dateOfEvent = eventSplit[lenOfSplit - 2]
+        eventName = ''.join(eventSplit[1:(lenOfSplit - 2)])
+
+        if not re.match(r"^[0-2][0-3][0-5][0-9]$", timeOfEvent):
+            errors.append("Time")
+
+        if not re.match(r"^\d{1,2}\/\d{1,2}", dateOfEvent):
+            errors.append("Date")
+
+        if errors:
+            return "Issue parsing: " + ','.join(errors) + f'\n make sure you are using the proper format {eventFormatMessage}'
+        else:
+            self.event_name = eventName
+            return ""
 
     def isValid(self):
         valid = self.event_name != "" and self.event_date is not None and self.description != ""
