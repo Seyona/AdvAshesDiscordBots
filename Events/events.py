@@ -30,7 +30,7 @@ class Event:
         self.description = data.description
 
     def isValid(self):
-        valid = self.id != 0 and self.event_name != "" and self.event_date is not None and self.description != ""
+        valid = self.event_name != "" and self.event_date is not None and self.description != ""
         if not self.recurring:
             return valid
         else:
