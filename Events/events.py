@@ -7,6 +7,17 @@ class EventData:
         self.recurring = False
         self.recurrence_rate = 0
         self.description = ""
+        self.disc_messageId = 0
+
+    def from_query(self, query_data):
+        """ Sets fields from the query data tuple """
+        self.id = query_data[0]
+        self.event_name = query_data[1]
+        self.event_date = query_data[2]
+        self.recurring = query_data[3]
+        self.recurrence_rate = query_data[4]
+        self.description = query_data[5]
+        self.disc_messageId = query_data[6]
 
 
 class Event:
