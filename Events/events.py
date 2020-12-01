@@ -46,7 +46,7 @@ class Event:
         if str.lower(eventSplit[3]) == "yes":
             recurring = True
             if len(eventSplit) != 5:
-                return (f'No Rate of recurrance was given. Please reference the message format and try again. \n ' \
+                return (f'No Rate of recurrence was given. Please reference the message format and try again. \n ' \
                         f'Format: {eventFormatMessage}')
             if eventSplit[4].isdigit():
                 recurrenceRate = int(eventSplit[4])
@@ -77,5 +77,3 @@ class Event:
             return valid
         else:
             return valid and self.recurrence_rate != 0
-
-
