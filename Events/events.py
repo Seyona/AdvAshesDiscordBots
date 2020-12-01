@@ -1,8 +1,11 @@
-import re
+import dateparser
 from helpers import eventFormatMessage
+import pytz
+
 
 class EventData:
     """ Object for event data transfer """
+
     def __init__(self):
         self.id = 0
         self.event_name = ""
@@ -36,25 +39,37 @@ class Event:
     def from_message(self, message):
         """ Sets fields to values parsed from the given message """
 
-        errors = []
-        eventSplit = message.content.split(' ')
-        lenOfSplit = len(eventSplit)
+        eventSplit = message.content.split(',')
 
-        timeOfEvent = eventSplit[lenOfSplit - 1]
-        dateOfEvent = eventSplit[lenOfSplit - 2]
-        eventName = ''.join(eventSplit[1:(lenOfSplit - 2)])
+        recurrenceRate = None
+        recurring = False
+        if str.lower(eventSplit[3]) == "yes":
+            recurring = True
+            if len(eventSplit) != 5:
+                return (f'No Rate of recurrance was given. Please reference the message format and try again. \n ' \
+                        f'Format: {eventFormatMessage}')
+            if eventSplit[4].isdigit():
+                recurrenceRate = int(eventSplit[4])
+            else:
+                return f'Rate of recurrence is not a number. Double check your message format {eventFormatMessage}'
 
-        if not re.match(r"^[0-2][0-3][0-5][0-9]$", timeOfEvent):
-            errors.append("Time")
+        datetimeStr = eventSplit[2]
+        eventName = eventSplit[0].split(' ')[1]  # remove the !create from the original split
+        # dateparser can be a little slow so we do this last
+        eventDt = dateparser.parse(datetimeStr, settings={'TIMEZONE': 'US/Central'})
 
-        if not re.match(r"^\d{1,2}\/\d{1,2}", dateOfEvent):
-            errors.append("Date")
+        if eventDt == "":
+            return f'Event date could not be parsed double check your message format {eventFormatMessage}'
 
-        if errors:
-            return "Issue parsing: " + ','.join(errors) + f'\n make sure you are using the proper format {eventFormatMessage}'
-        else:
-            self.event_name = eventName
-            return ""
+        self.event_name = eventName
+        self.description = eventSplit[1]
+        self.disc_messageId = message.id
+        # Store event date as utc
+        self.event_date = eventDt.datetime.astimezone(pytz.utc)
+        self.recurring = recurring
+        self.recurrence_rate = recurrenceRate
+
+        return ""
 
     def isValid(self):
         valid = self.event_name != "" and self.event_date is not None and self.description != ""
