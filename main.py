@@ -52,8 +52,6 @@ async def on_ready():
     global RolesManager
     global googleSheet
 
-    loadEventsFromFile()
-
     print(f'{client.user} has connected to Discord')
 
     for guild in client.guilds:
