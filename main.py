@@ -7,8 +7,11 @@ import os
 import json
 import time
 import re
+from Events.events import Event
+
 from classRolesManagement import AshesRolesManager
 from spreadsheet import Spreadsheet
+from helpers import *
 
 from dotenv import load_dotenv
 
@@ -32,14 +35,9 @@ chanIds = {
     "events": 738276488851226715
 }
 
-# Events stored by ID mapping to a string.
-# Users will react to the message and the message ID will add them to a spreadsheet
-events = {}
-
-eventsFile = 'events.json'
 
 # pull ids into memory
-with open('/discordBot/AdvAshesDiscordBots/discordIds.json') as json_file:
+with open(baseDir + 'NonPythonFiles/discordIds.json') as json_file:
     discordIds = json.load(json_file)
 
 RolesManager = None
@@ -53,8 +51,6 @@ async def on_ready():
     global isReady
     global RolesManager
     global googleSheet
-
-    loadEventsFromFile()
 
     print(f'{client.user} has connected to Discord')
 
@@ -100,40 +96,23 @@ async def on_message(message):
         await DeleteMessageFromChannel(message.channel, message)
 
     elif chanId == chanIds["events"]:
-        global events
 
         if message.content.startswith('!create'):
-            event = events.get(message.id)
-            if event is None:
-                eventSplit = message.content.split(' ')
-                lenOfSplit = len(eventSplit)
+            event = Event()
+            err = event.from_message(message)
 
-                timeOfEvent = eventSplit[lenOfSplit - 1]
-                dateOfEvent = eventSplit[lenOfSplit - 2]
-                eventName = ''.join(eventSplit[1:(lenOfSplit - 2)])
+            if err != "":
+                await message.channel.send(err)
 
-                properFormat = "!create Event Name mm/dd hhmm (military time)"
-
-                timeErrStr = f'Time is invalid or non-existent :: {properFormat}'
-                if not re.match(r"^[0-2][0-3][0-5][0-9]$", timeOfEvent):
-                    await message.channel.send(timeErrStr)
-                    return
-
-                eventTimeAsInt = int(timeOfEvent)
-
-                if not re.match(r"^\d{1,2}\/\d{1,2}", dateOfEvent):
-                    await message.channel.send(f'Date is invalid or non-existent :: {properFormat}')
-                    return
-
-                events[message.id] = eventName
-                #eventsWorksheet = sheet.add_worksheet(title=eventName, rows=500, cols=7)
-                #eventsWorksheet.update('A1:F1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
-
-                writeEventsToFile()  # save the current events dict to file in case of program crash
-                await message.channel.send(
-                    f'An event called <{eventName}> has been scheduled for {dateOfEvent} at {eventTimeAsInt}')
+            elif not event.isValid():
+                await message.channel.send("Passed data was unable to be parsed please revise your input \n"
+                                           f'Format: {eventFormatMessage} \n Example: {createEventEx}')
             else:
-                await message.channel.send("There is already an event of that name created")
+                # Add the event to the database (and spreadsheet?)
+                # eventsWorksheet = sheet.add_worksheet(title=eventName, rows=500, cols=7)
+                # eventsWorksheet.update('A1:F1', ['DiscordTag', 'Attended', 'Date', dateOfEvent, 'Time', eventTimeAsInt])
+                await message.channel.send(
+                    f'An event called <{event.event_name}> has been scheduled')
 
         elif message.content.startswith('!events'):
             return
@@ -145,22 +124,6 @@ async def on_message(message):
 async def DeleteMessageFromChannel(channel, msg, sleepTime=0):
     time.sleep(sleepTime)
     await channel.delete_messages([msg])
-
-
-# removes an existing events.json file and replaces it with an updated version of the events dictionary
-def writeEventsToFile():
-    os.remove(f'/discordBot/AdvAshesDiscordBots/{eventsFile}')
-    with open(eventsFile, 'w') as file:
-        json.dump(events, file)
-
-
-def loadEventsFromFile():
-    global events
-    if os.path.isfile(eventsFile):
-        with open(eventsFile) as file:
-            events = json.load(file)
-    else:
-        print("No event file found")
 
 
 client.run(TOKEN)
