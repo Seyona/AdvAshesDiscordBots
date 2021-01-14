@@ -42,5 +42,5 @@ class Spreadsheet:
 
     def GetNextAvailableRow(self):
         """ Gets the next row number that is free """
-        str_list = list(filter(None, self.sheet.col_values(1)))
+        str_list = list(filter(None, self.rosterSheet.col_values(1)))
         return str(len(str_list) + 1)
