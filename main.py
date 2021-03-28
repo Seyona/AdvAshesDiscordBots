@@ -139,7 +139,7 @@ async def on_message(message):
             return
         if message.content.startswith('!disbandorder'):
             return
-        if message.content.startswith('!promotelead')
+        if message.content.startswith('!promotelead'):
             return
 
 
