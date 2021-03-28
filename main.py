@@ -8,6 +8,7 @@ import json
 import time
 import re
 from Events.events import Event
+from Statics.statics import Static
 
 from classRolesManagement import AshesRolesManager
 from spreadsheet import Spreadsheet
@@ -32,7 +33,9 @@ summaryDict = {}
 
 chanIds = {
     "roster": 735729573865586708,
-    "events": 738276488851226715
+    "events": 738276488851226715,
+    "staticCreation":825527440452485160,
+    "orderDisplay": 825527879306575902
 }
 
 
@@ -117,6 +120,26 @@ async def on_message(message):
         elif message.content.startswith('!events'):
             return
         elif message.content.startswith('!startevent'):
+            return
+    
+    elif chanId == chanIds["staticCreation"]: 
+        if message.content.startswith('!help'): #display commands and 
+            await message.channel.send("Here is a list of valid commands: \n"
+                                        f'Create: {createStaticEx} \n'
+                                        f'Join: {joinorderEx} \n'
+                                        f'Order Leader commands: \n'
+                                        f'Disband: {disbandEx}\n'
+                                        f'Promote Lead: {promoteLeaderEx} \n'
+                                        f'Add Colead: {promoteColeadEx} \n')
+        if message.content.startswith('!startorder'):
+            return
+        if message.content.startswith('!joinorder'):
+            return 
+        if message.content.startswith('!addcolead'):
+            return
+        if message.content.startswith('!disbandorder'):
+            return
+        if message.content.startswith('!promotelead')
             return
 
 
