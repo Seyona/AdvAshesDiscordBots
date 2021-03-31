@@ -1,12 +1,14 @@
+from Statics.staticsDb import staticsDb
+
 class StaticData:
     """ Object for static data transfer """
     def __init__(self):
         self.id = 0
         self.static_name = ""
         self.static_lead = ""
-        self.static_colead = ""
-        self.discord_id = ""
-        self.chat_id = ""
+        self.static_colead = None
+        self.discord_id = None
+        self.chat_id = None
         self.static_size = 0
 
     def from_query(self, query_data):
@@ -28,3 +30,25 @@ class Static:
         self.discord_id = data.discord_id
         self.chat_id = data.chat_id
         self.static_size = data.static_size
+
+    def from_creation_request(self, message: str, discord_name):
+        """ 
+            Sets fields to values parsed from the given messsage 
+            Message should contain the order name, that is all
+        """
+
+        msg_split = [x.strip() for x in message.split(' ', 1)]
+        self.id = None
+        self.static_name = msg_split[1]
+        self.static_lead = discord_name
+        self.static_size += 1
+
+    def static_exists(self):
+        """ Checks if the current static exists in the database """
+        db = staticsDb()
+
+        data = db.GetStaticData(self.static_name)
+        if (data):
+            return True
+        else:
+            return False

@@ -4,7 +4,7 @@ import pytz, datetime
 
 from dbconfig import config
 from helpers import baseDir
-from Statics.Statics import StaticData
+from Statics.Statics import StaticData, Static
 
 
 class staticsDb:
@@ -14,26 +14,33 @@ class staticsDb:
         self.dbConf = config()
         logging.basicConfig(filename=baseDir + 'Logs/' + 'statics.log', format='%(name)s - %(levelname)s - %(message)s')
 
-    def createNewStatic(self, static):
-        """ Creates a new static """
+    def createNewStatic(self, static: Static):
+        """ 
+            Creates a new static 
+            Returns True on success, False otherwise
+        """
 
-        sql = """INSERT INTO statics (static_name, static_lead, static_colead,discord_id, chat_id, static_size) 
-        VALUES(%s, %s, %s, %s, %s, %s)"""
+        sql = """INSERT INTO statics (static_name, static_lead, static_size) 
+        VALUES(%s, %s, %s) RETURNING static_id"""
 
         conn = None
-        eventId = None
 
         try:
+
+            static = self.GetStaticData(static.static_name) #Check if a static of this name exists
+
+            if (static):
+                return False
+            
             params = self.dbConf
             conn = psycopg2.connect(**params)
 
             cur = conn.cursor()
 
-            cur.execute(sql, (static.static_name, static.static_lead, None,
-                              None, None, 0))
+            cur.execute(sql, (static.static_name, static.static_lead, static.size))
 
-            eventId = cur.fetchone()[0]
-
+            retId = cur.fetchone()[0]
+            static.static_id = retId
             conn.commit()
             cur.close()
 
@@ -43,4 +50,88 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-        return static.static_name
+        return True
+
+    def GetStaticData(self, static_name):
+        """
+            Gets Static Data
+            Returns StaticData object, if exists, otherwise None
+        """
+        sql = f'SELECT * FROM statics WHERE static_name = {static_name}'
+
+        try:
+            params =self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+            cur.execute(sql)
+
+            row = cur.fetchone()
+            if row: # static Exists
+                data = StaticData()
+                data.from_query(row)
+                return data
+            else:
+                return None
+                
+        except(Exception, psycopg2.DatabaseError) as error:
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+
+    def GetUserStaticData(self, username):
+        """
+            Gets User static data 
+            Returns Tuple (discord_name, static_id), if user exists, else None
+        """
+        
+        sql = f'SELECT username, static_id FROM static_users WHERE discord_name = {username}'
+
+        try:
+            params =self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+            cur.execute(sql)
+
+            row = cur.fetchone()
+            if row: # User Exists
+                return (row[0],row(1))
+            else:
+                return None
+                
+        except(Exception, psycopg2.DatabaseError) as error:
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+
+    def IsInAStatic(self, username):
+        """
+            Checks if a user is in any static
+        """
+
+        user = self.GetUserStaticData(username)
+        if user:
+            return True
+        else:
+            return False
+
+    def IsInGivenStatic(self, username, static_name):
+        """
+            Checks if a user is in a given static
+        """
+        user = self.GetUserStaticData(username)
+        if user[1] == static_name:
+            return True
+        else:
+            return False
+
+    def StaticHasSpace(self, static_name):
+        """ Checks if a static has space for members """
+        static = self.GetStaticData(static_name)
+        if static:
+            return static.static_size < 8
+        else:
+            return False

@@ -7,8 +7,11 @@ import os
 import json
 import time
 import re
+from psycopg2 import DatabaseError
 from Events.events import Event
 from Statics.statics import Static
+from Statics.staticsManagement import StaticsManagement
+from Statics.staticsDb import staticsDb
 
 from classRolesManagement import AshesRolesManager
 from spreadsheet import Spreadsheet
@@ -46,6 +49,7 @@ with open(baseDir + 'NonPythonFiles/discordIds.json') as json_file:
 RolesManager = None
 googleSheet = None
 
+discordG = None
 
 # On ready prep function
 @client.event
@@ -54,11 +58,13 @@ async def on_ready():
     global isReady
     global RolesManager
     global googleSheet
+    global discordG
 
     print(f'{client.user} has connected to Discord')
 
     for guild in client.guilds:
         if guild.name == GUILD:
+            discordG = guild
             break
 
     rosterChan = None
@@ -126,20 +132,40 @@ async def on_message(message):
         if message.content.startswith('!help'): #display commands and 
             await message.channel.send("Here is a list of valid commands: \n"
                                         f'Create: {createStaticEx} \n'
-                                        f'Join: {joinorderEx} \n'
+                                        f'Join: {joinStaticEx} \n'
                                         f'Order Leader commands: \n'
                                         f'Disband: {disbandEx}\n'
                                         f'Promote Lead: {promoteLeaderEx} \n'
                                         f'Add Colead: {promoteColeadEx} \n')
-        if message.content.startswith('!startorder'):
-            return
-        if message.content.startswith('!joinorder'):
+
+        elif message.content.startswith('!startorder'):
+            
+            static = Static()
+            static.from_creation_request(message.content, str(message.author))
+
+            if static.static_exists():
+                await message.channel.send("An Order with this name already exists")
+            else:
+                manager = StaticsManagement(static)
+
+                try:
+                    manager.createStatic(static)
+                except(Exception, DatabaseError) as error:
+                    await message.channel.send("There was an error when creating your Order. Contact Seyon")
+                    return
+                
+                manager.initRoles(discordIds, discordG, static.static_name)
+                await manager.AddLeaderRole(message.author)
+                await manager.AddStaticRole(message.author)
+                await manager.AddDiscordRole(message.author)
+
+        elif message.content.startswith('!joinorder'):
             return 
-        if message.content.startswith('!addcolead'):
+        elif message.content.startswith('!addcolead'):
             return
-        if message.content.startswith('!disbandorder'):
+        elif message.content.startswith('!disbandorder'):
             return
-        if message.content.startswith('!promotelead'):
+        elif message.content.startswith('!promotelead'):
             return
 
 
