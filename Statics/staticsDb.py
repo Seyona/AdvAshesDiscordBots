@@ -57,7 +57,7 @@ class staticsDb:
             Gets Static Data
             Returns StaticData object, if exists, otherwise None
         """
-        sql = f'SELECT * FROM statics WHERE static_name = {static_name}'
+        sql = f'SELECT * FROM statics WHERE static_name = \'{static_name}\''
 
         try:
             params =self.dbConf
@@ -86,7 +86,7 @@ class staticsDb:
             Returns Tuple (discord_name, static_id), if user exists, else None
         """
         
-        sql = f'SELECT username, static_id FROM static_users WHERE discord_name = {username}'
+        sql = f'SELECT username, static_id FROM static_users WHERE discord_name = \'{username}\''
 
         try:
             params =self.dbConf
@@ -135,3 +135,94 @@ class staticsDb:
             return static.static_size < 8
         else:
             return False
+
+    def dropStatic(self, static_name):
+        """ Drops the passed static """
+        static = self.GetStaticData(static_name)
+        if static:
+            if static.static_size > 1:
+                return 'Static should be empty before deleting'
+            else:
+                sql = f'DELETE from statics where static_name = \'{static_name}\''
+                try:
+                    params = self.dbConf
+                    conn = psycopg2.connect(**params)
+
+                    cur = conn.cursor()
+
+                    cur.execute(sql)
+
+                    conn.commit()
+                    cur.close()
+
+                except(Exception, psycopg2.DatabaseError) as error:
+                    raise error
+                finally:
+                    if conn is not None:
+                        conn.close()
+                return ""
+
+        else:
+            return 'Static \'{static_name}\' does not exist'
+
+    def UpdateStaticRow(self, sqlSet, static_id)
+        """ Updates row based on the passed sqlSet str """ 
+        conn = None
+        sql = f'UPDATE statics {sqlSet} WHERE static_id = \'{static_id}\''
+        try:
+      
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+
+            cur.execute(sql)
+
+            conn.commit()
+            cur.close()
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+
+        return True
+
+    def AddUserToStatic(self, discordName, static_name):
+        """ creates a user in the static_users table """
+
+        sql = """INSERT INTO static_users (discord_name, static_id) 
+        VALUES(%s, %s) RETURNING player_id"""
+
+        conn = None
+
+        try:
+
+            static = self.GetStaticData(static_name) #Check if a static of this name exists
+
+            if not (static):
+                return "Static does not exist"
+
+            if self.IsInGivenStatic(discordName, static_name):
+                return "You are already in the static"
+
+            if self.IsInAStatic(discordName):
+                return "You are already in a static"
+            
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+            cur.execute(sql, (discordName, static_name)) 
+
+            conn.commit()
+            cur.close()
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+
+        return ""

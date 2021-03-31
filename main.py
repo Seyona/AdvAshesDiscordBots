@@ -154,10 +154,45 @@ async def on_message(message):
                     await message.channel.send("There was an error when creating your Order. Contact Seyon")
                     return
                 
+                # Create new role for static 
+                await discordG.create_role(name=f'{static.static_name}')
+                newRole = discord.utils.get(discordG.roles, name=f'{static.static_name}')
+                static.discord_id = newRole.id
+
                 manager.initRoles(discordIds, discordG, static.static_name)
                 await manager.AddLeaderRole(message.author)
                 await manager.AddStaticRole(message.author)
                 await manager.AddDiscordRole(message.author)
+
+                # Create new channel for static under the Category
+                category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
+                await discordG.create_text_channel(f'{static.static_name}', category=category)
+
+                # Fetch new Channel ID
+                newChan = discord.utils.get(discordG.channels, name=f'{static.static_name}', type="ChannelType.text")
+                static.chat_id = newChan.id
+
+                try:
+                    static.Update()
+                except(Exception, DatabaseError) as error:
+                    await message.channel.send("There was an error when updating your Order. Contact Seyon")
+                    return
+
+                try:
+                    db = staticsDb()
+                    msg = db.CreateUser(str(message.author), static.id)
+
+                    if msg != "":
+                        await message.channel.send(f'{msg}')
+                        dropmsg = db.dropStatic(static.static_name)
+                        if dropmsg != "":
+                            await message.channel.send(f'{dropmsg}')
+                
+                except(Exception, DatabaseError) as error:
+                    await message.channel.send("There was an error when linking the user to the static. Contact Seyon")
+                    return
+                
+                await message.channel.send(f'The order {static.static_name}. The role <@&{static.discord_id}> and channel <#{static.chat_id}> were created for your use. ')
 
         elif message.content.startswith('!joinorder'):
             return 

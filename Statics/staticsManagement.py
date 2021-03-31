@@ -28,7 +28,7 @@ class StaticsManagement:
                 self.coleaderRole = role
             if role.id == int(discordIds["captainId"]):
                 self.leaderRole = role
-            if role.name == static_name:
+            if role.name == static_name: #Role for Static
                 self.memberRole = role
 
     def createStatic(self, static: Static):
