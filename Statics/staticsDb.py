@@ -20,7 +20,7 @@ class staticsDb:
             Returns True on success, False otherwise
         """
 
-        sql = """INSERT INTO statics (static_name, static_lead, static_size) 
+        sql = """INSERT INTO statics (static_name, leader_name, static_size) 
         VALUES(%s, %s, %s) RETURNING static_id"""
 
         conn = None
