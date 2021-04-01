@@ -27,9 +27,9 @@ class staticsDb:
 
         try:
 
-            static = self.GetStaticData(static.static_name) #Check if a static of this name exists
+            existingStatic = self.GetStaticData(static.static_name) #Check if a static of this name exists
 
-            if (static):
+            if (existingStatic):
                 return False
             
             params = self.dbConf
