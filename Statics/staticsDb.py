@@ -37,7 +37,7 @@ class staticsDb:
 
             cur = conn.cursor()
 
-            cur.execute(sql, (static.static_name, static.static_lead, static.size))
+            cur.execute(sql, (static.static_name, static.static_lead, static.static_size))
 
             retId = cur.fetchone()[0]
             static.static_id = retId
