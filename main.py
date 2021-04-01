@@ -64,7 +64,6 @@ async def on_ready():
 
     for guild in client.guilds:
         if guild.name == GUILD:
-            discordG = guild
             break
 
     discordG = guild
@@ -164,13 +163,14 @@ async def on_message(message):
                 await manager.AddLeaderRole(message.author)
                 await manager.AddStaticRole(message.author)
                 await manager.AddDiscordRole(message.author)
+                # Remove Ritualist 
 
                 # Create new channel for static under the Category
                 category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
                 await discordG.create_text_channel(f'{static.static_name}', category=category)
 
                 # Fetch new Channel ID
-                newChan = discord.utils.get(discordG.channels, name=f'{static.static_name}', type="ChannelType.text")
+                newChan = discord.utils.get(discordG.channels, name=f'{str.lower(static.static_name)}', type="ChannelType.text")
                 static.chat_id = newChan.id
 
                 try:
