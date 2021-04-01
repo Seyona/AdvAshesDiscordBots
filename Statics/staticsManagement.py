@@ -36,7 +36,7 @@ class StaticsManagement:
     def setStaticInfo(self, static: Static):
         self.static_name = static.static_name
         self.static_lead = static.static_lead
-        self.staticId  = static.static_id
+        self.staticId  = static.id
 
     async def AddLeaderRole(self, user: User):
         """ Adds Leader role and Static to given user """
