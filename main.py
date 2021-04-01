@@ -181,7 +181,7 @@ async def on_message(message):
 
                 try:
                     db = staticsDb()
-                    msg = db.CreateUser(str(message.author), static.id)
+                    msg = db.AddUserToStatic(str(message.author), static.id)
 
                     if msg != "":
                         await message.channel.send(f'{msg}')
