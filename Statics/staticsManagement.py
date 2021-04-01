@@ -33,10 +33,7 @@ class StaticsManagement:
             if role.name == static_name: #Role for Static
                 self.memberRole = role
 
-    def createStatic(self, static: Static):
-        db = staticsDb()
-        db.createNewStatic(static)
-
+    def setStaticInfo(self, static: Static):
         self.static_name = static.static_name
         self.static_lead = static.static_lead
         self.staticId  = static.static_id

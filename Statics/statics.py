@@ -23,6 +23,12 @@ class Static:
         self.static_lead = discord_name
         self.static_size += 1
 
+
+    def create(self):
+        """ Creates a static db entry """
+        db = staticsDb()
+        self.id = db.createNewStatic(self)
+        
     def static_exists(self):
         """ Checks if the current static exists in the database """
         db = staticsDb()

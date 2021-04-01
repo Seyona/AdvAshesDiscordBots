@@ -24,7 +24,7 @@ class staticsDb:
         VALUES(%s, %s, %s) RETURNING static_id"""
 
         conn = None
-
+        retId = None
         try:
 
             existingStatic = self.GetStaticData(static.static_name) #Check if a static of this name exists
@@ -40,7 +40,7 @@ class staticsDb:
             cur.execute(sql, (static.static_name, static.static_lead, static.static_size))
 
             retId = cur.fetchone()[0]
-            static.static_id = retId
+
             conn.commit()
             cur.close()
 
@@ -51,7 +51,7 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-        return True
+        return retId
 
     def GetStaticData(self, static_name):
         """

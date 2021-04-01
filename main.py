@@ -149,7 +149,8 @@ async def on_message(message):
                 manager = StaticsManagement(static)
 
                 try:
-                    manager.createStatic(static)
+                    static.create()
+                    manager.setStaticInfo(static)
                 except(Exception, DatabaseError) as error:
                     await message.channel.send("There was an error when creating your Order. Contact Seyon")
                     return
