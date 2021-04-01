@@ -169,7 +169,7 @@ class staticsDb:
         else:
             return 'Static \'{static_name}\' does not exist'
 
-    def UpdateStaticRow(self, static):
+    def UpdateStaticRow(self, sqlSet, static_id):
         """ Updates row based on the passed sqlSet str """ 
         conn = None
         sql = """UPDATE statics SET {sqlSet} WHERE static_id = \'{static_id}\'"""

@@ -48,4 +48,4 @@ class Static:
             f'discord_id = \'{self.discord_id}\','
             f'chat_id = \'{self.chat_id}\','
             f'static_size = {self.static_size}')
-        db.UpdateStaticRow(setStr, self)
+        db.UpdateStaticRow(setStr, self.id)
