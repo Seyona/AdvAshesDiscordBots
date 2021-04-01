@@ -45,6 +45,7 @@ class staticsDb:
             cur.close()
 
         except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when creating new static {error}')
             raise error
         finally:
             if conn is not None:
@@ -75,6 +76,7 @@ class staticsDb:
                 return None
                 
         except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when fetching static {static_name} :: {error}')
             raise error
         finally:
             if conn is not None:
@@ -102,6 +104,7 @@ class staticsDb:
                 return None
                 
         except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when fetching user data for {username} :: {error}')
             raise error
         finally:
             if conn is not None:
@@ -156,6 +159,7 @@ class staticsDb:
                     cur.close()
 
                 except(Exception, psycopg2.DatabaseError) as error:
+                    logging.warning(f'Error when Deleting {static_name} :: {error}')
                     raise error
                 finally:
                     if conn is not None:
@@ -182,6 +186,7 @@ class staticsDb:
             cur.close()
 
         except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when updating static data for {static_id} :: {error}')
             raise error
         finally:
             if conn is not None:
@@ -220,6 +225,7 @@ class staticsDb:
             cur.close()
 
         except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when adding user:{discordName} to static {static_name} :: {error}')
             raise error
         finally:
             if conn is not None:
