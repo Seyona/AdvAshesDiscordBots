@@ -27,7 +27,7 @@ class staticsDb:
         retId = None
         try:
 
-            existingStatic = self.GetStaticData(static.static_name) #Check if a static of this name exists
+            existingStatic = self.GetStaticDataByName(static.static_name) #Check if a static of this name exists
 
             if (existingStatic):
                 return False
@@ -53,7 +53,7 @@ class staticsDb:
 
         return retId
 
-    def GetStaticData(self, static_name):
+    def GetStaticDataByName(self, static_name):
         """
             Gets Static Data
             Returns StaticData object, if exists, otherwise None
@@ -133,7 +133,7 @@ class staticsDb:
 
     def StaticHasSpace(self, static_name):
         """ Checks if a static has space for members """
-        static = self.GetStaticData(static_name)
+        static = self.GetStaticDataByName(static_name)
         if static:
             return static.static_size < 8
         else:
@@ -141,7 +141,7 @@ class staticsDb:
 
     def dropStatic(self, static_name):
         """ Drops the passed static """
-        static = self.GetStaticData(static_name)
+        static = self.GetStaticDataByName(static_name)
         if static:
             if static.static_size > 1:
                 return 'Static should be empty before deleting'
@@ -204,7 +204,7 @@ class staticsDb:
 
         try:
 
-            static = self.GetStaticData(static_name) #Check if a static of this name exists
+            static = self.GetStaticDataByName(static_name) #Check if a static of this name exists
 
             if not (static):
                 return "Static does not exist"
