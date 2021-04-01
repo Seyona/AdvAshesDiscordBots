@@ -170,11 +170,10 @@ async def on_message(message):
                 await discordG.create_text_channel(f'{static.static_name}', category=category)
 
                 # Fetch new Channel ID
-                newChan = discord.utils.get(discordG.channels, name=f'{str.lower(static.static_name)}', type="ChannelType.text")
+                newChan = discord.utils.get(discordG.channels, name=f'{str.lower(static.static_name)}')
                 static.chat_id = newChan.id
 
                 try:
-                    
                     static.Update()
                 except(Exception, DatabaseError) as error:
                     await message.channel.send("There was an error when updating your Order. Contact Seyon")
