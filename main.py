@@ -170,6 +170,9 @@ async def on_message(message):
                 category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
                 await discordG.create_text_channel(f'{static.static_name}', category=category)
 
+                # Create new voice channel for static under the Category
+                await discordG.create_voice_channel(f'{static.static_name}', category=category)
+
                 # Fetch new Channel ID
                 newChan = discord.utils.get(discordG.channels, name=f'{str.lower(static.static_name)}')
                 static.chat_id = newChan.id
