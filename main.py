@@ -67,6 +67,7 @@ async def on_ready():
             discordG = guild
             break
 
+    discordG = guild
     rosterChan = None
     for channel in guild.text_channels:
         if channel.id == chanIds["roster"]:
