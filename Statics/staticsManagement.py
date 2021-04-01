@@ -2,7 +2,9 @@ from asyncio import gather
 
 import discord
 from discord import TextChannel, Guild, Member, User
-from Statics.statics import Static, staticsDb
+from Statics.statics import Static
+from Statics.staticsDb import staticsDb
+from Statics.staticsData import StaticsData
 from typing import Dict, Union
 
 class StaticsManagement:

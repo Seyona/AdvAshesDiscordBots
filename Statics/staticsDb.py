@@ -4,7 +4,7 @@ import pytz, datetime
 
 from dbconfig import config
 from helpers import baseDir
-from Statics.Statics import StaticData, Static
+from Statics.staticsData import StaticsData
 
 
 class staticsDb:
@@ -14,7 +14,7 @@ class staticsDb:
         self.dbConf = config()
         logging.basicConfig(filename=baseDir + 'Logs/' + 'statics.log', format='%(name)s - %(levelname)s - %(message)s')
 
-    def createNewStatic(self, static: Static):
+    def createNewStatic(self, static):
         """ 
             Creates a new static 
             Returns True on success, False otherwise
@@ -226,4 +226,3 @@ class staticsDb:
                 conn.close()
 
         return ""
-        

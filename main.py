@@ -173,6 +173,7 @@ async def on_message(message):
                 static.chat_id = newChan.id
 
                 try:
+                    
                     static.Update()
                 except(Exception, DatabaseError) as error:
                     await message.channel.send("There was an error when updating your Order. Contact Seyon")
