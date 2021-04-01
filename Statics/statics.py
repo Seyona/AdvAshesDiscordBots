@@ -36,10 +36,10 @@ class Static:
     def Update(self):
         """ Requests to update table entry for static """
         db = staticsDb()
-        setStr = (f'static_name = {self.static_name},'
-            f'leader_name = {self.static_lead},'
-            f'colead_name = {self.static_colead},'
-            f'discord_id = {self.discord_id},'
-            f'chat_id = {self.chat_id},'
+        setStr = (f'static_name = \'{self.static_name}\','
+            f'leader_name = \'{self.static_lead}\','
+            f'colead_name = \'{self.static_colead}\','
+            f'discord_id = \'{self.discord_id}\','
+            f'chat_id = \'{self.chat_id}\','
             f'static_size = {self.static_size}')
         db.UpdateStaticRow(setStr, self.id)
