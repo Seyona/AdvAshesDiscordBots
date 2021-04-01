@@ -4,7 +4,7 @@ import discord
 from discord import TextChannel, Guild, Member, User
 from Statics.statics import Static
 from Statics.staticsDb import staticsDb
-from Statics.staticsData import StaticsData
+from Statics.staticsData import StaticData
 from typing import Dict, Union
 
 class StaticsManagement:

@@ -1,5 +1,5 @@
 from Statics.staticsDb import staticsDb
-from Statics.staticsData import StaticsData
+from Statics.staticsData import StaticData
 
 class Static:
     def __init__(self, data: StaticData = StaticData()):

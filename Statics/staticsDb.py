@@ -4,7 +4,7 @@ import pytz, datetime
 
 from dbconfig import config
 from helpers import baseDir
-from Statics.staticsData import StaticsData
+from Statics.staticsData import StaticData
 
 
 class staticsDb:
