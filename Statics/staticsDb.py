@@ -88,7 +88,7 @@ class staticsDb:
             Returns Tuple (discord_name, static_id), if user exists, else None
         """
         
-        sql = f'SELECT username, static_id FROM static_users WHERE discord_name = \'{username}\''
+        sql = f'SELECT discord_name, static_id FROM static_users WHERE discord_name = \'{username}\''
 
         try:
             params =self.dbConf
