@@ -172,7 +172,7 @@ class staticsDb:
     def UpdateStaticRow(self, sqlSet, static_id):
         """ Updates row based on the passed sqlSet str """ 
         conn = None
-        sql = """UPDATE statics SET {sqlSet} WHERE static_id = \'{static_id}\'"""
+        sql = f'UPDATE statics SET {sqlSet} WHERE static_id = \'{static_id}\''
         try:
       
             params = self.dbConf
