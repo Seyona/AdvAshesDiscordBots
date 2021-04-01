@@ -33,7 +33,7 @@ class Static:
         """ Checks if the current static exists in the database """
         db = staticsDb()
 
-        data = db.GetStaticData(self.static_name)
+        data = db.GetStaticDataByName(self.static_name)
         if (data):
             return True
         else:
