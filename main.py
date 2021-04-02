@@ -213,7 +213,6 @@ async def on_message(message):
             manager.setStaticInfo(Static(data))
             manager.initRoles(discordIds, discordG)
 
-
             outputMsg = ""
 
             if data:
@@ -271,7 +270,6 @@ async def on_message(message):
                 manager.setStaticInfo(Static(static))
                 manager.initRoles(discordIds, discordG)
                 
-
                 if userStr == static_data.static_lead:
                     static_users = db.GetAllUsersInStatic(staticName)
 
