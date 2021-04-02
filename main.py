@@ -167,7 +167,7 @@ async def on_message(message):
                 await manager.AddLeaderRole(message.author)
                 await manager.AddStaticRole(message.author)
                 await manager.AddDiscordRole(message.author)
-                # Remove Ritualist 
+                await manager.RemoveBasicTag(message.author)
 
                 # Create new channel for static under the Category
                 category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
