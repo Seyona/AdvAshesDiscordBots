@@ -139,6 +139,62 @@ class staticsDb:
         else:
             return False
 
+    def GetAllUsersInStatic(self, static_name):
+        """ Gets a list of all users in a static 
+            Returns a list of user names 
+        """
+        conn = None
+        users = []
+        sql = f'SELECT discord_name from static_users where static_id = {static_name}'
+        try:
+      
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+
+            cur.execute(sql)
+            rows = cur.fetchall()
+
+            for row in rows:
+                user = row
+                users.append(user)
+
+            conn.commit()
+            cur.close()
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when fetching all users for static {static_name} :: {error} \n')
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+
+        return users
+
+    def DropUserFromStatic(self, static_name, userName):
+        """ Drops a given user from a static """
+        sql = f'DELETE FROM static_users where discord_name = \'{userName}\' and static_id = \'{static_name}\''
+        try:
+      
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+            cur.execute(sql)
+
+            conn.commit()
+            cur.close()
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when removing user, {userName},  from static {static_name} :: {error} \n')
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+
+        return True
+
     def dropStatic(self, static_name):
         """ Drops the passed static """
         static = self.GetStaticDataByName(static_name)
