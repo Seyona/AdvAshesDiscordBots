@@ -9,6 +9,7 @@ class Static:
         self.static_colead = data.static_colead
         self.discord_id = data.discord_id
         self.chat_id = data.chat_id
+        self.voicechat_id = data.voicechat_id
         self.static_size = data.static_size
 
     def from_creation_request(self, message: str, discord_name):
@@ -21,7 +22,7 @@ class Static:
         self.id = None
         self.static_name = msg_split[1]
         self.static_lead = discord_name
-        self.static_size += 1
+        self.static_size = 0 # This value will be updated when ever a user is added to the static
 
 
     def create(self):
@@ -47,5 +48,6 @@ class Static:
             f'colead_name = \'{self.static_colead}\','
             f'discord_id = \'{self.discord_id}\','
             f'chat_id = \'{self.chat_id}\','
+            f'voicechat_id = \'{self.voicechat_id}\','
             f'static_size = {self.static_size}')
         db.UpdateStaticRow(setStr, self.id)
