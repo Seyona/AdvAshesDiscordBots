@@ -42,16 +42,24 @@ class StaticsManagement:
         self.staticId  = static.id
 
     async def AddLeaderRole(self, user: User):
-        """ Adds Leader role and Static to given user """
+        """ Adds Leader role to given user """
         await user.add_roles(self.leaderRole)
+
+    async def RemoveLeaderRole(self, user: User):
+        """ Removes Leader role to given user """
+        await user.remove_roles(self.leaderRole)
 
     async def MakeNewLeader(self, oldLead: User, newLead: User):
         """ Gives the new lead the leader role and remove the previous role """
         await gather(oldLead.remove_roles(self.leaderRole), self.AddLeaderRole(newLead))
 
     async def AddColeadRole(self, user: User):
-        """ Adds a colead role, coleads are already in the static """
+        """ Adds the colead role, coleads are already in the static """
         await user.add_roles(self.coleaderRole)
+    
+    async def RemoveColeadRole(self, user: User):
+        """ Removes the colead role, coleads are already in the static """
+        await user.remove_roles(self.coleaderRole)
 
     async def ReplaceColead(self, oldCoLead: User, newCoLead: User):
         """ Replaces the old colead with the new colead """
@@ -68,6 +76,10 @@ class StaticsManagement:
     async def AddDiscordRole(self, user:User):
         """ Adds generic member role to user """
         await user.add_roles(self.discordMemberRole)
+
+    async def RemoveDiscordRole(self, user:User):
+        """ Remove generic member role to user """
+        await user.remove_roles(self.discordMemberRole)
 
     async def RemoveBasicTag(self, user:User):
         """ Removes basic tag from user 
