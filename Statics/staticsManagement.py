@@ -33,7 +33,7 @@ class StaticsManagement:
                 self.leaderRole = role
             if role.name == static_name: #Role for Static
                 self.memberRole = role
-            if role.name == int(discordIds["ritualistId"]:
+            if role.name == int(discordIds["ritualistId"]):
                 self.basicRole = role
 
     def setStaticInfo(self, static: Static):
