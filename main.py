@@ -260,6 +260,8 @@ async def on_message(message):
                             staticObj = Static(data)
                             staticObj.Update()
                             manager.AddColeadRole(msgUser)
+                        else:
+                            await message.channel.send(f'User: {userStr} is not in the order \'{staticName}\' and cannot be promoted to Knight')
                     else:
                         await message.channel.send(f'User: {new_colead} is not in Order: {userData[1]}')
                         
@@ -268,9 +270,6 @@ async def on_message(message):
                     return
             else:
                 await message.channel.send(f'User {new_colead}, is not formatted properly. Proper Format: {promoteColeadEx}')
-                
-            else:
-                await message.channel.send(f'User: {userStr} is not in the order \'{staticName}\' and cannot be promoted to Knight')
 
         elif message.content.startswith('!disbandorder'):
             db = staticsDb()
