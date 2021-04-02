@@ -251,27 +251,19 @@ async def on_message(message):
                 static = db.GetStaticDataByName(staticName)
 
                 if userStr == static.static_lead:
-                    try:
-                        static_users = db.GetAllUsersInStatic(staticName)
+                    static_users = db.GetAllUsersInStatic(staticName)
 
-                        if static_users:
-                            try:
-                                for user in static_users:
-                                    db.DropUserFromStatic(staticName, user)
+                    if static_users:
+                        for user in static_users:
+                            db.DropUserFromStatic(staticName, user)
+                    else:
+                        await message.channel.send(f'Order: {staticName}, has no users')
 
-                            except(Exception, DatabaseError) as error:
-                                await message.channel.send(f'There was an issue when removing user from the Order {staticName}')
-                        else:
-                            await message.channel.send(f'Order: {staticName}, has no users')
-
-                    except(Exception, DatabaseError) as error:
-                        await message.channel.send("There was an error when fetching static users. Contact Seyon")
-                        return
                 else:
                     await message.channel.send(f'You need to be the leader of the order to disband.')
 
             except(Exception, DatabaseError) as error:
-                await message.channel.send("There was an error when fetching Order by name. Contact Seyon")
+                await message.channel.send("There was an error when disbanding Order by. Contact Seyon")
                 return
 
         elif message.content.startswith('!promotelead'):
