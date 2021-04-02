@@ -242,6 +242,12 @@ async def on_message(message):
                 data = db.GetStaticDataByName(staticName)
                 manager.setStaticInfo(Static(data))
                 manager.initRoles(discordIds, discordG)
+                current_colead = None
+
+                if data.static_colead != 'None':
+                    splitname = data.static_colead.split('#')
+                    current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
+                    manager.RemoveColeadRole(current_colead)
 
                 if db.IsInGivenStatic(userStr, staticName):
                     data.static_colead = userStr
@@ -278,7 +284,7 @@ async def on_message(message):
                             manager.RemoveColeadRole(msgUser)
                             manager.RemoveStaticRole(msgUser)
                             manager.RemoveDiscordRole(msgUser)
-                            
+
                         db.dropStatic(staticName)
                     else:
                         await message.channel.send(f'Order: {staticName}, has no users')
