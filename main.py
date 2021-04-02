@@ -137,10 +137,10 @@ async def on_message(message):
             await message.channel.send("Here is a list of valid commands: \n"
                                         f'Create: {createStaticEx} \n'
                                         f'Join: {joinStaticEx} \n'
-                                        f'Order Leader commands: \n'
-                                        f'Disband: {disbandEx}\n'
-                                        f'Promote Lead: {promoteLeaderEx} \n'
-                                        f'Add Colead: {promoteColeadEx} \n')
+                                        f'------------------------------ \n'
+                                        f'Disband [Order leader only]: {disbandEx}\n'
+                                        f'Promote Lead [Order leader only]: {promoteLeaderEx} \n'
+                                        f'Add Colead [Order leader only]: {promoteColeadEx} \n')
 
         elif message.content.startswith('!startorder'):
             
@@ -236,23 +236,30 @@ async def on_message(message):
 
         elif message.content.startswith('!addcolead'):
             db = staticsDb()
-            staticName = [x.strip() for x in message.split(' ', 1)][1]
+            new_colead = [x.strip() for x in message.split(' ', 1)][1]
+
             try:
-                data = db.GetStaticDataByName(staticName)
-                manager.setStaticInfo(Static(data))
-                manager.initRoles(discordIds, discordG)
-                current_colead = None
+                new_coleadData = db.GetUserStaticData(new_colead)
+                userData = db.GetUserStaticData(msgUser)
 
-                if data.static_colead != 'None':
-                    splitname = data.static_colead.split('#')
-                    current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
-                    manager.RemoveColeadRole(current_colead)
+                if userData[1] == new_coleadData[1]: # Same static 
+                    data = db.GetStaticDataByName(new_coleadData[1])
+                    manager.setStaticInfo(Static(data))
+                    manager.initRoles(discordIds, discordG)
+                    current_colead = None
 
-                if db.IsInGivenStatic(userStr, staticName):
-                    data.static_colead = userStr
-                    staticObj = Static(data)
-                    staticObj.Update()
-                    manager.AddColeadRole(msgUser)
+                    if data.static_colead != 'None':
+                        splitname = data.static_colead.split('#')
+                        current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
+                        manager.RemoveColeadRole(current_colead)
+
+                    if db.IsInGivenStatic(userStr, staticName):
+                        data.static_colead = userStr
+                        staticObj = Static(data)
+                        staticObj.Update()
+                        manager.AddColeadRole(msgUser)
+                else:
+                    await message.channel.send(f'User: {new_colead} is not in Order: {userData[1]}')
                     
             except(Exception, DatabaseError) as error:
                 await message.channel.send("There was an error when promoting Colead. Contact Seyon")
