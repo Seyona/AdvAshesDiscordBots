@@ -9,7 +9,7 @@ from typing import Dict, Union
 
 class StaticsManagement:
     """ Class to modify data releated to Statics """
-    def __init__(self, static_name):
+    def __init__(self):
         self.staticRole = None
         self.primaryDiscordRole = None 
         self.leaderRole = None

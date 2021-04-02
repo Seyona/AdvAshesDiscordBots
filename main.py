@@ -149,7 +149,7 @@ async def on_message(message):
             if static.static_exists():
                 await message.channel.send("An Order with this name already exists")
             else:
-                manager = StaticsManagement(static)
+                manager = StaticsManagement()
 
                 try:
                     static.create()
@@ -240,6 +240,7 @@ async def on_message(message):
                     data.static_colead = userStr
                     staticObj = Static(data)
                     staticObj.Update()
+                    
             except(Exception, DatabaseError) as error:
                 await message.channel.send("There was an error when promoting Colead. Contact Seyon")
                 return
