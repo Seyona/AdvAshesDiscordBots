@@ -131,6 +131,7 @@ async def on_message(message):
     elif chanId == chanIds["staticCreation"]: 
         msgUser = message.author
         userStr = str(msgUser)
+        manager = StaticsManagement()
 
         if message.content.startswith('!help'): #display commands and 
             await message.channel.send("Here is a list of valid commands: \n"
@@ -149,8 +150,6 @@ async def on_message(message):
             if static.static_exists():
                 await message.channel.send("An Order with this name already exists")
             else:
-                manager = StaticsManagement()
-
                 try:
                     static.create()
                     manager.setStaticInfo(static)
@@ -163,7 +162,7 @@ async def on_message(message):
                 newRole = discord.utils.get(discordG.roles, name=f'{static.static_name}')
                 static.discord_id = newRole.id
 
-                manager.initRoles(discordIds, discordG, static.static_name)
+                manager.initRoles(discordIds, discordG)
                 await manager.AddLeaderRole(message.author)
                 await manager.AddStaticRole(message.author)
                 await manager.AddDiscordRole(message.author)
@@ -210,15 +209,21 @@ async def on_message(message):
 
             db = staticsDb()
             staticName = [x.strip() for x in message.split(' ', 1)][1]
-            static = db.GetStaticDataByName(staticName)
-            
+            data = db.GetStaticDataByName(staticName)
+            manager.setStaticInfo(Static(data))
+            manager.initRoles(discordIds, discordG)
+
+
             outputMsg = ""
 
-            if static:
+            if data:
                 if db.StaticHasSpace(staticName):         
                     if not db.IsInAStatic(userStr):
                         if not db.IsInGivenStatic(userStr, staticName):
                             db.AddUserToStatic(userStr, staticName)
+                            manager.RemoveBasicTag(msgUser)
+                            manager.AddDiscordRole(msgUser)
+                            manager.AddStaticRole(msgUser)
                         else:
                             outputMsg = f'{userStr} is already in this Order'
                     else:
@@ -235,11 +240,14 @@ async def on_message(message):
             staticName = [x.strip() for x in message.split(' ', 1)][1]
             try:
                 data = db.GetStaticDataByName(staticName)
+                manager.setStaticInfo(Static(data))
+                manager.initRoles(discordIds, discordG)
 
                 if db.IsInGivenStatic(userStr, staticName):
                     data.static_colead = userStr
                     staticObj = Static(data)
                     staticObj.Update()
+                    manager.AddColeadRole(msgUser)
                     
             except(Exception, DatabaseError) as error:
                 await message.channel.send("There was an error when promoting Colead. Contact Seyon")
@@ -253,14 +261,25 @@ async def on_message(message):
             staticName = [x.strip() for x in message.split(' ', 1)][1]
 
             try:
-                static = db.GetStaticDataByName(staticName)
+                static_data = db.GetStaticDataByName(staticName)
+                manager.setStaticInfo(Static(static))
+                manager.initRoles(discordIds, discordG)
+                
 
-                if userStr == static.static_lead:
+                if userStr == static_data.static_lead:
                     static_users = db.GetAllUsersInStatic(staticName)
 
                     if static_users:
                         for user in static_users:
                             db.DropUserFromStatic(staticName, user)
+                            manager.AddBasicTag(msgUser)
+                            # Don't really care what tags they may or may not have, just remove all possible tags
+                            manager.RemoveLeaderRole(msgUser)
+                            manager.RemoveColeadRole(msgUser)
+                            manager.RemoveStaticRole(msgUser)
+                            manager.RemoveDiscordRole(msgUser)
+                            
+                        db.dropStatic(staticName)
                     else:
                         await message.channel.send(f'Order: {staticName}, has no users')
 
