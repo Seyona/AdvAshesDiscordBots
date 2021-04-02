@@ -233,12 +233,16 @@ async def on_message(message):
         elif message.content.startswith('!addcolead'):
             db = staticsDb()
             staticName = [x.strip() for x in message.split(' ', 1)][1]
-            data = db.GetStaticDataByName(staticName)
+            try:
+                data = db.GetStaticDataByName(staticName)
 
-            if db.IsInGivenStatic(userStr, staticName):
-                data.static_colead = userStr
-                staticObj = Static(data)
-                staticObj.Update()
+                if db.IsInGivenStatic(userStr, staticName):
+                    data.static_colead = userStr
+                    staticObj = Static(data)
+                    staticObj.Update()
+            except(Exception, DatabaseError) as error:
+                await message.channel.send("There was an error when promoting Colead. Contact Seyon")
+                return
                 
             else:
                 await message.channel.send(f'User: {userStr} is not in the order \'{staticName}\' and cannot be promoted to Knight')
