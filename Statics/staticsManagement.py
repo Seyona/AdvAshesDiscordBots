@@ -23,7 +23,7 @@ class StaticsManagement:
         self.staticId  = None
 
 
-    def initRoles(self, discordIds, discGuild: Guild, static_name):
+    def initRoles(self, discordIds, discGuild: Guild):
         for role in discGuild.roles:
             if role.id == int(discordIds["cultistId"]):
                 self.discordMemberRole = role
@@ -31,7 +31,7 @@ class StaticsManagement:
                 self.coleaderRole = role
             if role.id == int(discordIds["captainId"]):
                 self.leaderRole = role
-            if role.name == static_name: #Role for Static
+            if role.name == self.static_name: #Role for Static
                 self.memberRole = role
             if role.name == int(discordIds["ritualistId"]):
                 self.basicRole = role
