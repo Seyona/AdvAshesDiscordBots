@@ -7,6 +7,7 @@ class StaticData:
         self.static_colead = None
         self.discord_id = None
         self.chat_id = None
+        self.voicechat_id = None
         self.static_size = 0
 
     def from_query(self, query_data):
@@ -17,4 +18,5 @@ class StaticData:
         self.static_colead = query_data[3]
         self.discord_id = query_data[4] # Discord role Id
         self.chat_id = query_data[5] # Discord Chat Id
-        self.static_size = query_data[6] # Current size of static, currently limited to 8. Cannot be null
+        self.voicechat_id = query_data[6]
+        self.static_size = query_data[7] # Current size of static, currently limited to 8. Cannot be null

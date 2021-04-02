@@ -129,6 +129,9 @@ async def on_message(message):
             return
     
     elif chanId == chanIds["staticCreation"]: 
+        msgUser = message.author
+        userStr = str(msgUser)
+
         if message.content.startswith('!help'): #display commands and 
             await message.channel.send("Here is a list of valid commands: \n"
                                         f'Create: {createStaticEx} \n'
@@ -177,6 +180,10 @@ async def on_message(message):
                 newChan = discord.utils.get(discordG.channels, name=f'{str.lower(static.static_name)}')
                 static.chat_id = newChan.id
 
+                # Fetch new Voice Channel Id
+                newVChan = discord.utils.get(discordG.channels, name=f'{static.static_name}')
+                static.voicechat_id = newVChan.id
+
                 try:
                     static.Update()
                 except(Exception, DatabaseError) as error:
@@ -200,9 +207,42 @@ async def on_message(message):
                 await message.channel.send(f'The order {static.static_name}. The role <@&{static.discord_id}> and channel <#{static.chat_id}> were created for your use. ')
 
         elif message.content.startswith('!joinorder'):
-            return 
+
+            db = staticsDb()
+            staticName = [x.strip() for x in message.split(' ', 1)][1]
+            static = db.GetStaticDataByName(staticName)
+            
+            outputMsg = ""
+
+            if static:
+                if db.StaticHasSpace(staticName):         
+                    if not db.IsInAStatic(userStr):
+                        if not db.IsInGivenStatic(userStr, staticName):
+                            db.AddUserToStatic(userStr, staticName)
+                        else:
+                            outputMsg = f'{userStr} is already in this Order'
+                    else:
+                        outputMsg = f'{userStr} is already in a Order'
+                else:
+                    outputMsg = f'Static is currently full (8 people)'
+            else:
+                outputMsg = f'Order \'{staticName}\' does not exist.'
+            
+            await message.channel.send(outputMsg)
+
         elif message.content.startswith('!addcolead'):
-            return
+            db = staticsDb()
+            staticName = [x.strip() for x in message.split(' ', 1)][1]
+            data = db.GetStaticDataByName(staticName)
+
+            if db.IsInGivenStatic(userStr, staticName):
+                data.static_colead = userStr
+                staticObj = Static(data)
+                staticObj.Update()
+                
+            else:
+                await message.channel.send(f'User: {userStr} is not in the order \'{staticName}\' and cannot be promoted to Knight')
+                
         elif message.content.startswith('!disbandorder'):
             return
         elif message.content.startswith('!promotelead'):

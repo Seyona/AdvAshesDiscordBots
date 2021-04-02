@@ -197,8 +197,10 @@ class staticsDb:
     def AddUserToStatic(self, discordName, static_name):
         """ creates a user in the static_users table """
 
-        sql = """INSERT INTO static_users (discord_name, static_id) 
+        usersSql = """INSERT INTO static_users (discord_name, static_id) 
         VALUES(%s, %s) RETURNING player_id"""
+
+        updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = {static_name}'
 
         conn = None
 
@@ -219,7 +221,8 @@ class staticsDb:
             conn = psycopg2.connect(**params)
 
             cur = conn.cursor()
-            cur.execute(sql, (discordName, static_name)) 
+            cur.execute(usersSql, (discordName, static_name)) 
+            cur.execute(updateCount)
 
             conn.commit()
             cur.close()

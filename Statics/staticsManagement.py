@@ -16,6 +16,7 @@ class StaticsManagement:
         self.coleaderRole = None
         self.memberRole = None
         self.discordMemberRole = None
+        self.basicRole = None
 
         self.static_name = None
         self.static_lead = None
@@ -32,6 +33,8 @@ class StaticsManagement:
                 self.leaderRole = role
             if role.name == static_name: #Role for Static
                 self.memberRole = role
+            if role.name == int(discordIds["ritualistId"]:
+                self.basicRole = role
 
     def setStaticInfo(self, static: Static):
         self.static_name = static.static_name
@@ -66,3 +69,8 @@ class StaticsManagement:
         """ Adds generic member role to user """
         await user.add_roles(self.discordMemberRole)
 
+    async def RemoveBasicTag(self, user:User):
+        """ Removes basic tag from user 
+            4/1 : This is currently the ritualist tag
+        """
+        await user.remove_roles(self.basicRole)
