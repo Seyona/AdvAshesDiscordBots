@@ -74,3 +74,10 @@ class StaticsManagement:
             4/1 : This is currently the ritualist tag
         """
         await user.remove_roles(self.basicRole)
+
+    async def AddBasicTag(self, user:User):
+        """ Adds basic tag to user 
+            4/1: This is currently the ritualist tag
+        """
+        await user.add_roles(self.basicRole)
+
