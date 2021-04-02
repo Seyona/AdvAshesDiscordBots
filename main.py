@@ -238,32 +238,36 @@ async def on_message(message):
             db = staticsDb()
             new_colead = [x.strip() for x in message.split(' ', 1)][1]
 
-            try:
-                new_coleadData = db.GetUserStaticData(new_colead)
-                userData = db.GetUserStaticData(msgUser)
+            coleadHasProperFormat = re.match(r".*#\d{4}$", new_colead)
+            if coleadHasProperFormat:
+                try:
+                    new_coleadData = db.GetUserStaticData(new_colead)
+                    userData = db.GetUserStaticData(msgUser)
 
-                if userData[1] == new_coleadData[1]: # Same static 
-                    data = db.GetStaticDataByName(new_coleadData[1])
-                    manager.setStaticInfo(Static(data))
-                    manager.initRoles(discordIds, discordG)
-                    current_colead = None
+                    if userData[1] == new_coleadData[1]: # Same static 
+                        data = db.GetStaticDataByName(new_coleadData[1])
+                        manager.setStaticInfo(Static(data))
+                        manager.initRoles(discordIds, discordG)
+                        current_colead = None
 
-                    if data.static_colead != 'None':
-                        splitname = data.static_colead.split('#')
-                        current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
-                        manager.RemoveColeadRole(current_colead)
+                        if data.static_colead != 'None':
+                            splitname = data.static_colead.split('#')
+                            current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
+                            manager.RemoveColeadRole(current_colead)
 
-                    if db.IsInGivenStatic(userStr, staticName):
-                        data.static_colead = userStr
-                        staticObj = Static(data)
-                        staticObj.Update()
-                        manager.AddColeadRole(msgUser)
-                else:
-                    await message.channel.send(f'User: {new_colead} is not in Order: {userData[1]}')
-                    
-            except(Exception, DatabaseError) as error:
-                await message.channel.send("There was an error when promoting Colead. Contact Seyon")
-                return
+                        if db.IsInGivenStatic(userStr, staticName):
+                            data.static_colead = userStr
+                            staticObj = Static(data)
+                            staticObj.Update()
+                            manager.AddColeadRole(msgUser)
+                    else:
+                        await message.channel.send(f'User: {new_colead} is not in Order: {userData[1]}')
+                        
+                except(Exception, DatabaseError) as error:
+                    await message.channel.send("There was an error when promoting Colead. Contact Seyon")
+                    return
+            else:
+                await message.channel.send(f'User {new_colead}, is not formatted properly. Proper Format: {promoteColeadEx}')
                 
             else:
                 await message.channel.send(f'User: {userStr} is not in the order \'{staticName}\' and cannot be promoted to Knight')
