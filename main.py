@@ -242,9 +242,38 @@ async def on_message(message):
                 
             else:
                 await message.channel.send(f'User: {userStr} is not in the order \'{staticName}\' and cannot be promoted to Knight')
-                
+
         elif message.content.startswith('!disbandorder'):
-            return
+            db = staticsDb()
+            staticName = [x.strip() for x in message.split(' ', 1)][1]
+
+            try:
+                static = db.GetStaticDataByName(staticName)
+
+                if userStr == static.static_lead:
+                    try:
+                        static_users = db.GetAllUsersInStatic(staticName)
+
+                        if static_users:
+                            try:
+                                for user in static_users:
+                                    db.DropUserFromStatic(staticName, user)
+
+                            except(Exception, DatabaseError) as error:
+                                await message.channel.send(f'There was an issue when removing user from the Order {staticName}')
+                        else:
+                            await message.channel.send(f'Order: {staticName}, has no users')
+
+                    except(Exception, DatabaseError) as error:
+                        await message.channel.send("There was an error when fetching static users. Contact Seyon")
+                        return
+                else:
+                    await message.channel.send(f'You need to be the leader of the order to disband.')
+
+            except(Exception, DatabaseError) as error:
+                await message.channel.send("There was an error when fetching Order by name. Contact Seyon")
+                return
+
         elif message.content.startswith('!promotelead'):
             return
 
