@@ -144,6 +144,14 @@ async def on_message(message):
 
         elif message.content.startswith('!startorder'):
             
+            try:
+                db = staticsDb()
+                if db.IsInAStatic(userStr):
+                    await message.channel.send("You cannot create an order while already in one")
+            except(Exception, DatabaseError) as error:
+                await message.channel.send("There was an error while checking your order status.  Contact Seyon")
+                return
+
             static = Static()
             static.from_creation_request(message.content, str(message.author))
 
