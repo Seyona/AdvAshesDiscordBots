@@ -256,7 +256,7 @@ class staticsDb:
         usersSql = """INSERT INTO static_users (discord_name, static_id) 
         VALUES(%s, %s) RETURNING player_id"""
 
-        updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = {static_name}'
+        updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = \'{static_name}\''
 
         conn = None
 
