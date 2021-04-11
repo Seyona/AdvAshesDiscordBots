@@ -99,7 +99,7 @@ class staticsDb:
 
             row = cur.fetchone()
             if row: # User Exists
-                return row[0], row(1)
+                return row[0], row[1]
             else:
                 return None
                 
