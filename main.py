@@ -245,7 +245,7 @@ async def on_message(message):
                     userData = db.GetUserStaticData(msgUser)
 
                     if userData[1] == new_coleadData[1]: # Same static 
-                        data = db.GetStaticDataByName(new_coleadData[1])
+                        data = db.GetStaticDataByName(userData[1])
                         manager.setStaticInfo(Static(data))
                         manager.initRoles(discordIds, discordG)
                         current_colead = None
@@ -255,8 +255,8 @@ async def on_message(message):
                             current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
                             manager.RemoveColeadRole(current_colead)
 
-                        if db.IsInGivenStatic(userStr, staticName):
-                            data.static_colead = userStr
+                        if db.IsInGivenStatic(new_colead, userData[1]):
+                            data.static_colead = new_colead
                             staticObj = Static(data)
                             staticObj.Update()
                             manager.AddColeadRole(msgUser)
@@ -286,12 +286,15 @@ async def on_message(message):
                     if static_users:
                         for user in static_users:
                             db.DropUserFromStatic(staticName, user)
-                            manager.AddBasicTag(msgUser)
+                            splitname = user.split('#')
+                            discUser = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
+                            
+                            manager.AddBasicTag(discUser)
                             # Don't really care what tags they may or may not have, just remove all possible tags
-                            manager.RemoveLeaderRole(msgUser)
-                            manager.RemoveColeadRole(msgUser)
-                            manager.RemoveStaticRole(msgUser)
-                            manager.RemoveDiscordRole(msgUser)
+                            manager.RemoveLeaderRole(discUser)
+                            manager.RemoveColeadRole(discUser)
+                            manager.RemoveStaticRole(discUser)
+                            manager.RemoveDiscordRole(discUser)
 
                         db.dropStatic(staticName)
                     else:
@@ -305,7 +308,38 @@ async def on_message(message):
                 return
 
         elif message.content.startswith('!promotelead'):
-            return
+            db = staticsDb()
+            new_lead = [x.strip() for x in message.split(' ', 1)][1]
+
+            leadHasProperFormat = re.match(r".*#\d{4}$", new_lead)
+
+            if leadHasProperFormat:
+                try:
+                    new_leadData = db.GetUserStaticData(new_lead)
+                    userData = db.GetUserStaticData(msgUser)
+
+                    if userData[1] == new_leadData[1]: # Same static
+
+                        data = db.GetStaticDataByName(new_leadData[1])
+                        manager.setStaticInfo(Static(data))
+                        manager.initRoles(discordIds, discordG)
+
+                        data.static_lead = new_lead
+                        splitname = new_lead.split('#')
+                        discUser = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
+
+                        staticObj = Static(data)
+                        staticObj.Update() # Make sure update is successful before updating roles
+                        manager.AddLeaderRole(discUser)
+                        manager.RemoveLeaderRole(msgUser)
+                    else:
+                        await message.channel.send(f'User: {new_lead} is not in Order: {userData[1]}')
+
+                except(Exception, DatabaseError) as error:
+                    await message.channel.send("There was an error when promoting a new lead. Contact Seyon")
+                    return
+            else:
+                 await message.channel.send(f'User {new_lead}, is not formatted properly. Proper Format: {promoteLeaderEx}')
 
 
 # Delete the message from the given reaction's channel
