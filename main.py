@@ -208,7 +208,7 @@ async def on_message(message):
         elif message.content.startswith('!joinorder'):
 
             db = staticsDb()
-            staticName = [x.strip() for x in message.split(' ', 1)][1]
+            staticName = [x.strip() for x in message.content.split(' ', 1)][1]
             data = db.GetStaticDataByName(staticName)
             manager.setStaticInfo(Static(data))
             manager.initRoles(discordIds, discordG)
@@ -236,7 +236,7 @@ async def on_message(message):
 
         elif message.content.startswith('!addcolead'):
             db = staticsDb()
-            new_colead = [x.strip() for x in message.split(' ', 1)][1]
+            new_colead = [x.strip() for x in message.content.split(' ', 1)][1]
 
             coleadHasProperFormat = re.match(r".*#\d{4}$", new_colead)
             if coleadHasProperFormat:
@@ -273,7 +273,7 @@ async def on_message(message):
 
         elif message.content.startswith('!disbandorder'):
             db = staticsDb()
-            staticName = [x.strip() for x in message.split(' ', 1)][1]
+            staticName = [x.strip() for x in message.content.split(' ', 1)][1]
 
             try:
                 static_data = db.GetStaticDataByName(staticName)
@@ -309,7 +309,7 @@ async def on_message(message):
 
         elif message.content.startswith('!promotelead'):
             db = staticsDb()
-            new_lead = [x.strip() for x in message.split(' ', 1)][1]
+            new_lead = [x.strip() for x in message.content.split(' ', 1)][1]
 
             leadHasProperFormat = re.match(r".*#\d{4}$", new_lead)
 
