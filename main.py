@@ -148,6 +148,7 @@ async def on_message(message):
                 db = staticsDb()
                 if db.IsInAStatic(userStr):
                     await message.channel.send("You cannot create an order while already in one")
+                    return
             except(Exception, DatabaseError) as error:
                 await message.channel.send("There was an error while checking your order status.  Contact Seyon")
                 return
