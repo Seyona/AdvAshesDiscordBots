@@ -221,7 +221,7 @@ async def on_message(message):
             manager.setStaticInfo(Static(data))
             manager.initRoles(discordIds, discordG)
 
-            outputMsg = ""
+            outputMsg = 'You have successfully joined {staticName}'
 
             if data:
                 if db.StaticHasSpace(staticName):         
