@@ -228,9 +228,9 @@ async def on_message(message):
                     if not db.IsInAStatic(userStr):
                         if not db.IsInGivenStatic(userStr, staticName):
                             db.AddUserToStatic(userStr, staticName)
-                            manager.RemoveBasicTag(msgUser)
-                            manager.AddDiscordRole(msgUser)
-                            manager.AddStaticRole(msgUser)
+                            await manager.RemoveBasicTag(msgUser)
+                            await manager.AddDiscordRole(msgUser)
+                            await manager.AddStaticRole(msgUser)
                         else:
                             outputMsg = f'{userStr} is already in this Order'
                     else:
