@@ -20,14 +20,14 @@ class staticsDb:
             Returns True on success, False otherwise
         """
 
-        sql = """INSERT INTO statics (static_name, leader_name, static_size) 
-        VALUES(%s, %s, %s) RETURNING static_id"""
+        sql = """INSERT INTO statics (static_name, leader_name, static_size, game_id) 
+        VALUES(%s, %s, %s, %s) RETURNING static_id"""
 
         conn = None
         retId = None
         try:
 
-            existingStatic = self.GetStaticDataByName(static.static_name) #Check if a static of this name exists
+            existingStatic = self.GetStaticDataByName(static.static_name, static.game_id) #Check if a static of this name exists
 
             if (existingStatic):
                 return False
@@ -37,7 +37,7 @@ class staticsDb:
 
             cur = conn.cursor()
 
-            cur.execute(sql, (static.static_name, static.static_lead, static.static_size))
+            cur.execute(sql, (static.static_name, static.static_lead, static.static_size, static.game_id))
 
             retId = cur.fetchone()[0]
 
@@ -53,7 +53,7 @@ class staticsDb:
 
         return retId
 
-    def GetStaticDataByName(self, static_name):
+    def GetStaticDataByName(self, static_name, game_id):
         """
             Gets Static Data
             Returns StaticData object, if exists, otherwise None
@@ -110,9 +110,9 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-    def IsInAStatic(self, username):
+    def IsInAStatic(self, username, game_id):
         """
-            Checks if a user is in any static
+            Checks if a user is in any static for a given game
         """
 
         user = self.GetUserStaticData(username)
@@ -131,9 +131,9 @@ class staticsDb:
         else:
             return False
 
-    def StaticHasSpace(self, static_name):
+    def StaticHasSpace(self, static_name, game_id):
         """ Checks if a static has space for members """
-        static = self.GetStaticDataByName(static_name)
+        static = self.GetStaticDataByName(static_name, game_id)
         if static:
             return static.static_size < 8
         else:

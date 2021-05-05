@@ -11,6 +11,7 @@ class Static:
         self.chat_id = data.chat_id
         self.voicechat_id = data.voicechat_id
         self.static_size = data.static_size
+        self.game_id = data.game_id
 
     def from_creation_request(self, message: str, discord_name):
         """ 
@@ -34,7 +35,7 @@ class Static:
         """ Checks if the current static exists in the database """
         db = staticsDb()
 
-        data = db.GetStaticDataByName(self.static_name)
+        data = db.GetStaticDataByName(self.static_name, self.game_id)
         if (data):
             return True
         else:
@@ -49,5 +50,6 @@ class Static:
             f'discord_id = \'{self.discord_id}\','
             f'chat_id = \'{self.chat_id}\','
             f'voicechat_id = \'{self.voicechat_id}\','
-            f'static_size = {self.static_size}')
+            f'static_size = {self.static_size}\','
+            f'game_id = {self.game_id}')
         db.UpdateStaticRow(setStr, self.id)

@@ -7,6 +7,7 @@ import os
 import json
 import time
 import re
+import asyncio
 from psycopg2 import DatabaseError
 from Events.events import Event
 from Statics.statics import Static
@@ -144,18 +145,41 @@ async def on_message(message):
 
         elif message.content.startswith('!startorder'):
             
+            static = Static()
+            static.from_creation_request(message.content, str(message.author))
+            
+            games=['Starbase', 'Sword of Legends', 'Elyon', 'Ashes of Creation']
+            game_index = None
+
+            await message.channel.send(f'What game is this order for? \n' + "\n".join(games))
+
+            def check(m):
+                return m.content in games and m.channel == message.channel
+
+            try:
+                msg = await client.wait_for('message', timeout=30.0, check=check)
+            except asyncio.TimeoutError:
+                await message.channel.send('Operation has timed out. You will need to start the creation process.')
+                return
+            else:
+                try:
+                    game_index = games.index(msg)
+                    static.game_id = game_index
+                except:
+                    await message.channel.send('Game is not in the list. If this is an error contact Seyon or Tockz.')
+                    return
+                await message.channel.send('Starting creation')
+
             try:
                 db = staticsDb()
-                if db.IsInAStatic(userStr):
+                if db.IsInAStatic(userStr, game_index):
                     await message.channel.send("You cannot create an order while already in one")
                     return
             except(Exception, DatabaseError) as error:
                 await message.channel.send("There was an error while checking your order status.  Contact Seyon")
                 return
 
-            static = Static()
-            static.from_creation_request(message.content, str(message.author))
-
+           
             if static.static_exists():
                 await message.channel.send("An Order with this name already exists")
             else:
