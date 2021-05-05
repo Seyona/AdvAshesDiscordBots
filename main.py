@@ -163,7 +163,7 @@ async def on_message(message):
                 return
             else:
                 try:
-                    game_index = games.index(msg)
+                    game_index = games.index(msg.content)
                     static.game_id = game_index
                 except:
                     await message.channel.send('Game is not in the list. If this is an error contact Seyon or Tockz.')
