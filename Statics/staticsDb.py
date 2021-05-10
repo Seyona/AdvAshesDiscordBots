@@ -297,9 +297,9 @@ class staticsDb:
 
         gamesSql = "Select game_name from games where active = True"
         conn = None
+        activeGames = []
 
         try:
-
             params = self.dbConf
             conn = psycopg2.connect(**params)
 
@@ -307,8 +307,6 @@ class staticsDb:
             cur.execute(gamesSql) 
             
             rows = cur.fetchall()
-
-            activeGames = []
 
             for row in rows:
                 game = row
@@ -321,8 +319,10 @@ class staticsDb:
 
         except(Exception, psycopg2.DatabaseError) as error:
             logging.error(f'Error when fetching games: {error}')
-            raise error
+            return []
         finally:
             if conn is not None:
                 conn.close()
+
+        return activeGames
 
