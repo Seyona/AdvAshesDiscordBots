@@ -145,10 +145,17 @@ async def on_message(message):
 
         elif message.content.startswith('!startorder'):
             
+            db = staticsDb()
             static = Static()
             static.from_creation_request(message.content, str(message.author))
-            
-            games=['Starbase', 'Sword of Legends', 'Elyon', 'Ashes of Creation']
+             
+            games = db.GetGames()
+            game = None
+
+            if games == []:
+                await message.channel.send("Error when fetching games. Contact Seyon")
+                return 
+
             game_index = None
 
             await message.channel.send(f'What game is this order for? \n' + "\n".join(games))
@@ -162,16 +169,15 @@ async def on_message(message):
                 await message.channel.send('Operation has timed out. You will need to start the creation process.')
                 return
             else:
-                try:
-                    game_index = games.index(msg.content)
-                    static.game_id = game_index
-                except:
+                if msg.content in games:
+                    game = msg.content
+                    static.game_id = game
+                    await message.channel.send('Starting creation')
+                else:
                     await message.channel.send('Game is not in the list. If this is an error contact Seyon or Tockz.')
                     return
-                await message.channel.send('Starting creation')
-
-            try:
-                db = staticsDb()
+                
+            try:           
                 if db.IsInAStatic(userStr, game_index):
                     await message.channel.send("You cannot create an order while already in one")
                     return
