@@ -211,7 +211,7 @@ async def on_message(message):
                 await discordG.create_voice_channel(new_chan_name, category=category)
 
                 # Fetch new Channel ID
-                newChan = discord.utils.get(discordG.channels, name=f'{str.lower(new_chan_name(" ","-"))}')
+                newChan = discord.utils.get(discordG.channels, name=f'{str.lower(new_chan_name.replace(" ","-"))}')
                 static.chat_id = newChan.id
 
                 # Fetch new Voice Channel Id
