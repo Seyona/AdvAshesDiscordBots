@@ -8,7 +8,7 @@ from Statics.staticsData import StaticData
 
 
 class staticsDb:
-    """ Contains all data reading and manipulation logic for the static based tables """
+    """ Contains all data reading and manipulation logic for the database """
 
     def __init__(self):
         self.dbConf = config()
@@ -291,3 +291,38 @@ class staticsDb:
                 conn.close()
 
         return ""
+
+    def GetGames(self):
+        """ Fetches a list of active games """
+
+        gamesSql = "Select game_name from games where active = True"
+        conn = None
+
+        try:
+
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+            cur.execute(gamesSql) 
+            
+            rows = cur.fetchall()
+
+            activeGames = []
+
+            for row in rows:
+                game = row
+                activeGames.append(game)
+
+            conn.commit()
+            cur.close()
+            
+            return activeGames
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when fetching games: {error}')
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+
