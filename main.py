@@ -194,9 +194,18 @@ async def on_message(message):
                     await message.channel.send("There was an error when creating your Order. Contact Seyon")
                     return
                 
-                # Create new role for static 
+                # Create new role and channels for static
+                category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
+
                 role_name = f'{static.static_name}~{static.game_id}'
+                new_chan_name = f'{static.static_name}~{static.game_id}'
                 await discordG.create_role(name=role_name)
+                await discordG.create_text_channel(new_chan_name, category=category)
+                await discordG.create_voice_channel(new_chan_name, category=category)
+
+                # fetch an updated instance of the discord server 
+                discordG = await client.fetch_guild(discordG.id) 
+                
                 newRole = discord.utils.get(discordG.roles, name=role_name)
                 static.discord_id = newRole.id
 
@@ -205,14 +214,6 @@ async def on_message(message):
                 await manager.AddStaticRole(message.author)
                 await manager.AddDiscordRole(message.author)
                 await manager.RemoveBasicTag(message.author)
-
-                # Create new channel for static under the Category
-                category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
-                new_chan_name = f'{static.static_name}~{static.game_id}'
-                await discordG.create_text_channel(new_chan_name, category=category)
-
-                # Create new voice channel for static under the Category
-                await discordG.create_voice_channel(new_chan_name, category=category)
 
                 # Fetch new Channel ID
                 newChan = discord.utils.get(discordG.channels, name=f'{str.lower(new_chan_name.replace(" ","-"))}')
