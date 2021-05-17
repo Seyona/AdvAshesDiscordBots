@@ -253,11 +253,11 @@ class staticsDb:
 
         return True
 
-    def AddUserToStatic(self, discordName, static_name):
+    def AddUserToStatic(self, discordName, static_name, game_name):
         """ creates a user in the static_users table """
 
         usersSql = """INSERT INTO static_users (discord_name, static_id) 
-        VALUES(%s, %s) RETURNING player_id"""
+        VALUES(%s, %s, %s) RETURNING player_id"""
 
         updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = \'{static_name}\''
 
@@ -265,22 +265,22 @@ class staticsDb:
 
         try:
 
-            static = self.GetStaticDataByName(static_name) #Check if a static of this name exists
+            static = self.GetStaticDataByName(static_name, game_name) #Check if a static of this name exists
 
             if not (static):
                 return "Static does not exist"
 
-            if self.IsInGivenStatic(discordName, static_name):
+            if self.IsInGivenStatic(discordName, static_name, game_name):
                 return "You are already in the static"
 
-            if self.IsInAStatic(discordName):
+            if self.IsInAStatic(discordName, game_name):
                 return "You are already in a static"
             
             params = self.dbConf
             conn = psycopg2.connect(**params)
 
             cur = conn.cursor()
-            cur.execute(usersSql, (discordName, static_name)) 
+            cur.execute(usersSql, (discordName, static_name, game_name)) 
             cur.execute(updateCount)
 
             conn.commit()
