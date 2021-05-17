@@ -311,8 +311,8 @@ class staticsDb:
             
             rows = cur.fetchall()
 
-            for row in rows:
-                game = row
+            for row in rows: # Row is a tuple, 0th index is the name
+                game = row[0]
                 activeGames.append(game)
 
             conn.commit()
