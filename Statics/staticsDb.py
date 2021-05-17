@@ -91,7 +91,7 @@ class staticsDb:
         sql = f'SELECT discord_name, static_id FROM static_users WHERE discord_name = \'{username}\''
 
         if game_name is not None:
-            sql = sql + f'and game_name =\'{game_name}\' '
+            sql = sql + f'and game_id =\'{game_name}\' '
 
         try:
             params =self.dbConf
