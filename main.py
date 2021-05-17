@@ -195,6 +195,7 @@ async def on_message(message):
                     return
                 
                 # Create new role and channels for static
+                global discordG 
                 category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
 
                 role_name = f'{static.static_name}~{static.game_id}'
@@ -204,8 +205,9 @@ async def on_message(message):
                 await discordG.create_voice_channel(new_chan_name, category=category)
 
                 # fetch an updated instance of the discord server 
-                discordG = await client.fetch_guild(discordG.id) 
                 
+                discordG = await client.fetch_guild(discordG.id) 
+
                 newRole = discord.utils.get(discordG.roles, name=role_name)
                 static.discord_id = newRole.id
 
