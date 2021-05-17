@@ -156,8 +156,6 @@ async def on_message(message):
                 await message.channel.send("Error when fetching games. Contact Seyon")
                 return 
 
-            game_index = None
-
             await message.channel.send(f'What game is this order for? \n' + "\n".join(games))
 
             def check(m):
@@ -178,7 +176,7 @@ async def on_message(message):
                     return
                 
             try:           
-                if db.IsInAStatic(userStr, game_index):
+                if db.IsInAStatic(userStr, static.game_id):
                     await message.channel.send("You cannot create an order while already in one")
                     return
             except(Exception, DatabaseError) as error:

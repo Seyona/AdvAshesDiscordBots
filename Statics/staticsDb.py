@@ -82,13 +82,16 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-    def GetUserStaticData(self, username):
+    def GetUserStaticData(self, username, game_name = None):
         """
             Gets User static data 
             Returns Tuple (discord_name, static_id), if user exists, else None
         """
         
         sql = f'SELECT discord_name, static_id FROM static_users WHERE discord_name = \'{username}\''
+
+        if game_name is not None:
+            sql = sql + f'and game_name =\'{game_name}\' '
 
         try:
             params =self.dbConf
@@ -110,22 +113,22 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-    def IsInAStatic(self, username, game_id):
+    def IsInAStatic(self, username, game_name = None):
         """
             Checks if a user is in any static for a given game
         """
 
-        user = self.GetUserStaticData(username)
+        user = self.GetUserStaticData(username, game_name)
         if user:
             return True
         else:
             return False
 
-    def IsInGivenStatic(self, username, static_name):
+    def IsInGivenStatic(self, username, static_name, game_name = None):
         """
             Checks if a user is in a given static
         """
-        user = self.GetUserStaticData(username)
+        user = self.GetUserStaticData(username, game_name)
         if user and user[1] == static_name:
             return True
         else:
