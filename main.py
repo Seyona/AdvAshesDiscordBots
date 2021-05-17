@@ -195,7 +195,7 @@ async def on_message(message):
                     return
                 
                 # Create new role for static 
-                role_name = f'{static.static_name}-{games[static.game_id]}'
+                role_name = f'{static.static_name}-{static.game_id}'
                 await discordG.create_role(name=role_name)
                 newRole = discord.utils.get(discordG.roles, name=role_name)
                 static.discord_id = newRole.id
@@ -208,7 +208,7 @@ async def on_message(message):
 
                 # Create new channel for static under the Category
                 category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
-                new_chan_name = f'{static.static_name}_{games[static.game_id]}'
+                new_chan_name = f'{static.static_name}_{static.game_id}'
                 await discordG.create_text_channel(new_chan_name, category=category)
 
                 # Create new voice channel for static under the Category
