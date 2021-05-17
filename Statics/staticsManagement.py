@@ -23,7 +23,7 @@ class StaticsManagement:
         self.staticId  = None
 
 
-    def initRoles(self, discordIds, discGuild: Guild):
+    def initRoles(self, discordIds, discGuild: Guild, role_tag, static_name):
         for role in discGuild.roles:
             if role.id == int(discordIds["cultistId"]):
                 self.discordMemberRole = role
@@ -31,10 +31,11 @@ class StaticsManagement:
                 self.coleaderRole = role
             if role.id == int(discordIds["captainId"]):
                 self.leaderRole = role
-            if role.name == self.static_name: #Role for Static
-                self.memberRole = role
             if role.id == int(discordIds["ritualistId"]):
                 self.basicRole = role
+
+        self.static_name = static_name
+        self.memberRole = role_tag  
 
     def setStaticInfo(self, static: Static):
         self.static_name = static.static_name
