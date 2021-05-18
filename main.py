@@ -211,7 +211,7 @@ async def on_message(message):
                 newRole = discord.utils.get(discordG.roles, name=role_name)
                 static.discord_id = newRole.id
 
-                manager.initRoles(discordIds, discordG, role_name, static.static_name)
+                manager.initRoles(discordIds, discordG, newRole, static.static_name)
                 await manager.AddLeaderRole(message.author)
                 await manager.AddStaticRole(message.author)
                 await manager.AddDiscordRole(message.author)
