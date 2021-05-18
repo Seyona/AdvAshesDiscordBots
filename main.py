@@ -198,8 +198,8 @@ async def on_message(message):
                 global discordG 
                 category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
 
-                role_name = f'{static.static_name}~{static.game_id}'
-                new_chan_name = f'{static.static_name}~{static.game_id}'
+                role_name = f'{static.static_name}-{static.game_id}'
+                new_chan_name = f'{static.static_name}-{static.game_id}'
                 await discordG.create_role(name=role_name)
                 await discordG.create_text_channel(new_chan_name, category=category)
                 await discordG.create_voice_channel(new_chan_name, category=category)
@@ -223,7 +223,7 @@ async def on_message(message):
                 static.chat_id = newChan.id
 
                 # Fetch new Voice Channel Id
-                newVChan = discord.utils.get(dchans, name=new_chan_name)
+                newVChan = discord.utils.get(chans, name=new_chan_name)
                 static.voicechat_id = newVChan.id
 
                 try:
