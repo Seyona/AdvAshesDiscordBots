@@ -218,11 +218,12 @@ async def on_message(message):
                 await manager.RemoveBasicTag(message.author)
 
                 # Fetch new Channel ID
-                newChan = discord.utils.get(discordG.channels, name=f'{str.lower(new_chan_name.replace(" ","-"))}')
+                chans = await discordG.fetch_channels()
+                newChan = discord.utils.get(chans, name=f'{str.lower(new_chan_name.replace(" ","-"))}')
                 static.chat_id = newChan.id
 
                 # Fetch new Voice Channel Id
-                newVChan = discord.utils.get(discordG.channels, name=new_chan_name)
+                newVChan = discord.utils.get(dchans, name=new_chan_name)
                 static.voicechat_id = newVChan.id
 
                 try:
