@@ -58,7 +58,7 @@ class staticsDb:
             Gets Static Data
             Returns StaticData object, if exists, otherwise None
         """
-        sql = f'SELECT * FROM statics WHERE static_name = \'{static_name}\''
+        sql = f'SELECT * FROM statics WHERE static_name = \'{static_name}\' and game_name = \'{game_id}\''
 
         try:
             params =self.dbConf
