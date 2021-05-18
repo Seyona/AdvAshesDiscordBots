@@ -51,5 +51,5 @@ class Static:
             f'chat_id = \'{self.chat_id}\','
             f'voicechat_id = \'{self.voicechat_id}\','
             f'static_size = {self.static_size},'
-            f'game_id = {self.game_id}')
+            f'game_id = \'{self.game_id}\'')
         db.UpdateStaticRow(setStr, self.id)
