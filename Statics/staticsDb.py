@@ -256,7 +256,7 @@ class staticsDb:
     def AddUserToStatic(self, discordName, static_name, game_name):
         """ creates a user in the static_users table """
 
-        usersSql = """INSERT INTO static_users (discord_name, static_id) 
+        usersSql = """INSERT INTO static_users (discord_name, static_id, game_id) 
         VALUES(%s, %s, %s) RETURNING player_id"""
 
         updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = \'{static_name}\''
