@@ -252,9 +252,11 @@ async def on_message(message):
 
             db = staticsDb()
             staticName = [x.strip() for x in message.content.split(' ', 1)][1]
-            data = db.GetStaticDataByName(staticName)
+            game_name = await GetGame(message, db)
+            data = db.GetStaticDataByName(staticName, game_name)
+            staticRole = discord.utils.get(discordG.roles, id=data.discord_id)
             manager.setStaticInfo(Static(data))
-            manager.initRoles(discordIds, discordG)
+            manager.initRoles(discordIds, discordG, staticRole ,data.static_name)
 
             outputMsg = 'You have successfully joined {staticName}'
 
@@ -280,25 +282,28 @@ async def on_message(message):
         elif message.content.startswith('!addcolead'):
             db = staticsDb()
             new_colead = [x.strip() for x in message.content.split(' ', 1)][1]
+            game_name = await GetGame(message, db)
 
             coleadHasProperFormat = re.match(r".*#\d{4}$", new_colead)
             if coleadHasProperFormat:
                 try:
-                    new_coleadData = db.GetUserStaticData(new_colead)
-                    userData = db.GetUserStaticData(msgUser)
+                    new_coleadData = db.GetUserStaticData(new_colead, game_name)
+                    userData = db.GetUserStaticData(msgUser, game_name)
 
-                    if userData[1] == new_coleadData[1]: # Same static 
-                        data = db.GetStaticDataByName(userData[1])
+                    if userData[1] == new_coleadData[1]: # Same static
+                        data = db.GetStaticDataByName(userData[1], game_name)
+                        staticRole = discord.utils.get(discordG.roles, id=data.discord_id)
                         manager.setStaticInfo(Static(data))
-                        manager.initRoles(discordIds, discordG)
+                        manager.initRoles(discordIds, discordG, staticRole, data.static_name)
                         current_colead = None
 
                         if data.static_colead != 'None':
                             splitname = data.static_colead.split('#')
                             current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
+                            # Needs to check if they aren't a co_lead in another order
                             manager.RemoveColeadRole(current_colead)
 
-                        if db.IsInGivenStatic(new_colead, userData[1]):
+                        if db.IsInGivenStatic(new_colead, userData[1], game_name):
                             data.static_colead = new_colead
                             staticObj = Static(data)
                             staticObj.Update()
@@ -315,16 +320,49 @@ async def on_message(message):
                 await message.channel.send(f'User {new_colead}, is not formatted properly. Proper Format: {promoteColeadEx}')
 
         elif message.content.startswith('!disbandorder'):
+            return True
             db = staticsDb()
             staticName = [x.strip() for x in message.content.split(' ', 1)][1]
 
+            # Get the game that the static is for before deleting
+            games = db.GetGames()
+            game = None
+
+            if games == []:
+                await message.channel.send("Error when fetching games. Contact Seyon")
+                return 
+
+            await message.channel.send(f'What game is this order for? \n' + "\n".join(games))
+
+            def check(m):
+                return m.content in games and m.channel == message.channel
+
             try:
-                static_data = db.GetStaticDataByName(staticName)
-                manager.setStaticInfo(Static(static))
-                manager.initRoles(discordIds, discordG)
-                
+                msg = await client.wait_for('message', timeout=30.0, check=check)
+                if msg.content in games:
+                    game = msg.content
+                    await message.channel.send('Processing....')
+                else:
+                    await message.channel.send('Game is not in the list. If this is an error contact Seyon or Tockz.')
+                    return
+            except asyncio.TimeoutError:
+                await message.channel.send('Operation has timed out. You will need to start the creation process.')
+                return
+
+            try:
+                static_data = db.GetStaticDataByName(staticName, game)
+
+                if static_data is not None:
+                    manager.setStaticInfo(Static(static_data))
+                    staticRole = discord.utils.get(discordG.roles, id=static_data.discord_id)
+
+                    manager.initRoles(discordIds, discordG, staticRole, static_data.static_name)
+                else:
+                    await message.channel.send(f'Unable to delete static, {staticName}, does not exist for game, {game}')
+                    return 
+
                 if userStr == static_data.static_lead:
-                    static_users = db.GetAllUsersInStatic(staticName)
+                    static_users = db.GetAllUsersInStatic(staticName, static_data.game_id)
 
                     if static_users:
                         for user in static_users:
@@ -332,12 +370,14 @@ async def on_message(message):
                             splitname = user.split('#')
                             discUser = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
                             
-                            manager.AddBasicTag(discUser)
-                            # Don't really care what tags they may or may not have, just remove all possible tags
-                            manager.RemoveLeaderRole(discUser)
-                            manager.RemoveColeadRole(discUser)
-                            manager.RemoveStaticRole(discUser)
-                            manager.RemoveDiscordRole(discUser)
+                            try:
+                                inAnyStatic = db.GetUsersStatics(str(discUser))
+                                if not inAnyStatic: # No order, add basic discord tag
+                                    manager.AddBasicTag(discUser)
+                                
+                            except Exception as Error:
+                                await ("There was an error when checking static data")
+                                return
 
                         db.dropStatic(staticName)
                     else:
@@ -389,6 +429,33 @@ async def on_message(message):
 async def DeleteMessageFromChannel(channel, msg, sleepTime=0):
     time.sleep(sleepTime)
     await channel.delete_messages([msg])
+
+async def GetGame(message, db):
+    """ Fetches the game from the messages channel """
+    games = db.GetGames()
+    game = None
+
+    if games == []:
+        await message.channel.send("Error when fetching games. Contact Seyon")
+        return 
+
+    await message.channel.send(f'What game is this order for? \n' + "\n".join(games))
+
+    def check(m):
+        return m.content in games and m.channel == message.channel
+
+    try:
+        msg = await client.wait_for('message', timeout=30.0, check=check)
+        if msg.content in games:
+            game = msg.content
+            await message.channel.send('Processing....')
+        else:
+            await message.channel.send('Game is not in the list. If this is an error contact Seyon or Tockz.')
+            return None
+    except asyncio.TimeoutError:
+        await message.channel.send('Operation has timed out. You will need to start the creation process.')
+        return None
+
 
 
 client.run(TOKEN)

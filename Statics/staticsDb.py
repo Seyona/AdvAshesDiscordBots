@@ -124,6 +124,34 @@ class staticsDb:
         else:
             return False
 
+    def GetUsersStatics(self, username):
+        """ Checks if a user is in any static """
+        inStatic = False
+        sql = f'Select * from games where discord_name = \'{username}\''
+        try: 
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+
+            cur.execute(sql)
+            row = cur.fetchone()
+
+            if row != None:
+                inStatic = True
+                
+            conn.commit()
+            cur.close()
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when checking static status for user {username}')
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
+            return inStatic
+
+
     def IsInGivenStatic(self, username, static_name, game_name = None):
         """
             Checks if a user is in a given static
@@ -142,13 +170,13 @@ class staticsDb:
         else:
             return False
 
-    def GetAllUsersInStatic(self, static_name):
+    def GetAllUsersInStatic(self, static_name, game_name):
         """ Gets a list of all users in a static 
             Returns a list of user names 
         """
         conn = None
         users = []
-        sql = f'SELECT discord_name from static_users where static_id = {static_name}'
+        sql = f'SELECT discord_name from static_users where static_id = {static_name} and game_name = {game_name}'
         try:
       
             params = self.dbConf
@@ -175,9 +203,9 @@ class staticsDb:
 
         return users
 
-    def DropUserFromStatic(self, static_name, userName):
+    def DropUserFromStatic(self, static_name, userName, game_name):
         """ Drops a given user from a static """
-        sql = f'DELETE FROM static_users where discord_name = \'{userName}\' and static_id = \'{static_name}\''
+        sql = f'DELETE FROM static_users where discord_name = \'{userName}\' and static_id = \'{static_name}\' and game_id = \'{game_name} \''
         try:
       
             params = self.dbConf
@@ -326,6 +354,5 @@ class staticsDb:
         finally:
             if conn is not None:
                 conn.close()
-
-        return activeGames
+            return activeGames
 
