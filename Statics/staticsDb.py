@@ -282,7 +282,7 @@ class staticsDb:
         """ creates a user in the static_users table """
 
         usersSql = """INSERT INTO static_users (discord_name, static_name) 
-        VALUES(%s, %s) RETURNING player_id"""
+        VALUES(%s, %s)"""
 
         updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = \'{static_name}\''
 
