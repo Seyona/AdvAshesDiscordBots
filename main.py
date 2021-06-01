@@ -164,7 +164,7 @@ async def on_message(message):
                 await message.channel.send(f'The order {static.static_name}. The role <@&{static.discord_id}> and channel <#{static.chat_id}> were created for your use. ')
 
             except(Exception, DatabaseError) as error:
-                await message.send(str(error))
+                await message.channel.send(str(error))
                 return              
                 
         elif message.content.startswith('!joinorder'):
