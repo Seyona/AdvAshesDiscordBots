@@ -8,10 +8,7 @@ class Static:
         self.static_lead = data.static_lead
         self.static_colead = data.static_colead
         self.discord_id = data.discord_id
-        self.chat_id = data.chat_id
-        self.voicechat_id = data.voicechat_id
         self.static_size = data.static_size
-        self.game_id = data.game_id
 
     def from_creation_request(self, message: str, discord_name):
         """ 
