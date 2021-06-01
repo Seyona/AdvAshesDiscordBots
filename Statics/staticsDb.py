@@ -173,7 +173,7 @@ class staticsDb:
         """
         conn = None
         users = []
-        sql = f'SELECT discord_name from static_users where static_id = {static_name}'
+        sql = f'SELECT discord_name from static_users where static_name= {static_name}'
         try:
       
             params = self.dbConf
@@ -202,7 +202,7 @@ class staticsDb:
 
     def DropUserFromStatic(self, static_name, userName):
         """ Drops a given user from a static """
-        sql = f'DELETE FROM static_users where discord_name = \'{userName}\' and static_id = \'{static_name}\''
+        sql = f'DELETE FROM static_users where discord_name = \'{userName}\' and static_name = \'{static_name}\''
         try:
       
             params = self.dbConf
@@ -281,7 +281,7 @@ class staticsDb:
     def AddUserToStatic(self, discordName, static_name):
         """ creates a user in the static_users table """
 
-        usersSql = """INSERT INTO static_users (discord_name, static_id) 
+        usersSql = """INSERT INTO static_users (discord_name, static_name) 
         VALUES(%s, %s) RETURNING player_id"""
 
         updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = \'{static_name}\''
