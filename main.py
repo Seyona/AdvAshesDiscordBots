@@ -151,7 +151,7 @@ async def on_message(message):
             static.from_creation_request(message.content, str(message.author))
             
             try:
-                (static, role) = StartOrder(static, discordG)
+                (static, role) = await StartOrder(static, discordG)
 
                 manager.setStaticInfo(static)
                 manager.initRoles(discordIds, discordG, role, static.static_name)
