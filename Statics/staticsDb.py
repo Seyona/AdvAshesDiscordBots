@@ -350,3 +350,23 @@ class staticsDb:
                 conn.close()
             return activeGames
 
+    def Create_chat_channel(self, chat):
+        sql = """ INSERT INTO chats(chat_id, chat_type, static_name) VALUES (%s, %s, %s) """ 
+        conn = None
+        try:
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+
+            cur.execute(sql, (chat.chat_id, chat.chat_type, chat.static_name))
+
+            conn.commit()
+            cur.close()
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when creating new chat {error}')
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()

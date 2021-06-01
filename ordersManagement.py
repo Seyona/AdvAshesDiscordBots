@@ -50,8 +50,8 @@ async def StartOrder(order, guild):
             voice_chat.static_name = order.static_name
 
             errorMsg = 'Error while creating voice/text channel'
-            db.create_chat_channel(text_chat)
-            db.create_chat_channel(voice_chat)
+            db.Create_chat_channel(text_chat)
+            db.Create_chat_channel(voice_chat)
 
             errorMsg = 'Error while updating static info'
             order.Update()
