@@ -21,7 +21,7 @@ class staticsDb:
         """
 
         sql = """INSERT INTO statics (static_name, leader_name, static_size) 
-        VALUES(%s, %s, %s, %s) RETURNING static_id"""
+        VALUES(%s, %s, %s) RETURNING static_id"""
 
         conn = None
         retId = None
