@@ -36,10 +36,10 @@ async def StartOrder(order, guild):
             new_chan_name = f'{order.static_name}'
             
             errorMsg = 'Error while creating text chat'
-            text_chat.CreateChat(guild, new_chan_name, category)
+            await text_chat.CreateChat(guild, new_chan_name, category)
             
             errorMsg = 'Error while creating voice chat'
-            voice_chat.CreateChat(guild, new_chan_name, category)
+            await voice_chat.CreateChat(guild, new_chan_name, category)
 
             errorMsg = 'Error while creating discord role'
             role = await guild.create_role(name=role_name)
