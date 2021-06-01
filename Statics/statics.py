@@ -32,7 +32,7 @@ class Static:
         """ Checks if the current static exists in the database """
         db = staticsDb()
 
-        data = db.GetStaticDataByName(self.static_name, self.game_id)
+        data = db.GetStaticDataByName(self.static_name)
         if (data):
             return True
         else:
@@ -45,8 +45,5 @@ class Static:
             f'leader_name = \'{self.static_lead}\','
             f'colead_name = \'{self.static_colead}\','
             f'discord_id = \'{self.discord_id}\','
-            f'chat_id = \'{self.chat_id}\','
-            f'voicechat_id = \'{self.voicechat_id}\','
-            f'static_size = {self.static_size},'
-            f'game_name = \'{self.game_id}\'')
+            f'static_size = {self.static_size}')
         db.UpdateStaticRow(setStr, self.id)
