@@ -8,6 +8,7 @@ import json
 import time
 import re
 import asyncio
+from ordersManagement import *
 from psycopg2 import DatabaseError
 from Events.events import Event
 from Statics.statics import Static
@@ -148,106 +149,24 @@ async def on_message(message):
             db = staticsDb()
             static = Static()
             static.from_creation_request(message.content, str(message.author))
-             
-            games = db.GetGames()
-            game = None
-
-            if games == []:
-                await message.channel.send("Error when fetching games. Contact Seyon")
-                return 
-
-            await message.channel.send(f'What game is this order for? \n' + "\n".join(games))
-
-            def check(m):
-                return m.content in games and m.channel == message.channel
-
+            
             try:
-                msg = await client.wait_for('message', timeout=30.0, check=check)
-            except asyncio.TimeoutError:
-                await message.channel.send('Operation has timed out. You will need to start the creation process.')
-                return
-            else:
-                if msg.content in games:
-                    game = msg.content
-                    static.game_id = game
-                    await message.channel.send('Starting creation')
-                else:
-                    await message.channel.send('Game is not in the list. If this is an error contact Seyon or Tockz.')
-                    return
-                
-            try:           
-                if db.IsInAStatic(userStr, static.game_id):
-                    await message.channel.send("You cannot create an order while already in one")
-                    return
-            except(Exception, DatabaseError) as error:
-                await message.channel.send("There was an error while checking your order status.  Contact Seyon")
-                return
+                (static, role) = StartOrder(static, discordG)
 
-           
-            if static.static_exists():
-                await message.channel.send("An Order with this name already exists")
-            else:
-                try:
-                    static.create()
-                    manager.setStaticInfo(static)
-                except(Exception, DatabaseError) as error:
-                    await message.channel.send("There was an error when creating your Order. Contact Seyon")
-                    return
-                
-                # Create new role and channels for static
-                global discordG 
-                category = discord.utils.get(discordG.categories, name='◇──◇Orders◇──◇')
-
-                role_name = f'{static.static_name}-{static.game_id}'
-                new_chan_name = f'{static.static_name}-{static.game_id}'
-                await discordG.create_role(name=role_name)
-                await discordG.create_text_channel(new_chan_name, category=category)
-                await discordG.create_voice_channel(new_chan_name, category=category)
-
-                # fetch an updated instance of the discord server 
-                
-                discordG = await client.fetch_guild(discordG.id) 
-
-                newRole = discord.utils.get(discordG.roles, name=role_name)
-                static.discord_id = newRole.id
-
-                manager.initRoles(discordIds, discordG, newRole, static.static_name)
+                manager.setStaticInfo(static)
+                manager.initRoles(discordIds, discordG, role, static.static_name)
                 await manager.AddLeaderRole(message.author)
                 await manager.AddStaticRole(message.author)
                 await manager.AddDiscordRole(message.author)
                 await manager.RemoveBasicTag(message.author)
 
-                # Fetch new Channel ID
-                chans = await discordG.fetch_channels()
-                newChan = discord.utils.get(chans, name=f'{str.lower(new_chan_name.replace(" ","-"))}')
-                static.chat_id = newChan.id
-
-                # Fetch new Voice Channel Id
-                newVChan = discord.utils.get(chans, name=new_chan_name)
-                static.voicechat_id = newVChan.id
-
-                try:
-                    static.Update()
-                except(Exception, DatabaseError) as error:
-                    await message.channel.send("There was an error when updating your Order. Contact Seyon")
-                    return
-
-                try:
-                    db = staticsDb()
-                    msg = db.AddUserToStatic(str(message.author), static.static_name, static.game_id)
-
-                    if msg != "":
-                        await message.channel.send(f'{msg}')
-                        dropmsg = db.dropStatic(static.static_name)
-                        if dropmsg != "":
-                            await message.channel.send(f'{dropmsg}')
-                
-                except(Exception, DatabaseError) as error:
-                    await message.channel.send("There was an error when linking the user to the static. Contact Seyon")
-                    return
-                
+                JoinOrder(static.static_name, msgUser)
                 await message.channel.send(f'The order {static.static_name}. The role <@&{static.discord_id}> and channel <#{static.chat_id}> were created for your use. ')
 
+            except(Exception, DatabaseError) as error:
+                await message.send(str(error))
+                return              
+                
         elif message.content.startswith('!joinorder'):
 
             db = staticsDb()

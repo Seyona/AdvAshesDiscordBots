@@ -20,14 +20,14 @@ class staticsDb:
             Returns True on success, False otherwise
         """
 
-        sql = """INSERT INTO statics (static_name, leader_name, static_size, game_name) 
+        sql = """INSERT INTO statics (static_name, leader_name, static_size) 
         VALUES(%s, %s, %s, %s) RETURNING static_id"""
 
         conn = None
         retId = None
         try:
 
-            existingStatic = self.GetStaticDataByName(static.static_name, static.game_id) #Check if a static of this name exists
+            existingStatic = self.GetStaticDataByName(static.static_name) #Check if a static of this name exists
 
             if (existingStatic):
                 return False
@@ -37,7 +37,7 @@ class staticsDb:
 
             cur = conn.cursor()
 
-            cur.execute(sql, (static.static_name, static.static_lead, static.static_size, static.game_id))
+            cur.execute(sql, (static.static_name, static.static_lead, static.static_size))
 
             retId = cur.fetchone()[0]
 
@@ -53,12 +53,12 @@ class staticsDb:
 
         return retId
 
-    def GetStaticDataByName(self, static_name, game_id):
+    def GetStaticDataByName(self, static_name):
         """
             Gets Static Data
             Returns StaticData object, if exists, otherwise None
         """
-        sql = f'SELECT * FROM statics WHERE static_name = \'{static_name}\' and game_name = \'{game_id}\''
+        sql = f'SELECT * FROM statics WHERE static_name = \'{static_name}\''
 
         try:
             params =self.dbConf
@@ -82,16 +82,13 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-    def GetUserStaticData(self, username, game_name = None):
+    def GetUserStaticData(self, username):
         """
             Gets User static data 
             Returns Tuple (discord_name, static_id), if user exists, else None
         """
         
         sql = f'SELECT discord_name, static_id FROM static_users WHERE discord_name = \'{username}\''
-
-        if game_name is not None:
-            sql = sql + f'and game_id =\'{game_name}\' '
 
         try:
             params =self.dbConf
@@ -281,11 +278,11 @@ class staticsDb:
 
         return True
 
-    def AddUserToStatic(self, discordName, static_name, game_name):
+    def AddUserToStatic(self, discordName, static_name):
         """ creates a user in the static_users table """
 
-        usersSql = """INSERT INTO static_users (discord_name, static_id, game_id) 
-        VALUES(%s, %s, %s) RETURNING player_id"""
+        usersSql = """INSERT INTO static_users (discord_name, static_id) 
+        VALUES(%s, %s) RETURNING player_id"""
 
         updateCount = f'UPDATE statics SET static_size = static_size + 1 WHERE static_name = \'{static_name}\''
 
@@ -293,22 +290,19 @@ class staticsDb:
 
         try:
 
-            static = self.GetStaticDataByName(static_name, game_name) #Check if a static of this name exists
+            static = self.GetStaticDataByName(static_name) #Check if a static of this name exists
 
             if not (static):
                 return "Static does not exist"
 
-            if self.IsInGivenStatic(discordName, static_name, game_name):
+            if self.IsInGivenStatic(discordName, static_name):
                 return "You are already in the static"
-
-            if self.IsInAStatic(discordName, game_name):
-                return "You are already in a static"
             
             params = self.dbConf
             conn = psycopg2.connect(**params)
 
             cur = conn.cursor()
-            cur.execute(usersSql, (discordName, static_name, game_name)) 
+            cur.execute(usersSql, (discordName, static_name)) 
             cur.execute(updateCount)
 
             conn.commit()
