@@ -85,10 +85,10 @@ class staticsDb:
     def GetUserStaticData(self, username):
         """
             Gets User static data 
-            Returns Tuple (discord_name, static_id), if user exists, else None
+            Returns Tuple (discord_name, static_name), if user exists, else None
         """
         
-        sql = f'SELECT discord_name, static_id FROM static_users WHERE discord_name = \'{username}\''
+        sql = f'SELECT discord_name, static_name FROM static_users WHERE discord_name = \'{username}\''
 
         try:
             params =self.dbConf
