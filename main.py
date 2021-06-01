@@ -161,7 +161,7 @@ async def on_message(message):
                 await manager.RemoveBasicTag(message.author)
 
                 JoinOrder(static.static_name, msgUser)
-                await message.channel.send(f'The order {static.static_name}. The role <@&{static.discord_id}> and channel <#{static.chat_id}> were created for your use. ')
+                await message.channel.send(f'The order {static.static_name}. The role <@&{static.discord_id}>, text channel, and voice channel were created for the Orders use')
 
             except(Exception, DatabaseError) as error:
                 await message.channel.send(str(error))
