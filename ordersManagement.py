@@ -75,4 +75,3 @@ def JoinOrder(order_name, user):
     if msg != "":
         raise Exception(msg)
 
-    return msg

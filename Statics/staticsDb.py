@@ -110,12 +110,12 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-    def IsInAStatic(self, username, game_name = None):
+    def IsInAStatic(self, username):
         """
-            Checks if a user is in any static for a given game
+            Checks if a user is in any static
         """
 
-        user = self.GetUserStaticData(username, game_name)
+        user = self.GetUserStaticData(username)
         if user:
             return True
         else:
@@ -149,31 +149,31 @@ class staticsDb:
             return inStatic
 
 
-    def IsInGivenStatic(self, username, static_name, game_name = None):
+    def IsInGivenStatic(self, username, static_name):
         """
             Checks if a user is in a given static
         """
-        user = self.GetUserStaticData(username, game_name)
+        user = self.GetUserStaticData(username)
         if user and user[1] == static_name:
             return True
         else:
             return False
 
-    def StaticHasSpace(self, static_name, game_id):
+    def StaticHasSpace(self, static_name):
         """ Checks if a static has space for members """
-        static = self.GetStaticDataByName(static_name, game_id)
+        static = self.GetStaticDataByName(static_name)
         if static:
             return static.static_size < 8
         else:
             return False
 
-    def GetAllUsersInStatic(self, static_name, game_name):
+    def GetAllUsersInStatic(self, static_name):
         """ Gets a list of all users in a static 
             Returns a list of user names 
         """
         conn = None
         users = []
-        sql = f'SELECT discord_name from static_users where static_id = {static_name} and game_name = {game_name}'
+        sql = f'SELECT discord_name from static_users where static_id = {static_name}'
         try:
       
             params = self.dbConf
@@ -200,9 +200,9 @@ class staticsDb:
 
         return users
 
-    def DropUserFromStatic(self, static_name, userName, game_name):
+    def DropUserFromStatic(self, static_name, userName):
         """ Drops a given user from a static """
-        sql = f'DELETE FROM static_users where discord_name = \'{userName}\' and static_id = \'{static_name}\' and game_id = \'{game_name} \''
+        sql = f'DELETE FROM static_users where discord_name = \'{userName}\' and static_id = \'{static_name}\''
         try:
       
             params = self.dbConf
