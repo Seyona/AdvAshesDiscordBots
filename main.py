@@ -172,12 +172,12 @@ async def on_message(message):
             db = staticsDb()
             staticName = [x.strip() for x in message.content.split(' ', 1)][1]
             data = db.GetStaticDataByName(staticName)
-            
+
             if not data:
                 await message.channel.send(f'Order, {staticName}, does not exist')
                 return
 
-            staticRole = discord.utils.get(discordG.roles, id=data.discord_id)
+            staticRole = discord.utils.get(discordG.roles, id=int(data.discord_id))
 
             try:
                 JoinOrder(data.static_name, msgUser)
@@ -205,7 +205,7 @@ async def on_message(message):
                 if not data: 
                     await message.channel.send(f'Order, {order_name}, does not exist')
 
-                staticRole = discord.utils.get(discordG.roles, id=data.discord_id)
+                staticRole = discord.utils.get(discordG.roles, id=int(data.discord_id))
                 manager.setStaticInfo(Static(data))
                 manager.initRoles(discordIds, discordG, staticRole, data.static_name)
 
