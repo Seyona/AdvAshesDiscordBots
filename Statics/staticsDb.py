@@ -153,7 +153,7 @@ class staticsDb:
         """
             Checks if a user is in a given static
         """
-        user = self.GetUserStaticData(username)
+        user = self.GetUserStaticData(username, static_name)
         if user and user[1] == static_name:
             return True
         else:
