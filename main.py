@@ -171,72 +171,40 @@ async def on_message(message):
 
             db = staticsDb()
             staticName = [x.strip() for x in message.content.split(' ', 1)][1]
-            game_name = await GetGame(message, db)
-            data = db.GetStaticDataByName(staticName, game_name)
+            data = db.GetStaticDataByName(staticName)
             staticRole = discord.utils.get(discordG.roles, id=data.discord_id)
-            manager.setStaticInfo(Static(data))
-            manager.initRoles(discordIds, discordG, staticRole ,data.static_name)
-
-            outputMsg = 'You have successfully joined {staticName}'
-
-            if data:
-                if db.StaticHasSpace(staticName):         
-                    if not db.IsInAStatic(userStr):
-                        if not db.IsInGivenStatic(userStr, staticName):
-                            db.AddUserToStatic(userStr, staticName)
-                            await manager.RemoveBasicTag(msgUser)
-                            await manager.AddDiscordRole(msgUser)
-                            await manager.AddStaticRole(msgUser)
-                        else:
-                            outputMsg = f'{userStr} is already in this Order'
-                    else:
-                        outputMsg = f'{userStr} is already in a Order'
-                else:
-                    outputMsg = f'Static is currently full (8 people)'
-            else:
-                outputMsg = f'Order \'{staticName}\' does not exist.'
             
-            await message.channel.send(outputMsg)
+            try:
+                JoinOrder(data.static_name, msgUser)
+                manager.setStaticInfo(Static(data))
+                manager.initRoles(discordIds, discordG, staticRole ,data.static_name)
+                await manager.RemoveBasicTag(msgUser) # Not everyone needs this
+                await manager.AddDiscordRole(msgUser) # Not everyone needs this every time
+                await manager.AddStaticRole(msgUser) # Unique to the order they are joining
+
+                await message.channel.send(f'You have success joined {data.static_name}.')
+
+            except(Exception, DatabaseError) as error:
+                await message.channel.send(str(error))
+                return
 
         elif message.content.startswith('!addcolead'):
             db = staticsDb()
-            new_colead = [x.strip() for x in message.content.split(' ', 1)][1]
-            game_name = await GetGame(message, db)
+            # split on space, get the 2nd item (everything after the command) split on the first comma
+            splitString = [x.strip() for x in message.content.split(' ',1)[1].split(',',1)] 
+            new_colead = splitString[0]
+            order_name = splitString[1]
 
-            coleadHasProperFormat = re.match(r".*#\d{4}$", new_colead)
-            if coleadHasProperFormat:
-                try:
-                    new_coleadData = db.GetUserStaticData(new_colead, game_name)
-                    userData = db.GetUserStaticData(msgUser, game_name)
+            try:
+                data = db.GetStaticDataByName(order_name)
+                staticRole = discord.utils.get(discordG.roles, id=data.discord_id)
+                manager.setStaticInfo(Static(data))
+                manager.initRoles(discordIds, discordG, staticRole, data.static_name)
 
-                    if userData[1] == new_coleadData[1]: # Same static
-                        data = db.GetStaticDataByName(userData[1], game_name)
-                        staticRole = discord.utils.get(discordG.roles, id=data.discord_id)
-                        manager.setStaticInfo(Static(data))
-                        manager.initRoles(discordIds, discordG, staticRole, data.static_name)
-                        current_colead = None
-
-                        if data.static_colead != 'None':
-                            splitname = data.static_colead.split('#')
-                            current_colead = discord.utils.get(discordG.members, name=splitname[0], discriminator=splitname[1])
-                            # Needs to check if they aren't a co_lead in another order
-                            manager.RemoveColeadRole(current_colead)
-
-                        if db.IsInGivenStatic(new_colead, userData[1], game_name):
-                            data.static_colead = new_colead
-                            staticObj = Static(data)
-                            staticObj.Update()
-                            manager.AddColeadRole(msgUser)
-                        else:
-                            await message.channel.send(f'User: {userStr} is not in the order \'{staticName}\' and cannot be promoted to Knight')
-                    else:
-                        await message.channel.send(f'User: {new_colead} is not in Order: {userData[1]}')
-                        
-                except(Exception, DatabaseError) as error:
-                    await message.channel.send("There was an error when promoting Colead. Contact Seyon")
-                    return
-            else:
-                await message.channel.send(f'User {new_colead}, is not formatted properly. Proper Format: {promoteColeadEx}')
+                await PromoteCoLead(data, new_colead, userStr, False, discordG, manager) 
+            except(Exception) as error:
+                await message.channel.send(str(error))
+                return
 
         elif message.content.startswith('!disbandorder'):
             return True

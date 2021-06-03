@@ -82,13 +82,13 @@ class staticsDb:
             if conn is not None:
                 conn.close()
 
-    def GetUserStaticData(self, username):
+    def GetUserStaticData(self, username, static_name):
         """
             Gets User static data 
             Returns Tuple (discord_name, static_name), if user exists, else None
         """
         
-        sql = f'SELECT discord_name, static_name FROM static_users WHERE discord_name = \'{username}\''
+        sql = f'SELECT discord_name, static_name FROM static_users WHERE discord_name = \'{username}\' and static_name = \'{static_name}\''
 
         try:
             params =self.dbConf
@@ -316,6 +316,29 @@ class staticsDb:
                 conn.close()
 
         return ""
+
+    def CheckIsCoLead(self, username):
+        """ Checks if a given user is a co_lead in ANY static """
+        sql = f'SELECT colead_name from statics where colead_name = \'{username}\''
+        try:
+            params =self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+            cur.execute(sql)
+
+            row = cur.fetchone()
+            if row: # User Exists in some static
+                return row[0], row[1]
+            else:
+                return None
+                
+        except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when checking if user {username} was co_lead anywhere :: {error}')
+            raise error
+        finally:
+            if conn is not None:
+                conn.close()
 
     def GetGames(self):
         """ Fetches a list of active games """
