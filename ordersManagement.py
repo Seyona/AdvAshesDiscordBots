@@ -93,7 +93,7 @@ async def PromoteCoLead(static_data, discord_name, adding_user, adding_user_is_o
     staticData = None
 
     if properFormat:
-        colead_staticData = db.getUserStaticData(discord_name, static_data.static_name)
+        colead_staticData = db.GetUserStaticData(discord_name, static_data.static_name)
         adding_userData = None 
 
         if not colead_staticData: # No data for the specified static was found
