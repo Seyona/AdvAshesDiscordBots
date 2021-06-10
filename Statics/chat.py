@@ -1,4 +1,6 @@
 import asyncio
+from discord import PermissionOverwrite  
+from discord.utils import get 
 class Chat:
     def __init__(self, chat_type):
         # Discord Chat Id
@@ -14,11 +16,21 @@ class Chat:
         self.chat_type = queryData[0]
         self.static_name = queryData[0]
 
-    async def CreateChat(self, guild, channelName, category):
+    async def CreateChat(self, guild, channelName, category, discordRole):
         chan = None
-        if str.lower(self.chat_type) == 'text':\
-            chan = await guild.create_text_channel(channelName, category=category)
+        cultistRole = get(guild.roles, name="Cultist")
+
+        if str.lower(self.chat_type) == 'text':
+            chan = await guild.create_text_channel(channelName, category=category, overwrites = text_overwrites)
+            
+            # Set Permissions for the channel
+            # List of Permissions can be found here (they are the attributes): https://discordpy.readthedocs.io/en/stable/api.html?highlight=permissionoverwrite#discord.Permissions
+            await chan.set_permissions(discordRole, view_channel=True, read_messages=True, send_messages=True)
+            await chan.set_permissions(cultistRole, view_channel=False)
+
         if str.lower(self.chat_type) == 'voice':
             chan = await guild.create_voice_channel(channelName, category=category)
-            
+            await chan.set_permissions(discordRole, view_channel=True, speak=True, stream=True, connect=True)
+            await chan.set_permissions(cultistRole, view_channel=True, connect=False, speak=True) # By default they cannot join, but can see who is in it
+
         self.chat_id = chan.id
