@@ -27,38 +27,41 @@ async def StartOrder(order, guild):
         else:
             errorMsg = 'Error when creating Order'
             order.create()
-            errorMsg = 'Error when Initializing order role info'
 
             errorMsg = 'Error when fetching discord category'
-            
+
             text_chat.static_name = order.static_name
             voice_chat.static_name = order.static_name
 
             category = discord.utils.get(guild.categories, name='◇──◇Orders◇──◇')
+
             role_name = f'{order.static_name}'
             new_chan_name = f'{order.static_name}'
             
             errorMsg = 'Error while creating discord role'
+
             role = await guild.create_role(name=role_name)
             order.discord_id = role.id
 
             errorMsg = 'Error while creating text chat'
+
             await text_chat.CreateChat(guild, new_chan_name, category, role)
             
             errorMsg = 'Error while creating voice chat'
+
             await voice_chat.CreateChat(guild, new_chan_name, category, role)
-
-
 
             # Create entries in Chat table 
             text_chat.static_name = order.static_name
             voice_chat.static_name = order.static_name
 
             errorMsg = 'Error while creating voice/text channel'
+
             db.Create_chat_channel(text_chat)
             db.Create_chat_channel(voice_chat)
 
             errorMsg = 'Error while updating static info'
+            
             order.Update()
             return (order, role)
 
