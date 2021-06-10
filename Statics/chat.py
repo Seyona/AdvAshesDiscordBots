@@ -21,7 +21,7 @@ class Chat:
         cultistRole = get(guild.roles, name="Cultist")
 
         if str.lower(self.chat_type) == 'text':
-            chan = await guild.create_text_channel(channelName, category=category, overwrites = text_overwrites)
+            chan = await guild.create_text_channel(channelName, category=category)
             
             # Set Permissions for the channel
             # List of Permissions can be found here (they are the attributes): https://discordpy.readthedocs.io/en/stable/api.html?highlight=permissionoverwrite#discord.Permissions
