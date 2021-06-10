@@ -187,7 +187,7 @@ async def on_message(message):
                 await manager.AddDiscordRole(msgUser) # Not everyone needs this every time
                 await manager.AddStaticRole(msgUser) # Unique to the order they are joining
 
-                await message.channel.send(f'You have success joined {data.static_name}.')
+                await message.channel.send(f'You have successfully joined {data.static_name}.')
 
             except(Exception, DatabaseError) as error:
                 await message.channel.send(str(error))
