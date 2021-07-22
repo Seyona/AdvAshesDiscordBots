@@ -21,6 +21,7 @@ class Chat:
         cultistRole = get(guild.roles, name="Cultist")
 
         if str.lower(self.chat_type) == 'text':
+
             chan = await guild.create_text_channel(channelName, category=category)
             
             # Set Permissions for the channel
