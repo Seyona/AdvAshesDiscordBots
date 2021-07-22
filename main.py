@@ -345,7 +345,7 @@ async def on_message(message):
 
                 out_message += '__________________'
                 out_message += '```'
-                await message.channel.send(message)
+                await message.channel.send(out_message)
         return
 
 # Delete the message from the given reaction's channel
