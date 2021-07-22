@@ -339,7 +339,7 @@ async def on_message(message):
                     co_lead = order[2]
 
                 out_message = (f'** {order[0].capitalize()} ** \n'
-                            f'```\n'
+                            f'```asciidoc \n'
                             f'RED [Captain]\n'
                             f'{order[1]}\n'
                             f'RED [Knight]\n'
