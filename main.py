@@ -340,11 +340,11 @@ async def on_message(message):
 
                 out_message = (f'** {order[0].capitalize()} ** \n'
                             f'```asciidoc \n'
-                            f'RED [Captain]\n'
+                            f'[Captain]\n'
                             f'{order[1]}\n'
-                            f'RED [Knight]\n'
+                            f'[Knight]\n'
                             f'{co_lead}\n'
-                            f'RED [Members]\n'
+                            f'[Members]\n'
                 )
 
                 if members is not None:
@@ -354,7 +354,7 @@ async def on_message(message):
                     out_message += "No Members \n"
 
                 out_message += '__________________'
-                out_message += '```'
+                out_message += '``` \n\n'
                 await message.channel.send(out_message)
         return
 
