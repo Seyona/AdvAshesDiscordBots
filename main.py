@@ -324,19 +324,24 @@ async def on_message(message):
             db = staticsDb()
             orders_list = db.FetchAllMembersList()
             for order in orders_list:
-                members = order[3].split(",")
+                members = None
+                if order[3] is not None:
+                    members = order[3].split(",")
 
                 message = (f'** {order[0]} ** \n'
                             f'```\n'
                             f'[Captain]\n'
                             f'{order[1]} \n'
                             f'[Knight]\n'
-                            f'{order[2]}'
+                            f'{order[2] if order[2] is not None else "No Colead"}'
                             f'[Members] \n'
                 )
 
-                for member in members:
-                    message += f'{member}\n'
+                if members is not None:
+                    for member in members:
+                        message += f'{member}\n'
+                else:
+                    message += "No Members"
 
                 message += '__________________'
                 message += '```'
