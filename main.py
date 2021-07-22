@@ -319,6 +319,28 @@ async def on_message(message):
             else:
                  await message.channel.send(f'User {new_lead}, is not formatted properly. Proper Format: {promoteLeaderEx}')
 
+    elif chanId == chanIds["orderDisplay"]:
+        if message.content.startswith('!report'):
+            db = staticsDb()
+            orders_list = db.FetchAllMembersList()
+            for order in orders_list:
+                members = order[3].split(",")
+
+                message = (f'** {order[0]} ** \n'
+                            f'```\n'
+                            f'[Captain]\n'
+                            f'{order[1]} \n'
+                            f'[Knight]\n'
+                            f'{order[2]}'
+                            f'[Members] \n'
+                )
+
+                for member in members:
+                    message += f'{member}\n'
+
+                message += '__________________'
+                message += '```'
+        return
 
 # Delete the message from the given reaction's channel
 async def DeleteMessageFromChannel(channel, msg, sleepTime=0):

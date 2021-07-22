@@ -393,3 +393,39 @@ class staticsDb:
         finally:
             if conn is not None:
                 conn.close()
+
+    def FetchAllMembersList(self):
+        """
+        Fetch a list of all orders and their members
+        """ 
+
+        query = """
+            select static_name, lead_name, colead_name,
+            (select string_agg(discord_name, ',') as members 
+                from static_users su 
+                where su.static_name = s.static_name and su.discord_name <> s.lead_name and su.discord_name <> s.colead_name)
+            from statics s;
+        """
+        conn = None
+        orders = []
+
+        try:
+            params = self.dbConf
+            conn = psycopg2.connect(**params)
+
+            cur = conn.cursor()
+            cur.execute(query) 
+            
+            orders = cur.fetchall()
+
+            conn.commit()
+            cur.close()
+
+        except(Exception, psycopg2.DatabaseError) as error:
+            logging.error(f'Error when fetching games: {error}')
+            return []
+        finally:
+            if conn is not None:
+                conn.close()
+            return orders
+        
