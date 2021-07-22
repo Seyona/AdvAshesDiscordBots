@@ -25,8 +25,17 @@ class Chat:
             
             # Set Permissions for the channel
             # List of Permissions can be found here (they are the attributes): https://discordpy.readthedocs.io/en/stable/api.html?highlight=permissionoverwrite#discord.Permissions
-            await chan.set_permissions(discordRole, view_channel=True, read_messages=True, send_messages=True)
-            await chan.set_permissions(cultistRole, view_channel=False)
+            role_overwrite = PermissionOverwrite()
+            role_overwrite.view_channel = True
+            role_overwrite.read_messages = True
+            role_overwrite.send_messages = True
+
+            await chan.set_permissions(discordRole, overwrite=role_overwrite)
+
+            cultist_overwrite = PermissionOverwrite()
+            cultist_overwrite.view_channel = False
+
+            await chan.set_permissions(cultistRole, overwrite=cultist_overwrite)
 
         if str.lower(self.chat_type) == 'voice':
             chan = await guild.create_voice_channel(channelName, category=category)
