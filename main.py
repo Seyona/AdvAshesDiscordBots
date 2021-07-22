@@ -323,9 +323,12 @@ async def on_message(message):
         if message.content.startswith('!report'):
 
             message_hist = await message.channel.history().flatten()
+            to_delete = []
             for msg in message_hist:
                 if str(msg.author) != 'Tockz#0001': #Put in limited time exception to deleting tockz old messages
-                    await DeleteMessageFromChannel(message.channel,msg)
+                    to_delete.append(msg)
+            
+            await DeleteMessageFromChannel(message.channel,to_delete)
 
             db = staticsDb()
             orders_list = db.FetchAllMembersList()
@@ -360,7 +363,10 @@ async def on_message(message):
 # Delete the message from the given reaction's channel
 async def DeleteMessageFromChannel(channel, msg, sleepTime=0):
     time.sleep(sleepTime)
-    await channel.delete_messages([msg])
+    if isinstance(msg, list):
+        await channel.delete_messages(msg)
+    else:   
+        await channel.delete_messages([msg])
 
 async def GetGame(message, db):
     """ Fetches the game from the messages channel """
