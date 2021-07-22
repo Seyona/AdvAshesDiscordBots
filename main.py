@@ -328,7 +328,7 @@ async def on_message(message):
                 if order[3] is not None:
                     members = order[3].split(",")
 
-                message = (f'** {order[0]} ** \n'
+                out_message = (f'** {order[0]} ** \n'
                             f'```\n'
                             f'[Captain]\n'
                             f'{order[1]} \n'
@@ -339,12 +339,12 @@ async def on_message(message):
 
                 if members is not None:
                     for member in members:
-                        message += f'{member}\n'
+                        out_message += f'{member}\n'
                 else:
-                    message += "No Members"
+                    out_message += "No Members"
 
-                message += '__________________'
-                message += '```'
+                out_message += '__________________'
+                out_message += '```'
                 await message.channel.send(message)
         return
 
