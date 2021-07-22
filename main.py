@@ -321,27 +321,37 @@ async def on_message(message):
 
     elif chanId == chanIds["orderDisplay"]:
         if message.content.startswith('!report'):
+
+            message_hist = await message.channel.history()
+            for msg in message_hist:
+                if str(msg.author) != 'Tockz#0001': #Put in limited time exception to deleting tockz old messages
+                    await DeleteMessageFromChannel(message.channel,msg)
+
             db = staticsDb()
             orders_list = db.FetchAllMembersList()
             for order in orders_list:
                 members = None
                 if order[3] is not None:
                     members = order[3].split(",")
+                
+                co_lead = "No Colead"
+                if order[2] is not None:
+                    co_lead = order[2]
 
-                out_message = (f'** {order[0]} ** \n'
+                out_message = (f'** {order[0].capitalize()} ** \n'
                             f'```\n'
-                            f'[Captain]\n'
-                            f'{order[1]} \n'
-                            f'[Knight]\n'
-                            f'{order[2] if order[2] is not None else "No Colead"}'
-                            f'[Members] \n'
+                            f'RED [Captain]\n'
+                            f'{order[1]}\n'
+                            f'RED [Knight]\n'
+                            f'{co_lead}\n'
+                            f'RED [Members]\n'
                 )
 
                 if members is not None:
                     for member in members:
-                        out_message += f'{member}\n'
+                        out_message += f'{member} \n'
                 else:
-                    out_message += "No Members"
+                    out_message += "No Members \n"
 
                 out_message += '__________________'
                 out_message += '```'
