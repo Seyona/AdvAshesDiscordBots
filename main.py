@@ -322,7 +322,7 @@ async def on_message(message):
     elif chanId == chanIds["orderDisplay"]:
         if message.content.startswith('!report'):
 
-            message_hist = await message.channel.history()
+            message_hist = await message.channel.history().flatten()
             for msg in message_hist:
                 if str(msg.author) != 'Tockz#0001': #Put in limited time exception to deleting tockz old messages
                     await DeleteMessageFromChannel(message.channel,msg)
