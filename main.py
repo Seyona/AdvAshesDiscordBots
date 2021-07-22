@@ -353,7 +353,6 @@ async def on_message(message):
                 else:
                     out_message += "No Members \n"
 
-                out_message += '__________________'
                 out_message += '``` \n\n'
                 await message.channel.send(out_message)
         return
